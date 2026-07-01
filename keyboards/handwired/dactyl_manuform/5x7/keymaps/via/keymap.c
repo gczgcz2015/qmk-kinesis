@@ -23,7 +23,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         XXXXXXX,
         KC_LCTL, KC_BSPC,
         KC_LALT, KC_DEL,
-        KC_LGUI, KC_SPC,
+        KC_HOME, KC_END,
 
         // Right key well: mirrored, with a three-key inner function column.
         XXXXXXX, KC_6,    KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS,
@@ -34,9 +34,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
         // Right thumb cluster. Matrix position 11,3 is intentionally hidden.
         XXXXXXX,
-        KC_ENT,  KC_BSPC,
-        KC_SPC,  KC_DEL,
-        KC_DOWN, KC_UP
+        KC_RCTL, KC_RGUI,
+        KC_SPC,  KC_PGUP,
+        KC_ENT,  KC_PGDN
     ),
 
     [_KEYPAD] = LAYOUT_5x7(
