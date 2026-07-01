@@ -1,0 +1,72 @@
+name: Build firmware
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - "v*"
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: ghcr.io/qmk/qmk_cli:latest
+
+    steps:
+      - name: Check out keyboard repository
+        uses: actions/checkout@v4
+
+      - name: Check out QMK 0.33.0
+        uses: actions/checkout@v4
+        with:
+          repository: qmk/qmk_firmware
+          ref: 0.33.0
+          submodules: recursive
+          path: qmk_firmware
+
+      - name: Validate matrix and VIA definition
+        run: python3 scripts/validate_layout.py
+
+      - name: Overlay the modified 5x7 target
+        run: cp -R keyboards/. qmk_firmware/keyboards/
+
+      - name: Compile RP2040 VIA firmware
+        run: make -C qmk_firmware handwired/dactyl_manuform/5x7:via
+
+      - name: Collect firmware
+        run: |
+          mkdir -p dist
+          cp qmk_firmware/handwired_dactyl_manuform_5x7_via.uf2 dist/
+          cp qmk_firmware/handwired_dactyl_manuform_5x7_via.bin dist/
+
+      - name: Upload firmware artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: kinesis-dactyl-5x7-firmware
+          path: dist/*
+          if-no-files-found: error
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download firmware artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: kinesis-dactyl-5x7-firmware
+          path: dist
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" dist/* --generate-notes
+
