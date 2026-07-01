@@ -41,7 +41,6 @@ make build
 `dist/`：
 
 - `handwired_dactyl_manuform_5x7_via.uf2`
-- `handwired_dactyl_manuform_5x7_via.bin`
 
 也可以使用现有的完整 QMK 0.33.0 工作树：
 
@@ -85,4 +84,3 @@ VIA JSON 故意不显示以下八个矩阵位置：
 - 右侧正常使用时由左侧通过 TRS 的 5V 供电。
 
 详细接线见 [docs/WIRING.md](docs/WIRING.md)。
-

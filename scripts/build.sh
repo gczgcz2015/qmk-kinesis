@@ -33,7 +33,5 @@ rsync -a "$ROOT_DIR/keyboards/" "$QMK_HOME/keyboards/"
 
 mkdir -p "$ROOT_DIR/dist"
 cp "$QMK_HOME/handwired_dactyl_manuform_5x7_via.uf2" "$ROOT_DIR/dist/"
-cp "$QMK_HOME/handwired_dactyl_manuform_5x7_via.bin" "$ROOT_DIR/dist/"
 
 echo "firmware written to $ROOT_DIR/dist"
-
