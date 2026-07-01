@@ -14,13 +14,13 @@ VIA_JSON = ROOT / "via/kinesis-dactyl-5x7.json"
 KEYMAP_C = ROOT / "keyboards/handwired/dactyl_manuform/5x7/keymaps/via/keymap.c"
 MATRIX_COORDINATE = re.compile(r"^(\d+),(\d+)$")
 EXPECTED_HIDDEN = {
-    (1, 6),
-    (2, 6),
-    (3, 6),
+    (0, 6),
+    (4, 5),
+    (4, 6),
     (5, 3),
-    (7, 6),
-    (8, 6),
-    (9, 6),
+    (6, 6),
+    (10, 5),
+    (10, 6),
     (11, 3),
 }
 
