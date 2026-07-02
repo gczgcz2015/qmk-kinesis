@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import html
 import json
+import math
 import re
 from dataclasses import dataclass
 from pathlib import Path
@@ -12,6 +13,17 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 VIA_JSON = ROOT / "via" / "kinesis-dactyl-5x7.json"
+KEYBOARD_JSON = ROOT / "keyboards" / "handwired" / "dactyl_manuform" / "5x7" / "keyboard.json"
+KEYMAP_C = (
+    ROOT
+    / "keyboards"
+    / "handwired"
+    / "dactyl_manuform"
+    / "5x7"
+    / "keymaps"
+    / "via"
+    / "keymap.c"
+)
 OUTPUT = ROOT / "docs" / "wiring-layout.svg"
 
 ROW_PINS = ("GP14", "GP15", "GP26", "GP27", "GP28", "GP29")
@@ -32,7 +44,6 @@ class Key:
     rotation: int = 0
     pivot_x: int = 0
     pivot_y: int = 0
-    name: str = ""
 
     @property
     def side(self) -> str:
@@ -85,18 +96,18 @@ def thumb_keys() -> list[Key]:
     two_u = KEY_H * 2 + (PITCH - KEY_H)
 
     return [
-        Key(5, 0, 576, 630, name="Ctrl", **left_rotation),
-        Key(5, 2, 672, 630, name="Alt", **left_rotation),
-        Key(5, 4, 480, 720, height=two_u, name="Backspace", **left_rotation),
-        Key(5, 6, 576, 720, height=two_u, name="Delete", **left_rotation),
-        Key(5, 1, 672, 720, name="Home", **left_rotation),
-        Key(5, 5, 672, 810, name="End", **left_rotation),
-        Key(11, 4, 1050, 630, name="GUI/Win", **right_rotation),
-        Key(11, 2, 1146, 630, name="Ctrl", **right_rotation),
-        Key(11, 6, 1050, 720, name="Page Up", **right_rotation),
-        Key(11, 5, 1146, 720, height=two_u, name="Enter", **right_rotation),
-        Key(11, 0, 1242, 720, height=two_u, name="Space", **right_rotation),
-        Key(11, 1, 1050, 810, name="Page Down", **right_rotation),
+        Key(5, 0, 576, 630, **left_rotation),
+        Key(5, 2, 672, 630, **left_rotation),
+        Key(5, 4, 480, 720, height=two_u, **left_rotation),
+        Key(5, 6, 576, 720, height=two_u, **left_rotation),
+        Key(5, 1, 672, 720, **left_rotation),
+        Key(5, 5, 672, 810, **left_rotation),
+        Key(11, 4, 1050, 630, **right_rotation),
+        Key(11, 2, 1146, 630, **right_rotation),
+        Key(11, 6, 1050, 720, **right_rotation),
+        Key(11, 5, 1146, 720, height=two_u, **right_rotation),
+        Key(11, 0, 1242, 720, height=two_u, **right_rotation),
+        Key(11, 1, 1050, 810, **right_rotation),
     ]
 
 
@@ -120,7 +131,89 @@ def via_visible_coordinates() -> set[tuple[int, int]]:
     return coordinates
 
 
-def key_svg(key: Key) -> str:
+def base_keycodes() -> dict[tuple[int, int], str]:
+    keyboard = json.loads(KEYBOARD_JSON.read_text(encoding="utf-8"))
+    layout = keyboard["layouts"]["LAYOUT_5x7"]["layout"]
+    coordinates = [tuple(item["matrix"]) for item in layout]
+
+    source = re.sub(r"//.*", "", KEYMAP_C.read_text(encoding="utf-8"))
+    marker = "[_BASE] = LAYOUT_5x7("
+    start = source.index(marker) + len(marker)
+    depth = 1
+    token: list[str] = []
+    arguments: list[str] = []
+
+    for char in source[start:]:
+        if char == "(":
+            depth += 1
+            token.append(char)
+        elif char == ")":
+            depth -= 1
+            if depth == 0:
+                arguments.append("".join(token).strip())
+                break
+            token.append(char)
+        elif char == "," and depth == 1:
+            arguments.append("".join(token).strip())
+            token = []
+        else:
+            token.append(char)
+
+    if len(coordinates) != len(arguments):
+        raise SystemExit(
+            f"LAYOUT_5x7/base key count mismatch: {len(coordinates)} coordinates, "
+            f"{len(arguments)} keycodes"
+        )
+    return dict(zip(coordinates, arguments))
+
+
+def keycode_label(keycode: str) -> str:
+    labels = {
+        "KC_EQL": "=",
+        "KC_MINS": "-",
+        "KC_TAB": "Tab",
+        "KC_ESC": "Esc",
+        "KC_LSFT": "L Shift",
+        "KC_RSFT": "R Shift",
+        "KC_GRV": "`",
+        "KC_CAPS": "Caps",
+        "KC_LEFT": "←",
+        "KC_RGHT": "→",
+        "KC_UP": "↑",
+        "KC_DOWN": "↓",
+        "KC_BSLS": "\\",
+        "KC_SCLN": ";",
+        "KC_QUOT": "'",
+        "KC_COMM": ",",
+        "KC_DOT": ".",
+        "KC_SLSH": "/",
+        "KC_LBRC": "[",
+        "KC_RBRC": "]",
+        "KC_LCTL": "L Ctrl",
+        "KC_RCTL": "R Ctrl",
+        "KC_BSPC": "Backspace",
+        "KC_LALT": "L Alt",
+        "KC_DEL": "Delete",
+        "KC_HOME": "Home",
+        "KC_END": "End",
+        "KC_RGUI": "GUI/Win",
+        "KC_SPC": "Space",
+        "KC_PGUP": "Page Up",
+        "KC_ENT": "Enter",
+        "KC_PGDN": "Page Down",
+        "TG(_KEYPAD)": "Keypad",
+        "MO(_FN)": "Fn",
+        "MO(_NAV_MEDIA)": "Nav/Media",
+        "XXXXXXX": "Disabled",
+    }
+    if keycode in labels:
+        return labels[keycode]
+    if keycode.startswith("KC_") and len(keycode) == 4:
+        return keycode[-1]
+    return keycode
+
+
+def key_svg(key: Key, keycodes: dict[tuple[int, int], str]) -> str:
     side_class = "left" if key.side == "L" else "right"
     thumb_class = " thumb" if key.qmk_row in (5, 11) else ""
     transform = ""
@@ -129,32 +222,140 @@ def key_svg(key: Key) -> str:
 
     center_x = key.x + KEY_W / 2
     if key.height > KEY_H:
-        text_y = key.y + key.height / 2 - 23
+        text_y = key.y + key.height / 2 - 30
     else:
-        text_y = key.y + 22
+        text_y = key.y + 16
 
-    name = f" {key.name}" if key.name else ""
-    meta = html.escape(f"{key.side}{name} · [{key.qmk_row},{key.col}]")
+    label = html.escape(keycode_label(keycodes[(key.qmk_row, key.col)]))
+    meta = html.escape(f"{key.side} · [{key.qmk_row},{key.col}]")
     matrix = f"R{key.local_row} C{key.col}"
     pins = f"{ROW_PINS[key.local_row]} / {COL_PINS[key.col]}"
 
     return f"""\
   <g class="key {side_class}{thumb_class}"{transform}>
     <rect class="key-shape" x="{key.x}" y="{key.y}" width="{KEY_W}" height="{key.height}" rx="9"/>
-    <text class="key-meta" x="{center_x:g}" y="{text_y:g}">{meta}</text>
-    <text class="key-matrix" x="{center_x:g}" y="{text_y + 22:g}">{matrix}</text>
-    <text class="key-pins" x="{center_x:g}" y="{text_y + 42:g}">{pins}</text>
+    <text class="key-label" x="{center_x:g}" y="{text_y:g}">{label}</text>
+    <text class="key-meta" x="{center_x:g}" y="{text_y + 18:g}">{meta}</text>
+    <text class="key-matrix" x="{center_x:g}" y="{text_y + 37:g}">{matrix}</text>
+    <text class="key-pins" x="{center_x:g}" y="{text_y + 56:g}">{pins}</text>
   </g>"""
 
 
-def generate_svg(keys: list[Key]) -> str:
-    key_markup = "\n".join(key_svg(key) for key in keys)
+def rotate_point(x: float, y: float, angle: int, pivot_x: float, pivot_y: float) -> tuple[float, float]:
+    if not angle:
+        return x, y
+    radians = math.radians(angle)
+    dx = x - pivot_x
+    dy = y - pivot_y
+    return (
+        pivot_x + dx * math.cos(radians) - dy * math.sin(radians),
+        pivot_y + dx * math.sin(radians) + dy * math.cos(radians),
+    )
+
+
+def wiring_points(key: Key, offset_y: int) -> tuple[tuple[float, float], tuple[float, float]]:
+    center_x = key.x + KEY_W / 2
+    center_y = key.y + offset_y + key.height / 2
+    pivot_y = key.pivot_y + offset_y
+    col_point = rotate_point(
+        center_x - 28, center_y, key.rotation, key.pivot_x, pivot_y
+    )
+    row_point = rotate_point(
+        center_x + 31, center_y, key.rotation, key.pivot_x, pivot_y
+    )
+    return col_point, row_point
+
+
+def wiring_key_shape_svg(key: Key, offset_y: int) -> str:
+    y = key.y + offset_y
+    transform = ""
+    if key.rotation:
+        transform = (
+            f' transform="rotate({key.rotation} {key.pivot_x} {key.pivot_y + offset_y})"'
+        )
+    return (
+        f'  <g class="wiring-key"{transform}>\n'
+        f'    <rect class="wiring-key-shape" x="{key.x}" y="{y}" '
+        f'width="{KEY_W}" height="{key.height}" rx="9"/>\n'
+        f"  </g>"
+    )
+
+
+def wiring_key_component_svg(key: Key, offset_y: int) -> str:
+    center_x = key.x + KEY_W / 2
+    center_y = key.y + offset_y + key.height / 2
+    transform = ""
+    if key.rotation:
+        transform = (
+            f' transform="rotate({key.rotation} {key.pivot_x} {key.pivot_y + offset_y})"'
+        )
+
+    return f"""\
+  <g class="wiring-component"{transform}>
+    <line class="component-col-wire" x1="{center_x - 28:g}" y1="{center_y:g}" x2="{center_x - 15:g}" y2="{center_y:g}"/>
+    <rect class="wiring-switch" x="{center_x - 15:g}" y="{center_y - 9:g}" width="22" height="18" rx="3"/>
+    <line class="component-wire" x1="{center_x + 7:g}" y1="{center_y:g}" x2="{center_x + 11:g}" y2="{center_y:g}"/>
+    <rect class="wiring-diode" x="{center_x + 11:g}" y="{center_y - 7:g}" width="16" height="14" rx="7"/>
+    <rect class="wiring-diode-band" x="{center_x + 22:g}" y="{center_y - 7:g}" width="4" height="14"/>
+    <line class="component-row-wire" x1="{center_x + 27:g}" y1="{center_y:g}" x2="{center_x + 31:g}" y2="{center_y:g}"/>
+    <circle class="col-junction" cx="{center_x - 28:g}" cy="{center_y:g}" r="4"/>
+    <circle class="row-junction" cx="{center_x + 31:g}" cy="{center_y:g}" r="4"/>
+  </g>"""
+
+
+def wiring_overlay_svg(keys: list[Key], offset_y: int) -> str:
+    parts = [wiring_key_shape_svg(key, offset_y) for key in keys]
+
+    for side in ("L", "R"):
+        side_keys = [key for key in keys if key.side == side]
+        for col in range(7):
+            points = [
+                wiring_points(key, offset_y)[0] for key in side_keys if key.col == col
+            ]
+            points.sort(key=lambda point: (point[1], point[0]))
+            point_text = " ".join(f"{x:.1f},{y:.1f}" for x, y in points)
+            parts.append(f'  <polyline class="wiring-col-line" points="{point_text}"/>')
+            for x, y in points:
+                parts.append(f'  <circle class="col-junction" cx="{x:.1f}" cy="{y:.1f}" r="4"/>')
+            label_x, label_y = points[0]
+            parts.append(
+                f'  <text class="wiring-col-label" x="{label_x:.1f}" '
+                f'y="{label_y - 55:.1f}">C{col}</text>'
+            )
+
+        for local_row in range(6):
+            points = [
+                wiring_points(key, offset_y)[1]
+                for key in side_keys
+                if key.local_row == local_row
+            ]
+            points.sort(key=lambda point: point[0])
+            point_text = " ".join(f"{x:.1f},{y:.1f}" for x, y in points)
+            parts.append(f'  <polyline class="wiring-row-halo" points="{point_text}"/>')
+            row_class = "wiring-row-line wiring-thumb-row" if local_row == 5 else "wiring-row-line"
+            parts.append(f'  <polyline class="{row_class}" points="{point_text}"/>')
+            for x, y in points:
+                parts.append(f'  <circle class="row-junction" cx="{x:.1f}" cy="{y:.1f}" r="4"/>')
+            label_x, label_y = points[0]
+            label = "R5（拇指区）" if local_row == 5 else f"R{local_row}"
+            parts.append(
+                f'  <text class="wiring-row-label" x="{label_x - 85:.1f}" '
+                f'y="{label_y - 14:.1f}">{label}</text>'
+            )
+
+    parts.extend(wiring_key_component_svg(key, offset_y) for key in keys)
+    return "\n".join(parts)
+
+
+def generate_svg(keys: list[Key], keycodes: dict[tuple[int, int], str]) -> str:
+    key_markup = "\n".join(key_svg(key, keycodes) for key in keys)
+    wiring_markup = wiring_overlay_svg(keys, 1150)
     return f"""\
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1750" height="1120" viewBox="0 0 1750 1120"
+<svg xmlns="http://www.w3.org/2000/svg" width="1750" height="2220" viewBox="0 0 1750 2220"
      role="img" aria-labelledby="title description">
-  <title id="title">Kinesis Dactyl 5x7 每键矩阵与 GPIO 接线图</title>
-  <desc id="description">76 个 VIA 可见键的本地矩阵行列、QMK 全局坐标以及行列 GPIO 引脚对。</desc>
+  <title id="title">Kinesis Dactyl 5x7 第一层键位、矩阵、GPIO 与二极管接线图</title>
+  <desc id="description">76 个 VIA 可见键的第一层键位、矩阵坐标、GPIO 引脚对，以及每侧行列总线和二极管方向。</desc>
   <style>
     :root {{
       color-scheme: dark;
@@ -187,23 +388,28 @@ def generate_svg(keys: list[Key]) -> str:
     .thumb .key-shape {{
       stroke-width: 3;
     }}
-    .key-meta, .key-matrix, .key-pins {{
+    .key-label, .key-meta, .key-matrix, .key-pins {{
       text-anchor: middle;
       dominant-baseline: middle;
     }}
+    .key-label {{
+      fill: #ffffff;
+      font-size: 14px;
+      font-weight: 750;
+    }}
     .key-meta {{
       fill: #b8c2d1;
-      font-size: 9px;
+      font-size: 8px;
       font-weight: 500;
     }}
     .key-matrix {{
-      fill: #ffffff;
-      font-size: 15px;
+      fill: #dce5f1;
+      font-size: 13px;
       font-weight: 700;
     }}
     .key-pins {{
       fill: #ffd479;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 650;
     }}
     .title {{
@@ -227,6 +433,127 @@ def generate_svg(keys: list[Key]) -> str:
       font-size: 14px;
       font-weight: 600;
     }}
+    .divider {{
+      stroke: #566174;
+      stroke-width: 2;
+    }}
+    .hardware-title {{
+      font-size: 25px;
+      font-weight: 750;
+    }}
+    .wiring-key-shape {{
+      fill: #252d38;
+      stroke: #68778b;
+      stroke-width: 2;
+    }}
+    .wiring-col-line {{
+      fill: none;
+      stroke: #e4b85f;
+      stroke-width: 4;
+      stroke-linejoin: round;
+      stroke-linecap: round;
+    }}
+    .wiring-row-halo {{
+      fill: none;
+      stroke: #202630;
+      stroke-width: 11;
+      stroke-linejoin: round;
+      stroke-linecap: round;
+    }}
+    .wiring-row-line {{
+      fill: none;
+      stroke: #6fb7df;
+      stroke-width: 5;
+      stroke-linejoin: round;
+      stroke-linecap: round;
+    }}
+    .wiring-thumb-row {{
+      stroke: #67d8ff;
+      stroke-width: 7;
+    }}
+    .wiring-col-label {{
+      fill: #ffd479;
+      font-size: 15px;
+      font-weight: 700;
+      text-anchor: middle;
+      paint-order: stroke;
+      stroke: #202630;
+      stroke-width: 6px;
+    }}
+    .wiring-row-label {{
+      fill: #9bddf7;
+      font-size: 14px;
+      font-weight: 700;
+      text-anchor: end;
+      paint-order: stroke;
+      stroke: #202630;
+      stroke-width: 6px;
+    }}
+    .component-col-wire {{
+      stroke: #e4b85f;
+      stroke-width: 3;
+    }}
+    .component-row-wire {{
+      stroke: #6fb7df;
+      stroke-width: 3;
+    }}
+    .component-wire {{
+      stroke: #d5deea;
+      stroke-width: 2;
+    }}
+    .wiring-switch {{
+      fill: #3a4554;
+      stroke: #e2e8f0;
+      stroke-width: 2;
+    }}
+    .wiring-diode {{
+      fill: #e09c4d;
+      stroke: #ffca78;
+      stroke-width: 1;
+    }}
+    .wiring-diode-band {{
+      fill: #11151b;
+    }}
+    .col-junction {{
+      fill: #ffd479;
+      stroke: #202630;
+      stroke-width: 1;
+    }}
+    .row-junction {{
+      fill: #8bd0f4;
+      stroke: #202630;
+      stroke-width: 1;
+    }}
+    .wiring-legend-box {{
+      fill: #252d39;
+      stroke: #68778b;
+      stroke-width: 2;
+    }}
+    .legend-col-line {{
+      stroke: #e4b85f;
+      stroke-width: 5;
+    }}
+    .legend-row-line {{
+      stroke: #67d8ff;
+      stroke-width: 7;
+    }}
+    .legend-diode {{
+      fill: #e09c4d;
+      stroke: #ffca78;
+      stroke-width: 2;
+    }}
+    .legend-diode-band {{
+      fill: #11151b;
+    }}
+    .wiring-note {{
+      fill: #c3cedc;
+      font-size: 14px;
+    }}
+    .wiring-emphasis {{
+      fill: #ffd479;
+      font-size: 16px;
+      font-weight: 750;
+    }}
     .left-label {{
       fill: #8dc9e8;
     }}
@@ -235,12 +562,12 @@ def generate_svg(keys: list[Key]) -> str:
     }}
   </style>
 
-  <rect class="background" width="1750" height="1120"/>
-  <rect class="frame" x="22" y="18" width="1706" height="1080" rx="24"/>
+  <rect class="background" width="1750" height="2220"/>
+  <rect class="frame" x="22" y="18" width="1706" height="2180" rx="24"/>
 
-  <text class="title" x="60" y="55">Kinesis Dactyl 5x7 — 每键矩阵 / GPIO 接线图</text>
+  <text class="title" x="60" y="55">Kinesis Dactyl 5x7 — 第一层键位 / 矩阵 / GPIO 接线图</text>
   <text class="subtitle" x="60" y="79">
-    每键三行：侧与 QMK 全局坐标 / 本地 R-C / 行 GPIO 与列 GPIO。右半本地 R0–R5 在 QMK 中映射为全局行 6–11。
+    每键四行：第一层键位 / 侧与 QMK 全局坐标 / 本地 R-C / 行 GPIO 与列 GPIO。右半本地 R0–R5 映射为全局行 6–11。
   </text>
   <text class="section left-label" x="60" y="94">左半</text>
   <text class="section right-label" x="1640" y="94" text-anchor="end">右半</text>
@@ -260,12 +587,32 @@ def generate_svg(keys: list[Key]) -> str:
     <text class="legend" x="0" y="55">右：[6,6]、[10,5]、[10,6]、[11,3]</text>
     <text class="warning" x="0" y="86">纵向 2u 仍然只使用一个开关和一个矩阵交点。</text>
   </g>
+
+  <line class="divider" x1="60" y1="1128" x2="1690" y2="1128"/>
+  <text class="hardware-title" x="60" y="1172">按实际键位连接行线与列线</text>
+  <text class="subtitle" x="60" y="1198">
+    下图与上方键盘几何 1:1；键帽内仅画开关与二极管。黄色连接同一列，蓝色连接同一行。
+  </text>
+
+{wiring_markup}
+
+  <rect class="wiring-legend-box" x="60" y="2090" width="1630" height="82" rx="14"/>
+  <line class="legend-col-line" x1="90" y1="2121" x2="145" y2="2121"/>
+  <text class="wiring-note" x="158" y="2126">黄色：同一列 C0–C6 相连</text>
+  <line class="legend-row-line" x1="400" y1="2121" x2="455" y2="2121"/>
+  <text class="wiring-note" x="468" y="2126">蓝色：同一行 R0–R5 相连</text>
+  <rect class="legend-diode" x="740" y="2108" width="46" height="24" rx="12"/>
+  <rect class="legend-diode-band" x="776" y="2108" width="7" height="24"/>
+  <text class="wiring-note" x="798" y="2126">黑色带环端接蓝色行线</text>
+  <text class="wiring-emphasis" x="90" y="2158">每侧拇指键全接本侧 R5（GP29）；列号为 C0/C1/C2/C4/C5/C6。</text>
+  <text class="wiring-note" x="1180" y="2158">行列线交叉处绝缘，不直接相连。</text>
 </svg>
 """
 
 
 def main() -> None:
     keys = main_keys() + thumb_keys()
+    keycodes = base_keycodes()
     generated_coordinates = {(key.qmk_row, key.col) for key in keys}
     visible_coordinates = via_visible_coordinates()
 
@@ -275,8 +622,11 @@ def main() -> None:
         missing = sorted(visible_coordinates - generated_coordinates)
         extra = sorted(generated_coordinates - visible_coordinates)
         raise SystemExit(f"SVG/VIA coordinate mismatch; missing={missing}, extra={extra}")
+    if not generated_coordinates.issubset(keycodes):
+        missing = sorted(generated_coordinates - keycodes.keys())
+        raise SystemExit(f"missing base-layer keycodes for SVG coordinates: {missing}")
 
-    OUTPUT.write_text(generate_svg(keys), encoding="utf-8")
+    OUTPUT.write_text(generate_svg(keys, keycodes), encoding="utf-8")
     print(f"generated {OUTPUT.relative_to(ROOT)} with {len(keys)} visible keys")
 
 
