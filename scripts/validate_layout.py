@@ -116,6 +116,9 @@ def main() -> None:
         "VIA hidden-key set does not match the intended eight keys"
     )
     assert vial_coordinates == via_coordinates, "Vial and VIA layouts must display the same keys"
+    assert vial["layouts"]["keymap"] == via["layouts"]["keymap"], (
+        "Vial and VIA visual geometry must stay in sync"
+    )
     assert via["matrix"] == {"rows": 12, "cols": 7}
     assert vial["matrix"] == {"rows": 12, "cols": 7}
     assert vial["lighting"] == "none"
