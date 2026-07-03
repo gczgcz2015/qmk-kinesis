@@ -21,32 +21,32 @@ jobs:
       - name: Check out keyboard repository
         uses: actions/checkout@v4
 
-      - name: Check out QMK 0.33.0
+      - name: Check out pinned Vial-QMK
         uses: actions/checkout@v4
         with:
-          repository: qmk/qmk_firmware
-          ref: 0.33.0
+          repository: vial-kb/vial-qmk
+          ref: 00fc4627cd038ac9b7e9b8bf2b40b50e9e88aecb
           submodules: recursive
-          path: qmk_firmware
+          path: vial-qmk
 
-      - name: Validate matrix and VIA definition
+      - name: Validate matrix, VIA, and Vial definitions
         run: python3 scripts/validate_layout.py
 
       - name: Overlay the modified 5x7 target
-        run: cp -R keyboards/. qmk_firmware/keyboards/
+        run: cp -R keyboards/. vial-qmk/keyboards/
 
-      - name: Compile RP2040 VIA firmware
-        run: make -C qmk_firmware handwired/dactyl_manuform/5x7:via
+      - name: Compile RP2040 Vial firmware
+        run: make -C vial-qmk handwired/dactyl_manuform/5x7:vial
 
       - name: Collect firmware
         run: |
           mkdir -p dist
-          cp qmk_firmware/handwired_dactyl_manuform_5x7_via.uf2 dist/
+          cp vial-qmk/handwired_dactyl_manuform_5x7_vial.uf2 dist/
 
       - name: Upload firmware artifact
         uses: actions/upload-artifact@v4
         with:
-          name: kinesis-dactyl-5x7-firmware
+          name: kinesis-dactyl-5x7-vial-firmware
           path: dist/*
           if-no-files-found: error
 
@@ -61,7 +61,7 @@ jobs:
       - name: Download firmware artifact
         uses: actions/download-artifact@v4
         with:
-          name: kinesis-dactyl-5x7-firmware
+          name: kinesis-dactyl-5x7-vial-firmware
           path: dist
 
       - name: Create GitHub release

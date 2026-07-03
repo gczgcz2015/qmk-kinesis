@@ -12,7 +12,16 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-VIA_JSON = ROOT / "via" / "kinesis-dactyl-5x7.json"
+VIAL_JSON = (
+    ROOT
+    / "keyboards"
+    / "handwired"
+    / "dactyl_manuform"
+    / "5x7"
+    / "keymaps"
+    / "vial"
+    / "vial.json"
+)
 KEYBOARD_JSON = ROOT / "keyboards" / "handwired" / "dactyl_manuform" / "5x7" / "keyboard.json"
 KEYMAP_C = (
     ROOT
@@ -21,7 +30,7 @@ KEYMAP_C = (
     / "dactyl_manuform"
     / "5x7"
     / "keymaps"
-    / "via"
+    / "vial"
     / "keymap.c"
 )
 OUTPUT = ROOT / "docs" / "wiring-layout.svg"
@@ -111,8 +120,8 @@ def thumb_keys() -> list[Key]:
     ]
 
 
-def via_visible_coordinates() -> set[tuple[int, int]]:
-    data = json.loads(VIA_JSON.read_text(encoding="utf-8"))
+def vial_visible_coordinates() -> set[tuple[int, int]]:
+    data = json.loads(VIAL_JSON.read_text(encoding="utf-8"))
     coordinates: set[tuple[int, int]] = set()
 
     def visit(value: object) -> None:
@@ -355,7 +364,7 @@ def generate_svg(keys: list[Key], keycodes: dict[tuple[int, int], str]) -> str:
 <svg xmlns="http://www.w3.org/2000/svg" width="1750" height="2220" viewBox="0 0 1750 2220"
      role="img" aria-labelledby="title description">
   <title id="title">Kinesis Dactyl 5x7 第一层键位、矩阵、GPIO 与二极管接线图</title>
-  <desc id="description">76 个 VIA 可见键的第一层键位、矩阵坐标、GPIO 引脚对，以及每侧行列总线和二极管方向。</desc>
+  <desc id="description">76 个 Vial 可见键的第一层键位、矩阵坐标、GPIO 引脚对，以及每侧行列总线和二极管方向。</desc>
   <style>
     :root {{
       color-scheme: dark;
@@ -582,7 +591,7 @@ def generate_svg(keys: list[Key], keycodes: dict[tuple[int, int], str]) -> str:
   </g>
 
   <g transform="translate(930 965)">
-    <text class="section" x="0" y="0">VIA 隐藏但实体保留的矩阵位置</text>
+    <text class="section" x="0" y="0">Vial 隐藏但实体保留的矩阵位置</text>
     <text class="legend" x="0" y="29">左：[0,6]、[4,5]、[4,6]、[5,3]</text>
     <text class="legend" x="0" y="55">右：[6,6]、[10,5]、[10,6]、[11,3]</text>
     <text class="warning" x="0" y="86">纵向 2u 仍然只使用一个开关和一个矩阵交点。</text>
@@ -614,14 +623,14 @@ def main() -> None:
     keys = main_keys() + thumb_keys()
     keycodes = base_keycodes()
     generated_coordinates = {(key.qmk_row, key.col) for key in keys}
-    visible_coordinates = via_visible_coordinates()
+    visible_coordinates = vial_visible_coordinates()
 
     if len(keys) != len(generated_coordinates):
         raise SystemExit("duplicate matrix coordinate in SVG layout")
     if generated_coordinates != visible_coordinates:
         missing = sorted(visible_coordinates - generated_coordinates)
         extra = sorted(generated_coordinates - visible_coordinates)
-        raise SystemExit(f"SVG/VIA coordinate mismatch; missing={missing}, extra={extra}")
+        raise SystemExit(f"SVG/Vial coordinate mismatch; missing={missing}, extra={extra}")
     if not generated_coordinates.issubset(keycodes):
         missing = sorted(generated_coordinates - keycodes.keys())
         raise SystemExit(f"missing base-layer keycodes for SVG coordinates: {missing}")

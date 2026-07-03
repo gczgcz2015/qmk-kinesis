@@ -9,10 +9,9 @@
 // RP2040 PIO half-duplex split transport over one TRS data conductor.
 #define SERIAL_USART_TX_PIN GP0
 
-// Four VIA-editable layers.
+// Four VIA/Vial-editable layers.
 #define DYNAMIC_KEYMAP_LAYER_COUNT 4
 
 // Enter the UF2 bootloader by pressing RESET twice quickly.
 #define RP2040_BOOTLOADER_DOUBLE_TAP_RESET
 #define RP2040_BOOTLOADER_DOUBLE_TAP_RESET_TIMEOUT 500U
-

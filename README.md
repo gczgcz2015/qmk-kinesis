@@ -9,19 +9,20 @@
 - 每个开关一颗 1N4148，方向为 `COL2ROW`
 - 三芯 TRS 连接左右半边：数据、5V、GND
 - QMK PIO `vendor` 半双工分体通信
-- VIA 四层动态键位
-- VIA 显示 76 个 Advantage360 风格键位，隐藏 8 个扩展矩阵位置
+- Vial 四层动态键位，支持 Vial Web 自动识别
+- Vial 显示 76 个 Advantage360 风格键位，隐藏 8 个扩展矩阵位置
 - 无外接 RGB、OLED 或旋钮
 
 ## 仓库内容
 
-- `keyboards/handwired/dactyl_manuform/5x7/`：RP2040 键盘配置与 VIA keymap
-- `via/kinesis-dactyl-5x7.json`：VIA Design 标签页加载的定义
+- `keyboards/handwired/dactyl_manuform/5x7/`：RP2040 键盘配置，以及 Vial/VIA keymap
+- `keyboards/handwired/dactyl_manuform/5x7/keymaps/vial/vial.json`：嵌入固件的 Vial 布局
+- `via/kinesis-dactyl-5x7.json`：保留用于旧 VIA 固件的布局定义
 - `docs/WIRING.md`：完整接线、二极管方向和刷写步骤
-- `scripts/build.sh`：固定使用 QMK 0.33.0 的本地 Docker 构建
+- `scripts/build.sh`：固定 Vial-QMK 提交的本地 Docker 构建
 - `.github/workflows/build.yml`：push 自动编译，tag 自动发布
 
-USB/VIA 标识：
+USB 标识：
 
 - VID：`0x4743`
 - PID：`0x0001`
@@ -36,21 +37,20 @@ make validate
 make build
 ```
 
-首次构建会把 QMK `0.33.0` 克隆到 `.build/qmk_firmware`，然后将本仓库中的
-5x7 修改覆盖到该工作树并使用 QMK 官方 Docker 构建流程编译。输出文件位于
-`dist/`：
+首次构建会把 `vial-kb/vial-qmk` 克隆到 `.build/vial-qmk`，检出固定提交
+`00fc4627cd038ac9b7e9b8bf2b40b50e9e88aecb`，然后覆盖本仓库中的 5x7
+配置并使用 Vial-QMK Docker 构建流程编译。输出文件位于 `dist/`：
 
-- `handwired_dactyl_manuform_5x7_via.uf2`
+- `handwired_dactyl_manuform_5x7_vial.uf2`
 
-也可以使用现有的完整 QMK 0.33.0 工作树：
+也可以使用已检出上述提交的完整 Vial-QMK 工作树：
 
 ```sh
-QMK_HOME=/path/to/qmk_firmware make build
+VIAL_HOME=/path/to/vial-qmk make build
 ```
 
-`QMK_HOME` 必须是完整 Git 仓库并正好位于 tag `0.33.0`。用户提供的
-`/Users/paul/Downloads/qmk_firmware` 是参考文件快照，不是完整 QMK 工作树，
-不能直接编译。
+普通的 `qmk/qmk_firmware` 工作树不能编译 Vial 固件；必须使用
+[`vial-kb/vial-qmk`](https://github.com/vial-kb/vial-qmk)。
 
 ## 刷写
 
@@ -64,22 +64,25 @@ QMK_HOME=/path/to/qmk_firmware make build
 
 左右使用相同固件；`MASTER_LEFT` 固定左侧为主控。
 
-## VIA
+## Vial Web
 
-1. 刷入 `via` 固件并连接左侧 USB。
-2. 打开 VIA，启用 Design 标签页。
-3. 加载 `via/kinesis-dactyl-5x7.json`。
-4. 在 Configure 中编辑 Base、Keypad、Fn、Navigation/Media 四层。
+1. 两侧刷入同一个 `vial` UF2，并只连接左侧 USB。
+2. 使用最新版 Chrome、Edge 或 Chromium 打开
+   [Vial Web](https://vial.rocks/app/)。
+3. 选择 `Kinesis Dactyl 5x7`，固件内嵌的布局会自动加载。
+4. 在 Keymap 中编辑 Base、Keypad、Fn、Navigation/Media 四层。
+5. 需要解锁安全功能时，在 Vial 中发起 Unlock，然后按住实体
+   `Escape + Enter`，直到进度完成。
 
-VIA JSON 故意不显示以下八个矩阵位置：
+Vial 布局故意不显示以下八个矩阵位置：
 
 `0,6`、`4,5`、`4,6`、`5,3`、`6,6`、`10,5`、`10,6`、`11,3`。
 
 每侧主键区按 `6/7/7/7/5` 排列，中间三行的第七键组成靠中央的功能键竖列；
 六键拇指区向内镜像旋转，其中 Backspace/Delete 与 Enter/Space 使用纵向 2u
-显示，其余四键为 1u。2u 仅是 VIA 中的布局尺寸，每个键仍对应一个矩阵交点。
+显示，其余四键为 1u。2u 仅是 Vial 中的布局尺寸，每个键仍对应一个矩阵交点。
 
-这些键在默认固件中为 `KC_NO`。如需使用，可将对应坐标重新加入 VIA JSON。
+这些键在默认固件中为 `KC_NO`。如需使用，可将对应坐标重新加入 `vial.json`。
 
 ## 安全要求
 

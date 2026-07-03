@@ -2,36 +2,39 @@
 set -eu
 
 ROOT_DIR=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
-QMK_REF=${QMK_REF:-0.33.0}
-QMK_HOME=${QMK_HOME:-"$ROOT_DIR/.build/qmk_firmware"}
-TARGET=handwired/dactyl_manuform/5x7:via
+VIAL_REF=${VIAL_REF:-00fc4627cd038ac9b7e9b8bf2b40b50e9e88aecb}
+VIAL_HOME=${VIAL_HOME:-"$ROOT_DIR/.build/vial-qmk"}
+TARGET=handwired/dactyl_manuform/5x7:vial
 
 python3 "$ROOT_DIR/scripts/validate_layout.py"
 
-if [ ! -d "$QMK_HOME/.git" ]; then
-    mkdir -p "$(dirname "$QMK_HOME")"
+if [ ! -d "$VIAL_HOME/.git" ]; then
+    mkdir -p "$(dirname "$VIAL_HOME")"
     git clone \
-        --branch "$QMK_REF" \
+        --branch vial \
         --depth 1 \
         --recurse-submodules \
         --shallow-submodules \
-        https://github.com/qmk/qmk_firmware.git \
-        "$QMK_HOME"
+        https://github.com/vial-kb/vial-qmk.git \
+        "$VIAL_HOME"
 fi
 
-if ! git -C "$QMK_HOME" describe --tags --exact-match 2>/dev/null | grep -qx "$QMK_REF"; then
-    echo "error: $QMK_HOME is not checked out at QMK $QMK_REF" >&2
-    exit 1
+CURRENT_REF=$(git -C "$VIAL_HOME" rev-parse HEAD)
+if [ "$CURRENT_REF" != "$VIAL_REF" ]; then
+    git -C "$VIAL_HOME" fetch --depth 1 origin "$VIAL_REF"
+    git -C "$VIAL_HOME" checkout --detach "$VIAL_REF"
+    git -C "$VIAL_HOME" submodule sync --recursive
+    git -C "$VIAL_HOME" submodule update --init --recursive --depth 1
 fi
 
-rsync -a "$ROOT_DIR/keyboards/" "$QMK_HOME/keyboards/"
+rsync -a "$ROOT_DIR/keyboards/" "$VIAL_HOME/keyboards/"
 
 (
-    cd "$QMK_HOME"
+    cd "$VIAL_HOME"
     SKIP_FLASHING_SUPPORT=1 ./util/docker_build.sh "$TARGET"
 )
 
 mkdir -p "$ROOT_DIR/dist"
-cp "$QMK_HOME/handwired_dactyl_manuform_5x7_via.uf2" "$ROOT_DIR/dist/"
+cp "$VIAL_HOME/handwired_dactyl_manuform_5x7_vial.uf2" "$ROOT_DIR/dist/"
 
 echo "firmware written to $ROOT_DIR/dist"

@@ -2,7 +2,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1750" height="2220" viewBox="0 0 1750 2220"
      role="img" aria-labelledby="title description">
   <title id="title">Kinesis Dactyl 5x7 第一层键位、矩阵、GPIO 与二极管接线图</title>
-  <desc id="description">76 个 VIA 可见键的第一层键位、矩阵坐标、GPIO 引脚对，以及每侧行列总线和二极管方向。</desc>
+  <desc id="description">76 个 Vial 可见键的第一层键位、矩阵坐标、GPIO 引脚对，以及每侧行列总线和二极管方向。</desc>
   <style>
     :root {
       color-scheme: dark;
@@ -760,7 +760,7 @@
   </g>
 
   <g transform="translate(930 965)">
-    <text class="section" x="0" y="0">VIA 隐藏但实体保留的矩阵位置</text>
+    <text class="section" x="0" y="0">Vial 隐藏但实体保留的矩阵位置</text>
     <text class="legend" x="0" y="29">左：[0,6]、[4,5]、[4,6]、[5,3]</text>
     <text class="legend" x="0" y="55">右：[6,6]、[10,5]、[10,6]、[11,3]</text>
     <text class="warning" x="0" y="86">纵向 2u 仍然只使用一个开关和一个矩阵交点。</text>
