@@ -105,17 +105,17 @@ def thumb_keys() -> list[Key]:
     two_u = KEY_H * 2 + (PITCH - KEY_H)
 
     return [
-        Key(5, 2, 576, 630, **left_rotation),
+        Key(5, 3, 576, 630, **left_rotation),
         Key(5, 6, 672, 630, **left_rotation),
-        Key(5, 0, 480, 720, height=two_u, **left_rotation),
-        Key(5, 1, 576, 720, height=two_u, **left_rotation),
+        Key(5, 1, 480, 720, height=two_u, **left_rotation),
+        Key(5, 2, 576, 720, height=two_u, **left_rotation),
         Key(5, 5, 672, 720, **left_rotation),
         Key(5, 4, 672, 810, **left_rotation),
         Key(11, 6, 1050, 630, **right_rotation),
-        Key(11, 2, 1146, 630, **right_rotation),
+        Key(11, 3, 1146, 630, **right_rotation),
         Key(11, 5, 1050, 720, **right_rotation),
-        Key(11, 1, 1146, 720, height=two_u, **right_rotation),
-        Key(11, 0, 1242, 720, height=two_u, **right_rotation),
+        Key(11, 2, 1146, 720, height=two_u, **right_rotation),
+        Key(11, 1, 1242, 720, height=two_u, **right_rotation),
         Key(11, 4, 1050, 810, **right_rotation),
     ]
 
@@ -592,8 +592,8 @@ def generate_svg(keys: list[Key], keycodes: dict[tuple[int, int], str]) -> str:
 
   <g transform="translate(930 965)">
     <text class="section" x="0" y="0">QMK 保留、Vial 隐藏且无需接线的位置</text>
-    <text class="legend" x="0" y="29">左：[3,6]、[4,5]、[4,6]、[5,3]</text>
-    <text class="legend" x="0" y="55">右：[9,6]、[10,5]、[10,6]、[11,3]</text>
+    <text class="legend" x="0" y="29">左：[3,6]、[4,5]、[4,6]、[5,0]</text>
+    <text class="legend" x="0" y="55">右：[9,6]、[10,5]、[10,6]、[11,0]</text>
     <text class="warning" x="0" y="86">纵向 2u 仍然只使用一个开关和一个矩阵交点。</text>
   </g>
 
@@ -613,7 +613,7 @@ def generate_svg(keys: list[Key], keycodes: dict[tuple[int, int], str]) -> str:
   <rect class="legend-diode" x="740" y="2108" width="46" height="24" rx="12"/>
   <rect class="legend-diode-band" x="776" y="2108" width="7" height="24"/>
   <text class="wiring-note" x="798" y="2126">黑色带环端接蓝色行线</text>
-  <text class="wiring-emphasis" x="90" y="2158">每侧拇指列从内向外依次 C6→C5→C4→C2→C1→C0；所有拇指键接本侧 R5（GP29）。</text>
+  <text class="wiring-emphasis" x="90" y="2158">每侧拇指列从内向外依次 C6→C5→C4→C3→C2→C1；所有拇指键接本侧 R5（GP29）。</text>
   <text class="wiring-note" x="1180" y="2158">行列线交叉处绝缘，不直接相连。</text>
 </svg>
 """

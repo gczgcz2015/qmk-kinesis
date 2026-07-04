@@ -26,11 +26,11 @@ EXPECTED_HIDDEN = {
     (3, 6),
     (4, 5),
     (4, 6),
-    (5, 3),
+    (5, 0),
     (9, 6),
     (10, 5),
     (10, 6),
-    (11, 3),
+    (11, 0),
 }
 EXPECTED_INNER_COLUMNS = {
     (0, 6),
@@ -41,41 +41,42 @@ EXPECTED_INNER_COLUMNS = {
     (8, 6),
 }
 EXPECTED_THUMB_COLUMNS_BY_POSITION = {
-    ("L", 576, 630): 2,
+    ("L", 576, 630): 3,
     ("L", 672, 630): 6,
-    ("L", 480, 720): 0,
-    ("L", 576, 720): 1,
+    ("L", 480, 720): 1,
+    ("L", 576, 720): 2,
     ("L", 672, 720): 5,
     ("L", 672, 810): 4,
     ("R", 1050, 630): 6,
-    ("R", 1146, 630): 2,
+    ("R", 1146, 630): 3,
     ("R", 1050, 720): 5,
-    ("R", 1146, 720): 1,
-    ("R", 1242, 720): 0,
+    ("R", 1146, 720): 2,
+    ("R", 1242, 720): 1,
     ("R", 1050, 810): 4,
 }
 EXPECTED_THUMB_LAYOUT_ROWS = [
-    ["5,2", "5,6"],
-    ["5,0", "5,1", "5,5"],
+    ["5,3", "5,6"],
+    ["5,1", "5,2", "5,5"],
     ["5,4"],
-    ["11,6", "11,2"],
-    ["11,5", "11,1", "11,0"],
+    ["11,6", "11,3"],
+    ["11,5", "11,2", "11,1"],
     ["11,4"],
 ]
 EXPECTED_BASE_THUMB_KEYCODES = {
-    (5, 0): "KC_BSPC",
-    (5, 1): "KC_DEL",
-    (5, 2): "KC_LCTL",
+    (5, 1): "KC_BSPC",
+    (5, 2): "KC_DEL",
+    (5, 3): "KC_LCTL",
     (5, 4): "KC_END",
     (5, 5): "KC_HOME",
     (5, 6): "KC_LALT",
-    (11, 0): "KC_SPC",
-    (11, 1): "KC_ENT",
-    (11, 2): "KC_RCTL",
+    (11, 1): "KC_SPC",
+    (11, 2): "KC_ENT",
+    (11, 3): "KC_RCTL",
     (11, 4): "KC_PGDN",
     (11, 5): "KC_PGUP",
     (11, 6): "KC_RGUI",
 }
+EXPECTED_UNLOCK_COORDINATES = {(2, 0), (11, 2)}
 
 
 def load_json(path: Path) -> dict:
@@ -245,6 +246,9 @@ def main() -> None:
     assert len(unlock_coordinates) >= 2, "Vial unlock combo must use at least two keys"
     assert unlock_coordinates <= vial_coordinates, (
         "Vial unlock combo must reference visible physical keys"
+    )
+    assert unlock_coordinates == EXPECTED_UNLOCK_COORDINATES, (
+        "Vial unlock combo must stay on the physical Escape and Enter keys"
     )
 
     vial_rules = VIAL_RULES.read_text(encoding="utf-8")

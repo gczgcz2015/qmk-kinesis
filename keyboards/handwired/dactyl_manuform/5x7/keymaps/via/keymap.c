@@ -19,11 +19,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    XXXXXXX,
         MO(_NAV_MEDIA), KC_GRV, KC_CAPS, KC_LEFT, KC_RGHT, XXXXXXX, XXXXXXX,
 
-        // Left thumb cluster. Matrix position 5,3 is intentionally hidden.
-        XXXXXXX,
-        KC_BSPC, KC_END,
-        KC_LCTL, KC_LALT,
-        KC_DEL,  KC_HOME,
+        // Left thumb cluster. Matrix position 5,0 is intentionally hidden.
+        KC_LCTL,
+        XXXXXXX, KC_END,
+        KC_DEL,  KC_LALT,
+        KC_BSPC, KC_HOME,
 
         // Right key well: mirrored, with a three-key inner function column.
         TG(_KEYPAD), KC_6, KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS,
@@ -32,11 +32,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         XXXXXXX, KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT,
         XXXXXXX, XXXXXXX, KC_UP,   KC_DOWN, KC_LBRC, KC_RBRC, MO(_NAV_MEDIA),
 
-        // Right thumb cluster. Matrix position 11,3 is intentionally hidden.
-        XXXXXXX,
-        KC_RCTL, KC_PGDN,
-        KC_SPC,  KC_RGUI,
-        KC_PGUP, KC_ENT
+        // Right thumb cluster. Matrix position 11,0 is intentionally hidden.
+        KC_RCTL,
+        KC_ENT,  KC_PGDN,
+        XXXXXXX, KC_RGUI,
+        KC_PGUP, KC_SPC
     ),
 
     [_KEYPAD] = LAYOUT_5x7(
@@ -46,8 +46,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         _______, _______, _______, _______, _______, _______, XXXXXXX,
         _______, _______, _______, _______, _______, XXXXXXX, XXXXXXX,
 
-        XXXXXXX,
-        _______, _______,
+        _______,
+        XXXXXXX, _______,
         _______, _______,
         _______, _______,
 
@@ -57,9 +57,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         XXXXXXX, KC_P1,   KC_P2,   KC_P3,   KC_PENT, KC_PDOT, _______,
         XXXXXXX, XXXXXXX, _______, _______, KC_P0,   _______, _______,
 
-        XXXXXXX,
+        _______,
         _______, _______,
-        _______, _______,
+        XXXXXXX, _______,
         _______, _______
     ),
 
@@ -70,8 +70,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         _______, _______, _______, _______, _______, _______, XXXXXXX,
         _______, _______, _______, _______, _______, XXXXXXX, XXXXXXX,
 
-        XXXXXXX,
-        _______, _______,
+        _______,
+        XXXXXXX, _______,
         _______, _______,
         _______, _______,
 
@@ -81,10 +81,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         XXXXXXX, _______, _______, _______, _______, _______, _______,
         XXXXXXX, XXXXXXX, KC_VOLU, KC_VOLD, KC_MUTE, _______, _______,
 
-        XXXXXXX,
-        _______, KC_MNXT,
-        _______, _______,
-        _______, KC_MPRV
+        _______,
+        KC_MPRV, KC_MNXT,
+        XXXXXXX, _______,
+        _______, _______
     ),
 
     [_NAV_MEDIA] = LAYOUT_5x7(
@@ -94,8 +94,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         _______, _______, _______, _______, _______, _______, XXXXXXX,
         _______, _______, _______, _______, _______, XXXXXXX, XXXXXXX,
 
-        XXXXXXX,
-        _______, _______,
+        _______,
+        XXXXXXX, _______,
         _______, _______,
         _______, _______,
 
@@ -105,9 +105,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         XXXXXXX, _______, _______, _______, KC_MUTE, _______, _______,
         XXXXXXX, XXXXXXX, _______, _______, _______, _______, _______,
 
-        XXXXXXX,
+        _______,
         _______, _______,
-        _______, _______,
+        XXXXXXX, _______,
         _______, _______
     )
 };

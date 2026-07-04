@@ -7,4 +7,4 @@
 
 // Physical Escape (left R2/C0) + Enter (right R5/C5).
 #define VIAL_UNLOCK_COMBO_ROWS { 2, 11 }
-#define VIAL_UNLOCK_COMBO_COLS { 0, 5 }
+#define VIAL_UNLOCK_COMBO_COLS { 0, 2 }
