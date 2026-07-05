@@ -104,21 +104,21 @@ QMK 的完整矩阵定义保留 84 个坐标，当前实体键盘和 Vial 使用
 ```text
 左侧拇指区
 
-                 C3 Ctrl        C6 Alt
+                 C4 Ctrl        C6 Alt
 C1 Backspace 2u  C2 Delete 2u   C5 Home
-                                 C4 End
+                                 C3 End
 
 右侧拇指区
 
-C6 GUI/Win       C3 Ctrl
+C6 GUI/Win       C4 Ctrl
 C5 Page Up       C2 Enter 2u    C1 Space 2u
-C4 Page Down
+C3 Page Down
 ```
 
 `C0` 是每侧保留但在 Vial 中隐藏的第七个拇指/扩展位置。
 
 为缩短列线并避免交叉，两侧都从靠中央的三键竖列向外，按
-`C6 → C5 → C4 → C3 → C2 → C1` 的连续物理顺序连接拇指键；`C0` 不接。
+`C6 → C5 → C3 → C4 → C2 → C1` 的物理顺序连接拇指键；`C0` 不接。
 
 Vial 中的纵向 2u 只表示键帽外观。Backspace、Delete、Enter、Space 每个仍然只
 使用一个 MX 开关、一个二极管和一个 `R5/Cn` 交点，不能把两个矩阵交点并联。

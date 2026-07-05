@@ -670,9 +670,9 @@
   <g class="key left thumb" transform="rotate(10 620 760)">
     <rect class="key-shape" x="576" y="630" width="90" height="84" rx="9"/>
     <text class="key-label" x="621" y="646">L Ctrl</text>
-    <text class="key-meta" x="621" y="664">L · [5,3]</text>
-    <text class="key-matrix" x="621" y="683">R5 C3</text>
-    <text class="key-pins" x="621" y="702">GP29 / GP5</text>
+    <text class="key-meta" x="621" y="664">L · [5,4]</text>
+    <text class="key-matrix" x="621" y="683">R5 C4</text>
+    <text class="key-pins" x="621" y="702">GP29 / GP6</text>
   </g>
   <g class="key left thumb" transform="rotate(10 620 760)">
     <rect class="key-shape" x="672" y="630" width="90" height="84" rx="9"/>
@@ -705,9 +705,9 @@
   <g class="key left thumb" transform="rotate(10 620 760)">
     <rect class="key-shape" x="672" y="810" width="90" height="84" rx="9"/>
     <text class="key-label" x="717" y="826">End</text>
-    <text class="key-meta" x="717" y="844">L · [5,4]</text>
-    <text class="key-matrix" x="717" y="863">R5 C4</text>
-    <text class="key-pins" x="717" y="882">GP29 / GP6</text>
+    <text class="key-meta" x="717" y="844">L · [5,3]</text>
+    <text class="key-matrix" x="717" y="863">R5 C3</text>
+    <text class="key-pins" x="717" y="882">GP29 / GP5</text>
   </g>
   <g class="key right thumb" transform="rotate(-10 1160 760)">
     <rect class="key-shape" x="1050" y="630" width="90" height="84" rx="9"/>
@@ -719,9 +719,9 @@
   <g class="key right thumb" transform="rotate(-10 1160 760)">
     <rect class="key-shape" x="1146" y="630" width="90" height="84" rx="9"/>
     <text class="key-label" x="1191" y="646">R Ctrl</text>
-    <text class="key-meta" x="1191" y="664">R · [11,3]</text>
-    <text class="key-matrix" x="1191" y="683">R5 C3</text>
-    <text class="key-pins" x="1191" y="702">GP29 / GP5</text>
+    <text class="key-meta" x="1191" y="664">R · [11,4]</text>
+    <text class="key-matrix" x="1191" y="683">R5 C4</text>
+    <text class="key-pins" x="1191" y="702">GP29 / GP6</text>
   </g>
   <g class="key right thumb" transform="rotate(-10 1160 760)">
     <rect class="key-shape" x="1050" y="720" width="90" height="84" rx="9"/>
@@ -747,9 +747,9 @@
   <g class="key right thumb" transform="rotate(-10 1160 760)">
     <rect class="key-shape" x="1050" y="810" width="90" height="84" rx="9"/>
     <text class="key-label" x="1095" y="826">Page Down</text>
-    <text class="key-meta" x="1095" y="844">R · [11,4]</text>
-    <text class="key-matrix" x="1095" y="863">R5 C4</text>
-    <text class="key-pins" x="1095" y="882">GP29 / GP6</text>
+    <text class="key-meta" x="1095" y="844">R · [11,3]</text>
+    <text class="key-matrix" x="1095" y="863">R5 C3</text>
+    <text class="key-pins" x="1095" y="882">GP29 / GP5</text>
   </g>
 
   <g transform="translate(60 965)">
@@ -1023,21 +1023,21 @@
   <circle class="col-junction" cx="269.0" cy="1652.0" r="4"/>
   <circle class="col-junction" cx="584.7" cy="1954.6" r="4"/>
   <text class="wiring-col-label" x="269.0" y="1237.0">C2</text>
-  <polyline class="wiring-col-line" points="365.0,1292.0 365.0,1382.0 365.0,1472.0 365.0,1562.0 365.0,1652.0 608.7,1818.6"/>
+  <polyline class="wiring-col-line" points="365.0,1292.0 365.0,1382.0 365.0,1472.0 365.0,1562.0 365.0,1652.0 672.0,2012.6"/>
   <circle class="col-junction" cx="365.0" cy="1292.0" r="4"/>
   <circle class="col-junction" cx="365.0" cy="1382.0" r="4"/>
   <circle class="col-junction" cx="365.0" cy="1472.0" r="4"/>
   <circle class="col-junction" cx="365.0" cy="1562.0" r="4"/>
   <circle class="col-junction" cx="365.0" cy="1652.0" r="4"/>
-  <circle class="col-junction" cx="608.7" cy="1818.6" r="4"/>
+  <circle class="col-junction" cx="672.0" cy="2012.6" r="4"/>
   <text class="wiring-col-label" x="365.0" y="1237.0">C3</text>
-  <polyline class="wiring-col-line" points="461.0,1292.0 461.0,1382.0 461.0,1472.0 461.0,1562.0 461.0,1652.0 672.0,2012.6"/>
+  <polyline class="wiring-col-line" points="461.0,1292.0 461.0,1382.0 461.0,1472.0 461.0,1562.0 461.0,1652.0 608.7,1818.6"/>
   <circle class="col-junction" cx="461.0" cy="1292.0" r="4"/>
   <circle class="col-junction" cx="461.0" cy="1382.0" r="4"/>
   <circle class="col-junction" cx="461.0" cy="1472.0" r="4"/>
   <circle class="col-junction" cx="461.0" cy="1562.0" r="4"/>
   <circle class="col-junction" cx="461.0" cy="1652.0" r="4"/>
-  <circle class="col-junction" cx="672.0" cy="2012.6" r="4"/>
+  <circle class="col-junction" cx="608.7" cy="1818.6" r="4"/>
   <text class="wiring-col-label" x="461.0" y="1237.0">C4</text>
   <polyline class="wiring-col-line" points="557.0,1292.0 557.0,1382.0 557.0,1472.0 557.0,1562.0 687.6,1924.0"/>
   <circle class="col-junction" cx="557.0" cy="1292.0" r="4"/>
@@ -1131,21 +1131,21 @@
   <circle class="col-junction" cx="1451.0" cy="1652.0" r="4"/>
   <circle class="col-junction" cx="1171.6" cy="1958.7" r="4"/>
   <text class="wiring-col-label" x="1451.0" y="1237.0">C2</text>
-  <polyline class="wiring-col-line" points="1355.0,1292.0 1355.0,1382.0 1355.0,1472.0 1355.0,1562.0 1355.0,1652.0 1147.7,1822.8"/>
+  <polyline class="wiring-col-line" points="1355.0,1292.0 1355.0,1382.0 1355.0,1472.0 1355.0,1562.0 1355.0,1652.0 1084.4,2016.8"/>
   <circle class="col-junction" cx="1355.0" cy="1292.0" r="4"/>
   <circle class="col-junction" cx="1355.0" cy="1382.0" r="4"/>
   <circle class="col-junction" cx="1355.0" cy="1472.0" r="4"/>
   <circle class="col-junction" cx="1355.0" cy="1562.0" r="4"/>
   <circle class="col-junction" cx="1355.0" cy="1652.0" r="4"/>
-  <circle class="col-junction" cx="1147.7" cy="1822.8" r="4"/>
+  <circle class="col-junction" cx="1084.4" cy="2016.8" r="4"/>
   <text class="wiring-col-label" x="1355.0" y="1237.0">C3</text>
-  <polyline class="wiring-col-line" points="1259.0,1292.0 1259.0,1382.0 1259.0,1472.0 1259.0,1562.0 1259.0,1652.0 1084.4,2016.8"/>
+  <polyline class="wiring-col-line" points="1259.0,1292.0 1259.0,1382.0 1259.0,1472.0 1259.0,1562.0 1259.0,1652.0 1147.7,1822.8"/>
   <circle class="col-junction" cx="1259.0" cy="1292.0" r="4"/>
   <circle class="col-junction" cx="1259.0" cy="1382.0" r="4"/>
   <circle class="col-junction" cx="1259.0" cy="1472.0" r="4"/>
   <circle class="col-junction" cx="1259.0" cy="1562.0" r="4"/>
   <circle class="col-junction" cx="1259.0" cy="1652.0" r="4"/>
-  <circle class="col-junction" cx="1084.4" cy="2016.8" r="4"/>
+  <circle class="col-junction" cx="1147.7" cy="1822.8" r="4"/>
   <text class="wiring-col-label" x="1259.0" y="1237.0">C4</text>
   <polyline class="wiring-col-line" points="1163.0,1292.0 1163.0,1382.0 1163.0,1472.0 1163.0,1562.0 1068.8,1928.1"/>
   <circle class="col-junction" cx="1163.0" cy="1292.0" r="4"/>
@@ -1985,6 +1985,6 @@
   <rect class="legend-diode" x="740" y="2108" width="46" height="24" rx="12"/>
   <rect class="legend-diode-band" x="776" y="2108" width="7" height="24"/>
   <text class="wiring-note" x="798" y="2126">黑色带环端接蓝色行线</text>
-  <text class="wiring-emphasis" x="90" y="2158">每侧拇指列从内向外依次 C6→C5→C4→C3→C2→C1；所有拇指键接本侧 R5（GP29）。</text>
+  <text class="wiring-emphasis" x="90" y="2158">每侧拇指列从内向外依次 C6→C5→C3→C4→C2→C1；所有拇指键接本侧 R5（GP29）。</text>
   <text class="wiring-note" x="1180" y="2158">行列线交叉处绝缘，不直接相连。</text>
 </svg>

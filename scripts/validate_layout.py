@@ -41,38 +41,38 @@ EXPECTED_INNER_COLUMNS = {
     (8, 6),
 }
 EXPECTED_THUMB_COLUMNS_BY_POSITION = {
-    ("L", 576, 630): 3,
+    ("L", 576, 630): 4,
     ("L", 672, 630): 6,
     ("L", 480, 720): 1,
     ("L", 576, 720): 2,
     ("L", 672, 720): 5,
-    ("L", 672, 810): 4,
+    ("L", 672, 810): 3,
     ("R", 1050, 630): 6,
-    ("R", 1146, 630): 3,
+    ("R", 1146, 630): 4,
     ("R", 1050, 720): 5,
     ("R", 1146, 720): 2,
     ("R", 1242, 720): 1,
-    ("R", 1050, 810): 4,
+    ("R", 1050, 810): 3,
 }
 EXPECTED_THUMB_LAYOUT_ROWS = [
-    ["5,3", "5,6"],
+    ["5,4", "5,6"],
     ["5,1", "5,2", "5,5"],
-    ["5,4"],
-    ["11,6", "11,3"],
+    ["5,3"],
+    ["11,6", "11,4"],
     ["11,5", "11,2", "11,1"],
-    ["11,4"],
+    ["11,3"],
 ]
 EXPECTED_BASE_THUMB_KEYCODES = {
     (5, 1): "KC_BSPC",
     (5, 2): "KC_DEL",
-    (5, 3): "KC_LCTL",
-    (5, 4): "KC_END",
+    (5, 3): "KC_END",
+    (5, 4): "KC_LCTL",
     (5, 5): "KC_HOME",
     (5, 6): "KC_LALT",
     (11, 1): "KC_SPC",
     (11, 2): "KC_ENT",
-    (11, 3): "KC_RCTL",
-    (11, 4): "KC_PGDN",
+    (11, 3): "KC_PGDN",
+    (11, 4): "KC_RCTL",
     (11, 5): "KC_PGUP",
     (11, 6): "KC_RGUI",
 }
@@ -187,7 +187,7 @@ def main() -> None:
         (key.side, key.x, key.y): key.col for key in thumb_keys()
     }
     assert thumb_columns_by_position == EXPECTED_THUMB_COLUMNS_BY_POSITION, (
-        "thumb matrix columns must follow physical position to minimize wire length"
+        "thumb matrix columns must match the documented physical wiring"
     )
     thumb_layout_rows = [
         [item for item in row if isinstance(item, str)]

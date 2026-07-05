@@ -20,8 +20,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         MO(_NAV_MEDIA), KC_GRV, KC_CAPS, KC_LEFT, KC_RGHT, XXXXXXX, XXXXXXX,
 
         // Left thumb cluster. Matrix position 5,0 is intentionally hidden.
-        KC_LCTL,
-        XXXXXXX, KC_END,
+        KC_END,
+        XXXXXXX, KC_LCTL,
         KC_DEL,  KC_LALT,
         KC_BSPC, KC_HOME,
 
@@ -33,8 +33,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         XXXXXXX, XXXXXXX, KC_UP,   KC_DOWN, KC_LBRC, KC_RBRC, MO(_NAV_MEDIA),
 
         // Right thumb cluster. Matrix position 11,0 is intentionally hidden.
-        KC_RCTL,
-        KC_ENT,  KC_PGDN,
+        KC_PGDN,
+        KC_ENT,  KC_RCTL,
         XXXXXXX, KC_RGUI,
         KC_PGUP, KC_SPC
     ),
@@ -81,8 +81,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         XXXXXXX, _______, _______, _______, _______, _______, _______,
         XXXXXXX, XXXXXXX, KC_VOLU, KC_VOLD, KC_MUTE, _______, _______,
 
-        _______,
-        KC_MPRV, KC_MNXT,
+        KC_MNXT,
+        KC_MPRV, _______,
         XXXXXXX, _______,
         _______, _______
     ),
