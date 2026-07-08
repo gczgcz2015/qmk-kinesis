@@ -7,7 +7,7 @@ import json
 import re
 from pathlib import Path
 
-from generate_wiring_svg import main_keys, thumb_keys
+from generate_wiring_svg import main_keys
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -27,10 +27,22 @@ EXPECTED_HIDDEN = {
     (4, 5),
     (4, 6),
     (5, 0),
+    (5, 1),
+    (5, 2),
+    (5, 3),
+    (5, 4),
+    (5, 5),
+    (5, 6),
     (9, 6),
     (10, 5),
     (10, 6),
     (11, 0),
+    (11, 1),
+    (11, 2),
+    (11, 3),
+    (11, 4),
+    (11, 5),
+    (11, 6),
 }
 EXPECTED_INNER_COLUMNS = {
     (0, 6),
@@ -40,43 +52,7 @@ EXPECTED_INNER_COLUMNS = {
     (7, 6),
     (8, 6),
 }
-EXPECTED_THUMB_COLUMNS_BY_POSITION = {
-    ("L", 576, 630): 4,
-    ("L", 672, 630): 6,
-    ("L", 480, 720): 1,
-    ("L", 576, 720): 2,
-    ("L", 672, 720): 5,
-    ("L", 672, 810): 3,
-    ("R", 1050, 630): 6,
-    ("R", 1146, 630): 4,
-    ("R", 1050, 720): 5,
-    ("R", 1146, 720): 2,
-    ("R", 1242, 720): 1,
-    ("R", 1050, 810): 3,
-}
-EXPECTED_THUMB_LAYOUT_ROWS = [
-    ["5,4", "5,6"],
-    ["5,1", "5,2", "5,5"],
-    ["5,3"],
-    ["11,6", "11,4"],
-    ["11,5", "11,2", "11,1"],
-    ["11,3"],
-]
-EXPECTED_BASE_THUMB_KEYCODES = {
-    (5, 1): "KC_BSPC",
-    (5, 2): "KC_DEL",
-    (5, 3): "KC_END",
-    (5, 4): "KC_LCTL",
-    (5, 5): "KC_HOME",
-    (5, 6): "KC_LALT",
-    (11, 1): "KC_SPC",
-    (11, 2): "KC_ENT",
-    (11, 3): "KC_PGDN",
-    (11, 4): "KC_RCTL",
-    (11, 5): "KC_PGUP",
-    (11, 6): "KC_RGUI",
-}
-EXPECTED_UNLOCK_COORDINATES = {(2, 0), (11, 2)}
+EXPECTED_UNLOCK_COORDINATES = {(2, 0), (9, 0)}
 
 
 def load_json(path: Path) -> dict:
@@ -155,8 +131,8 @@ def main() -> None:
 
     assert len(layout) == 84, f"QMK layout must contain 84 keys, got {len(layout)}"
     assert len(qmk_coordinates) == 84, "QMK layout contains duplicate matrix coordinates"
-    assert len(via_coordinates) == 76, (
-        f"VIA must display 76 keys, got {len(via_coordinates)}"
+    assert len(via_coordinates) == 64, (
+        f"VIA must display 64 keys, got {len(via_coordinates)}"
     )
     assert via_coordinates <= qmk_coordinates, "VIA references an unknown matrix coordinate"
     assert qmk_coordinates - via_coordinates == EXPECTED_HIDDEN, (
@@ -166,7 +142,7 @@ def main() -> None:
     assert vial["layouts"]["keymap"] == via["layouts"]["keymap"], (
         "Vial and VIA visual geometry must stay in sync"
     )
-    svg_keys = main_keys() + thumb_keys()
+    svg_keys = main_keys()
     svg_coordinates = {(key.qmk_row, key.col) for key in svg_keys}
     assert svg_coordinates == vial_coordinates, (
         "SVG and Vial/VIA must display the same matrix coordinates"
@@ -183,19 +159,6 @@ def main() -> None:
         for key in main_keys()
         if key.col == 6
     ), "every inner-column key must align with its electrical matrix row"
-    thumb_columns_by_position = {
-        (key.side, key.x, key.y): key.col for key in thumb_keys()
-    }
-    assert thumb_columns_by_position == EXPECTED_THUMB_COLUMNS_BY_POSITION, (
-        "thumb matrix columns must match the documented physical wiring"
-    )
-    thumb_layout_rows = [
-        [item for item in row if isinstance(item, str)]
-        for row in vial["layouts"]["keymap"][8:]
-    ]
-    assert thumb_layout_rows == EXPECTED_THUMB_LAYOUT_ROWS, (
-        "Vial thumb coordinates must match the optimized physical wiring"
-    )
     assert via["matrix"] == {"rows": 12, "cols": 7}
     assert vial["matrix"] == {"rows": 12, "cols": 7}
     assert vial["lighting"] == "none"
@@ -222,13 +185,6 @@ def main() -> None:
             assert set(hidden_keycodes.values()) == {"XXXXXXX"}, (
                 f"{name}: all eight hidden keys must be KC_NO on layer {layer_index}"
             )
-        base_keycodes_by_coordinate = dict(zip(matrix_order, keymap_layers[0], strict=True))
-        assert {
-            coordinate: base_keycodes_by_coordinate[coordinate]
-            for coordinate in EXPECTED_BASE_THUMB_KEYCODES
-        } == EXPECTED_BASE_THUMB_KEYCODES, (
-            f"{name}: base thumb functions must stay at their physical key positions"
-        )
         parsed_keymaps[name] = keymap_layers
 
     assert parsed_keymaps["Vial"] == parsed_keymaps["VIA"], (
@@ -248,16 +204,17 @@ def main() -> None:
         "Vial unlock combo must reference visible physical keys"
     )
     assert unlock_coordinates == EXPECTED_UNLOCK_COORDINATES, (
-        "Vial unlock combo must stay on the physical Escape and Enter keys"
+        "Vial unlock combo must stay on the physical Escape and Right Shift keys"
     )
 
     vial_rules = VIAL_RULES.read_text(encoding="utf-8")
     assert re.search(r"^VIA_ENABLE\s*=\s*yes$", vial_rules, re.MULTILINE)
     assert re.search(r"^VIAL_ENABLE\s*=\s*yes$", vial_rules, re.MULTILINE)
+    assert re.search(r"^ANALOG_DRIVER_REQUIRED\s*=\s*yes$", vial_rules, re.MULTILINE)
 
     print(
         "layout validation passed: 84 QMK matrix positions, "
-        "76 wired/VIA/Vial-visible keys, 8 unused and hidden, "
+        "64 wired/VIA/Vial-visible keys, 20 unused and hidden, "
         "4 synchronized layers"
     )
 

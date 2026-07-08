@@ -19,11 +19,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    XXXXXXX,
         MO(_NAV_MEDIA), KC_GRV, KC_CAPS, KC_LEFT, KC_RGHT, XXXXXXX, XXXXXXX,
 
-        // Left thumb cluster. Matrix position 5,0 is intentionally hidden.
-        KC_END,
-        XXXXXXX, KC_LCTL,
-        KC_DEL,  KC_LALT,
-        KC_BSPC, KC_HOME,
+        // Left thumb row is disabled on the Joy-Con branch.
+        XXXXXXX,
+        XXXXXXX, XXXXXXX,
+        XXXXXXX, XXXXXXX,
+        XXXXXXX, XXXXXXX,
 
         // Right key well: mirrored, with a three-key inner function column.
         TG(_KEYPAD), KC_6, KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS,
@@ -32,11 +32,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         XXXXXXX, KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT,
         XXXXXXX, XXXXXXX, KC_UP,   KC_DOWN, KC_LBRC, KC_RBRC, MO(_NAV_MEDIA),
 
-        // Right thumb cluster. Matrix position 11,0 is intentionally hidden.
-        KC_PGDN,
-        KC_ENT,  KC_RCTL,
-        XXXXXXX, KC_RGUI,
-        KC_PGUP, KC_SPC
+        // Right thumb row is disabled on the Joy-Con branch.
+        XXXXXXX,
+        XXXXXXX, XXXXXXX,
+        XXXXXXX, XXXXXXX,
+        XXXXXXX, XXXXXXX
     ),
 
     [_KEYPAD] = LAYOUT_5x7(
@@ -46,10 +46,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         _______, _______, _______, _______, _______, _______, XXXXXXX,
         _______, _______, _______, _______, _______, XXXXXXX, XXXXXXX,
 
-        _______,
-        XXXXXXX, _______,
-        _______, _______,
-        _______, _______,
+        XXXXXXX,
+        XXXXXXX, XXXXXXX,
+        XXXXXXX, XXXXXXX,
+        XXXXXXX, XXXXXXX,
 
         _______, _______, _______, _______, _______, _______, _______,
         _______, KC_P7,   KC_P8,   KC_P9,   KC_PMNS, KC_PSLS, _______,
@@ -57,10 +57,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         XXXXXXX, KC_P1,   KC_P2,   KC_P3,   KC_PENT, KC_PDOT, _______,
         XXXXXXX, XXXXXXX, _______, _______, KC_P0,   _______, _______,
 
-        _______,
-        _______, _______,
-        XXXXXXX, _______,
-        _______, _______
+        XXXXXXX,
+        XXXXXXX, XXXXXXX,
+        XXXXXXX, XXXXXXX,
+        XXXXXXX, XXXXXXX
     ),
 
     [_FN] = LAYOUT_5x7(
@@ -70,10 +70,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         _______, _______, _______, _______, _______, _______, XXXXXXX,
         _______, _______, _______, _______, _______, XXXXXXX, XXXXXXX,
 
-        _______,
-        XXXXXXX, _______,
-        _______, _______,
-        _______, _______,
+        XXXXXXX,
+        XXXXXXX, XXXXXXX,
+        XXXXXXX, XXXXXXX,
+        XXXXXXX, XXXXXXX,
 
         _______, KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,
         _______, _______, _______, _______, _______, _______, _______,
@@ -81,10 +81,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         XXXXXXX, _______, _______, _______, _______, _______, _______,
         XXXXXXX, XXXXXXX, KC_VOLU, KC_VOLD, KC_MUTE, _______, _______,
 
-        KC_MNXT,
-        KC_MPRV, _______,
-        XXXXXXX, _______,
-        _______, _______
+        XXXXXXX,
+        XXXXXXX, XXXXXXX,
+        XXXXXXX, XXXXXXX,
+        XXXXXXX, XXXXXXX
     ),
 
     [_NAV_MEDIA] = LAYOUT_5x7(
@@ -94,10 +94,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         _______, _______, _______, _______, _______, _______, XXXXXXX,
         _______, _______, _______, _______, _______, XXXXXXX, XXXXXXX,
 
-        _______,
-        XXXXXXX, _______,
-        _______, _______,
-        _______, _______,
+        XXXXXXX,
+        XXXXXXX, XXXXXXX,
+        XXXXXXX, XXXXXXX,
+        XXXXXXX, XXXXXXX,
 
         _______, _______, _______, _______, _______, _______, _______,
         _______, KC_MPRV, KC_MPLY, KC_MNXT, KC_VOLU, _______, _______,
@@ -105,9 +105,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         XXXXXXX, _______, _______, _______, KC_MUTE, _______, _______,
         XXXXXXX, XXXXXXX, _______, _______, _______, _______, _______,
 
-        _______,
-        _______, _______,
-        XXXXXXX, _______,
-        _______, _______
+        XXXXXXX,
+        XXXXXXX, XXXXXXX,
+        XXXXXXX, XXXXXXX,
+        XXXXXXX, XXXXXXX
     )
 };

@@ -35,7 +35,7 @@ KEYMAP_C = (
 )
 OUTPUT = ROOT / "docs" / "wiring-layout.svg"
 
-ROW_PINS = ("GP14", "GP15", "GP26", "GP27", "GP28", "GP29")
+ROW_PINS = ("GP14", "GP15", "GP26", "GP27", "GP9", "NO_PIN")
 COL_PINS = ("GP2", "GP3", "GP4", "GP5", "GP6", "GP7", "GP8")
 
 KEY_W = 90
@@ -100,24 +100,67 @@ def main_keys() -> list[Key]:
 
 
 def thumb_keys() -> list[Key]:
-    left_rotation = {"rotation": 10, "pivot_x": 620, "pivot_y": 760}
-    right_rotation = {"rotation": -10, "pivot_x": 1160, "pivot_y": 760}
-    two_u = KEY_H * 2 + (PITCH - KEY_H)
+    return []
 
-    return [
-        Key(5, 4, 576, 630, **left_rotation),
-        Key(5, 6, 672, 630, **left_rotation),
-        Key(5, 1, 480, 720, height=two_u, **left_rotation),
-        Key(5, 2, 576, 720, height=two_u, **left_rotation),
-        Key(5, 5, 672, 720, **left_rotation),
-        Key(5, 3, 672, 810, **left_rotation),
-        Key(11, 6, 1050, 630, **right_rotation),
-        Key(11, 4, 1146, 630, **right_rotation),
-        Key(11, 5, 1050, 720, **right_rotation),
-        Key(11, 2, 1146, 720, height=two_u, **right_rotation),
-        Key(11, 1, 1242, 720, height=two_u, **right_rotation),
-        Key(11, 3, 1050, 810, **right_rotation),
-    ]
+
+def joycon_layout_svg() -> str:
+    return """\
+  <g class="joycon-module" transform="rotate(10 640 780)">
+    <rect class="joycon-body" x="520" y="660" width="250" height="220" rx="34"/>
+    <circle class="joycon-stick-outer" cx="645" cy="750" r="64"/>
+    <circle class="joycon-stick-inner" cx="645" cy="750" r="34"/>
+    <text class="joycon-title" x="645" y="842">左侧 Joy-Con</text>
+    <text class="joycon-note" x="645" y="862">GP28=X / GP29=Y</text>
+  </g>
+  <g class="joycon-module" transform="rotate(-10 1160 780)">
+    <rect class="disabled-thumb-body" x="1035" y="660" width="250" height="220" rx="34"/>
+    <text class="disabled-thumb-title" x="1160" y="746">右侧拇指区停用</text>
+    <text class="disabled-thumb-note" x="1160" y="774">R5 = NO_PIN</text>
+    <text class="disabled-thumb-note" x="1160" y="796">不安装开关 / 不接矩阵</text>
+  </g>"""
+
+
+def joycon_wiring_svg() -> str:
+    return """\
+  <g class="joycon-wiring" transform="translate(60 1660)">
+    <text class="hardware-title" x="0" y="0">左侧 Joy-Con 接线</text>
+    <text class="subtitle" x="0" y="26">Joy-Con 只接左侧主控；拇指区矩阵 R5 不接线。SW/BTN 暂不接。</text>
+
+    <rect class="controller-body" x="0" y="62" width="360" height="250" rx="18"/>
+    <text class="controller-title" x="180" y="94">左 RP2040-Zero</text>
+    <text class="controller-note" x="180" y="118">只使用 3.3V 模拟输入，不能把 Joy-Con 接 5V</text>
+
+    <g class="pin-list" transform="translate(42 146)">
+      <circle class="pin-vcc" cx="0" cy="0" r="7"/><text class="pin-label" x="18" y="5">3V3</text>
+      <circle class="pin-gnd" cx="0" cy="42" r="7"/><text class="pin-label" x="18" y="47">GND</text>
+      <circle class="pin-x" cx="0" cy="84" r="7"/><text class="pin-label" x="18" y="89">GP28 / ADC2 / X</text>
+      <circle class="pin-y" cx="0" cy="126" r="7"/><text class="pin-label" x="18" y="131">GP29 / ADC3 / Y</text>
+    </g>
+
+    <rect class="breakout-body" x="690" y="62" width="330" height="250" rx="18"/>
+    <text class="controller-title" x="855" y="94">Joy-Con 5P FPC 转接板</text>
+    <text class="controller-note" x="855" y="118">按你转接板丝印为准：VCC/GND/X/Y/SW</text>
+
+    <g class="pin-list" transform="translate(740 146)">
+      <circle class="pin-vcc" cx="0" cy="0" r="7"/><text class="pin-label" x="18" y="5">VCC</text>
+      <circle class="pin-gnd" cx="0" cy="42" r="7"/><text class="pin-label" x="18" y="47">GND</text>
+      <circle class="pin-x" cx="0" cy="84" r="7"/><text class="pin-label" x="18" y="89">X / VRX</text>
+      <circle class="pin-y" cx="0" cy="126" r="7"/><text class="pin-label" x="18" y="131">Y / VRY</text>
+      <circle class="pin-unused" cx="0" cy="168" r="7"/><text class="pin-label muted" x="18" y="173">SW / BTN 不接</text>
+    </g>
+
+    <path class="wire-vcc" d="M42 146 C260 120, 520 120, 740 146"/>
+    <path class="wire-gnd" d="M42 188 C260 176, 520 176, 740 188"/>
+    <path class="wire-x" d="M42 230 C260 232, 520 232, 740 230"/>
+    <path class="wire-y" d="M42 272 C260 288, 520 288, 740 272"/>
+
+    <rect class="wasd-box" x="1110" y="62" width="520" height="250" rx="18"/>
+    <text class="controller-title" x="1370" y="94">固件映射</text>
+    <text class="controller-note" x="1370" y="122">X 轴：左=A，右=D；Y 轴：上=W，下=S</text>
+    <text class="controller-note" x="1370" y="150">支持斜向：左上=A+W，右下=D+S</text>
+    <text class="controller-note" x="1370" y="178">默认中心 512，按下阈值 ±180，释放阈值 ±120</text>
+    <text class="controller-warning" x="1370" y="214">如果方向相反，先改 keymap.c 的轴方向逻辑，不要改到 5V。</text>
+  </g>"""
 
 
 def vial_visible_coordinates() -> set[tuple[int, int]]:
@@ -332,7 +375,7 @@ def wiring_overlay_svg(keys: list[Key], offset_y: int) -> str:
                 f'y="{label_y - 55:.1f}">C{col}</text>'
             )
 
-        for local_row in range(6):
+        for local_row in range(5):
             points = [
                 wiring_points(key, offset_y)[1]
                 for key in side_keys
@@ -346,7 +389,7 @@ def wiring_overlay_svg(keys: list[Key], offset_y: int) -> str:
             for x, y in points:
                 parts.append(f'  <circle class="row-junction" cx="{x:.1f}" cy="{y:.1f}" r="4"/>')
             label_x, label_y = points[0]
-            label = "R5（拇指区）" if local_row == 5 else f"R{local_row}"
+            label = f"R{local_row}"
             parts.append(
                 f'  <text class="wiring-row-label" x="{label_x - 85:.1f}" '
                 f'y="{label_y - 14:.1f}">{label}</text>'
@@ -359,12 +402,14 @@ def wiring_overlay_svg(keys: list[Key], offset_y: int) -> str:
 def generate_svg(keys: list[Key], keycodes: dict[tuple[int, int], str]) -> str:
     key_markup = "\n".join(key_svg(key, keycodes) for key in keys)
     wiring_markup = wiring_overlay_svg(keys, 1150)
+    joycon_markup = joycon_layout_svg()
+    joycon_wiring_markup = joycon_wiring_svg()
     return f"""\
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="1750" height="2220" viewBox="0 0 1750 2220"
      role="img" aria-labelledby="title description">
-  <title id="title">Kinesis Dactyl 5x7 第一层键位、矩阵、GPIO 与二极管接线图</title>
-  <desc id="description">76 个 Vial 可见键的第一层键位、矩阵坐标、GPIO 引脚对，以及每侧行列总线和二极管方向。</desc>
+  <title id="title">Kinesis Dactyl 5x7 Joy-Con 分支第一层键位、矩阵、GPIO 与接线图</title>
+  <desc id="description">64 个 Vial 可见主键的第一层键位、矩阵坐标、GPIO 引脚对，以及每侧行列总线、二极管方向和左侧 Joy-Con 接线。</desc>
   <style>
     :root {{
       color-scheme: dark;
@@ -396,6 +441,51 @@ def generate_svg(keys: list[Key], keycodes: dict[tuple[int, int], str]) -> str:
     }}
     .thumb .key-shape {{
       stroke-width: 3;
+    }}
+    .joycon-body {{
+      fill: #3c3836;
+      stroke: #d65d0e;
+      stroke-width: 4;
+    }}
+    .joycon-stick-outer {{
+      fill: #504945;
+      stroke: #fabd2f;
+      stroke-width: 4;
+    }}
+    .joycon-stick-inner {{
+      fill: #282828;
+      stroke: #ebdbb2;
+      stroke-width: 3;
+    }}
+    .joycon-title, .disabled-thumb-title {{
+      text-anchor: middle;
+      dominant-baseline: middle;
+      font-size: 17px;
+      font-weight: 800;
+    }}
+    .joycon-title {{
+      fill: #fabd2f;
+    }}
+    .joycon-note, .disabled-thumb-note {{
+      text-anchor: middle;
+      dominant-baseline: middle;
+      font-size: 12px;
+      font-weight: 650;
+    }}
+    .joycon-note {{
+      fill: #ebdbb2;
+    }}
+    .disabled-thumb-body {{
+      fill: #2a2f38;
+      stroke: #928374;
+      stroke-width: 3;
+      stroke-dasharray: 10 8;
+    }}
+    .disabled-thumb-title {{
+      fill: #d5c4a1;
+    }}
+    .disabled-thumb-note {{
+      fill: #a89984;
     }}
     .key-label, .key-meta, .key-matrix, .key-pins {{
       text-anchor: middle;
@@ -569,52 +659,118 @@ def generate_svg(keys: list[Key], keycodes: dict[tuple[int, int], str]) -> str:
     .right-label {{
       fill: #c4a5e5;
     }}
+    .controller-body, .breakout-body, .wasd-box {{
+      fill: #252d39;
+      stroke: #68778b;
+      stroke-width: 2;
+    }}
+    .controller-title {{
+      fill: #ebdbb2;
+      font-size: 18px;
+      font-weight: 800;
+      text-anchor: middle;
+    }}
+    .controller-note {{
+      fill: #c3cedc;
+      font-size: 14px;
+      text-anchor: middle;
+    }}
+    .controller-warning {{
+      fill: #fabd2f;
+      font-size: 14px;
+      font-weight: 750;
+      text-anchor: middle;
+    }}
+    .pin-label {{
+      fill: #ebdbb2;
+      font-size: 14px;
+      font-weight: 700;
+    }}
+    .muted {{
+      fill: #928374;
+    }}
+    .pin-vcc {{
+      fill: #cc241d;
+    }}
+    .pin-gnd {{
+      fill: #3c3836;
+      stroke: #ebdbb2;
+      stroke-width: 1.5;
+    }}
+    .pin-x {{
+      fill: #98971a;
+    }}
+    .pin-y {{
+      fill: #458588;
+    }}
+    .pin-unused {{
+      fill: #928374;
+    }}
+    .wire-vcc, .wire-gnd, .wire-x, .wire-y {{
+      fill: none;
+      stroke-width: 5;
+      stroke-linecap: round;
+    }}
+    .wire-vcc {{
+      stroke: #cc241d;
+    }}
+    .wire-gnd {{
+      stroke: #3c3836;
+    }}
+    .wire-x {{
+      stroke: #98971a;
+    }}
+    .wire-y {{
+      stroke: #458588;
+    }}
   </style>
 
   <rect class="background" width="1750" height="2220"/>
   <rect class="frame" x="22" y="18" width="1706" height="2180" rx="24"/>
 
-  <text class="title" x="60" y="55">Kinesis Dactyl 5x7 — 第一层键位 / 矩阵 / GPIO 接线图</text>
+  <text class="title" x="60" y="55">Kinesis Dactyl 5x7 Joy-Con — 第一层键位 / 矩阵 / GPIO 接线图</text>
   <text class="subtitle" x="60" y="79">
-    每键四行：第一层键位 / 侧与 QMK 全局坐标 / 本地 R-C / 行 GPIO 与列 GPIO。右半本地 R0–R5 映射为全局行 6–11。
+    每键四行：第一层键位 / 侧与 QMK 全局坐标 / 本地 R-C / 行 GPIO 与列 GPIO。拇指区矩阵隐藏，左侧改接 Joy-Con。
   </text>
   <text class="section left-label" x="60" y="94">左半</text>
   <text class="section right-label" x="1640" y="94" text-anchor="end">右半</text>
 
 {key_markup}
+{joycon_markup}
 
   <g transform="translate(60 965)">
     <text class="section" x="0" y="0">引脚总表</text>
-    <text class="legend" x="0" y="29">行：R0=GP14　R1=GP15　R2=GP26　R3=GP27　R4=GP28　R5=GP29</text>
+    <text class="legend" x="0" y="29">行：R0=GP14　R1=GP15　R2=GP26　R3=GP27　R4=GP9　R5=NO_PIN（拇指区停用）</text>
     <text class="legend" x="0" y="55">列：C0=GP2　C1=GP3　C2=GP4　C3=GP5　C4=GP6　C5=GP7　C6=GP8</text>
-    <text class="warning" x="0" y="86">COL2ROW：列 GPIO → 开关 → 二极管无环端 → 二极管带环端 → 行 GPIO</text>
+    <text class="warning" x="0" y="86">COL2ROW：列 GPIO → 开关 → 二极管无环端 → 二极管带环端 → 行 GPIO；Joy-Con：X=GP28，Y=GP29</text>
   </g>
 
   <g transform="translate(930 965)">
     <text class="section" x="0" y="0">QMK 保留、Vial 隐藏且无需接线的位置</text>
-    <text class="legend" x="0" y="29">左：[3,6]、[4,5]、[4,6]、[5,0]</text>
-    <text class="legend" x="0" y="55">右：[9,6]、[10,5]、[10,6]、[11,0]</text>
-    <text class="warning" x="0" y="86">纵向 2u 仍然只使用一个开关和一个矩阵交点。</text>
+    <text class="legend" x="0" y="29">左：[3,6]、[4,5]、[4,6]、整行 [5,0]–[5,6]</text>
+    <text class="legend" x="0" y="55">右：[9,6]、[10,5]、[10,6]、整行 [11,0]–[11,6]</text>
+    <text class="warning" x="0" y="86">R4 已从 GP28 改到 GP9；GP28/GP29 专用于左侧 Joy-Con ADC。</text>
   </g>
 
   <line class="divider" x1="60" y1="1128" x2="1690" y2="1128"/>
   <text class="hardware-title" x="60" y="1172">按实际键位连接行线与列线</text>
   <text class="subtitle" x="60" y="1198">
-    下图与上方键盘几何 1:1；键帽内仅画开关与二极管。黄色连接同一列，蓝色连接同一行。
+    下图与上方主键区几何 1:1；拇指区不接矩阵。键帽内仅画开关与二极管。黄色连接同一列，蓝色连接同一行。
   </text>
 
 {wiring_markup}
+{joycon_wiring_markup}
 
   <rect class="wiring-legend-box" x="60" y="2090" width="1630" height="82" rx="14"/>
   <line class="legend-col-line" x1="90" y1="2121" x2="145" y2="2121"/>
   <text class="wiring-note" x="158" y="2126">黄色：同一列 C0–C6 相连</text>
   <line class="legend-row-line" x1="400" y1="2121" x2="455" y2="2121"/>
-  <text class="wiring-note" x="468" y="2126">蓝色：同一行 R0–R5 相连</text>
+  <text class="wiring-note" x="468" y="2126">蓝色：同一行 R0–R4 相连</text>
   <rect class="legend-diode" x="740" y="2108" width="46" height="24" rx="12"/>
   <rect class="legend-diode-band" x="776" y="2108" width="7" height="24"/>
   <text class="wiring-note" x="798" y="2126">黑色带环端接蓝色行线</text>
-  <text class="wiring-emphasis" x="90" y="2158">每侧拇指列从内向外依次 C6→C5→C3→C4→C2→C1；所有拇指键接本侧 R5（GP29）。</text>
-  <text class="wiring-note" x="1180" y="2158">行列线交叉处绝缘，不直接相连。</text>
+  <text class="wiring-emphasis" x="90" y="2158">R4 改接 GP9；左侧 Joy-Con：VCC→3V3，GND→GND，X→GP28，Y→GP29，SW/BTN 不接。</text>
+  <text class="wiring-note" x="1210" y="2158">行列线交叉处绝缘，不直接相连。</text>
 </svg>
 """
 
