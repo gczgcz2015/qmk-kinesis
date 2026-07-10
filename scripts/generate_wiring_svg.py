@@ -158,8 +158,9 @@ def joycon_wiring_svg() -> str:
     <text class="controller-title" x="1370" y="94">固件映射</text>
     <text class="controller-note" x="1370" y="122">X 轴：左=A，右=D；Y 轴：上=W，下=S</text>
     <text class="controller-note" x="1370" y="150">支持斜向：左上=A+W，右下=D+S</text>
-    <text class="controller-note" x="1370" y="178">默认中心 512，按下阈值 ±180，释放阈值 ±120</text>
-    <text class="controller-warning" x="1370" y="214">如果方向相反，先改 keymap.c 的轴方向逻辑，不要改到 5V。</text>
+    <text class="controller-note" x="1370" y="178">上电静置约 1 秒：32 个稳定样本自动校准中心</text>
+    <text class="controller-note" x="1370" y="204">按下阈值 ±110，释放阈值 ±70，带低通滤波和滞回</text>
+    <text class="controller-warning" x="1370" y="238">如果方向相反，先改 keymap.c 的轴方向逻辑，不要改到 5V。</text>
   </g>"""
 
 
