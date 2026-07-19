@@ -210,7 +210,9 @@ def main() -> None:
     vial_rules = VIAL_RULES.read_text(encoding="utf-8")
     assert re.search(r"^VIA_ENABLE\s*=\s*yes$", vial_rules, re.MULTILINE)
     assert re.search(r"^VIAL_ENABLE\s*=\s*yes$", vial_rules, re.MULTILINE)
-    assert re.search(r"^ANALOG_DRIVER_REQUIRED\s*=\s*yes$", vial_rules, re.MULTILINE)
+    assert re.search(r"^POINTING_DEVICE_ENABLE\s*=\s*yes$", vial_rules, re.MULTILINE)
+    assert re.search(r"^POINTING_DEVICE_DRIVER\s*=\s*pmw3360$", vial_rules, re.MULTILINE)
+    assert re.search(r"^SPLIT_POINTING_ENABLE\s*=\s*yes$", vial_rules, re.MULTILINE)
 
     print(
         "layout validation passed: 84 QMK matrix positions, "

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="1750" height="2220" viewBox="0 0 1750 2220"
      role="img" aria-labelledby="title description">
-  <title id="title">Kinesis Dactyl 5x7 Joy-Con 分支第一层键位、矩阵、GPIO 与接线图</title>
-  <desc id="description">64 个 Vial 可见主键的第一层键位、矩阵坐标、GPIO 引脚对，以及每侧行列总线、二极管方向和左侧 Joy-Con 接线。</desc>
+  <title id="title">Kinesis Dactyl 5x7 PMW3360 轨迹球分支第一层键位、矩阵、GPIO 与接线图</title>
+  <desc id="description">64 个 Vial 可见主键的第一层键位、矩阵坐标、GPIO 引脚对，以及每侧行列总线、二极管方向和左侧 Ogen Lite 接线。</desc>
   <style>
     :root {
       color-scheme: dark;
@@ -35,37 +35,37 @@
     .thumb .key-shape {
       stroke-width: 3;
     }
-    .joycon-body {
+    .trackball-body {
       fill: #3c3836;
       stroke: #d65d0e;
       stroke-width: 4;
     }
-    .joycon-stick-outer {
+    .trackball-outer {
       fill: #504945;
       stroke: #fabd2f;
       stroke-width: 4;
     }
-    .joycon-stick-inner {
+    .trackball-inner {
       fill: #282828;
       stroke: #ebdbb2;
       stroke-width: 3;
     }
-    .joycon-title, .disabled-thumb-title {
+    .trackball-title, .disabled-thumb-title {
       text-anchor: middle;
       dominant-baseline: middle;
       font-size: 17px;
       font-weight: 800;
     }
-    .joycon-title {
+    .trackball-title {
       fill: #fabd2f;
     }
-    .joycon-note, .disabled-thumb-note {
+    .trackball-note, .disabled-thumb-note {
       text-anchor: middle;
       dominant-baseline: middle;
       font-size: 12px;
       font-weight: 650;
     }
-    .joycon-note {
+    .trackball-note {
       fill: #ebdbb2;
     }
     .disabled-thumb-body {
@@ -252,7 +252,7 @@
     .right-label {
       fill: #c4a5e5;
     }
-    .controller-body, .breakout-body, .wasd-box {
+    .controller-body, .breakout-body, .sensor-box {
       fill: #252d39;
       stroke: #68778b;
       stroke-width: 2;
@@ -299,7 +299,7 @@
     .pin-unused {
       fill: #928374;
     }
-    .wire-vcc, .wire-gnd, .wire-x, .wire-y {
+    .wire-vcc, .wire-gnd, .wire-sclk, .wire-mosi, .wire-miso, .wire-ss {
       fill: none;
       stroke-width: 5;
       stroke-linecap: round;
@@ -310,10 +310,10 @@
     .wire-gnd {
       stroke: #3c3836;
     }
-    .wire-x {
+    .wire-sclk, .wire-miso {
       stroke: #98971a;
     }
-    .wire-y {
+    .wire-mosi, .wire-ss {
       stroke: #458588;
     }
   </style>
@@ -321,9 +321,9 @@
   <rect class="background" width="1750" height="2220"/>
   <rect class="frame" x="22" y="18" width="1706" height="2180" rx="24"/>
 
-  <text class="title" x="60" y="55">Kinesis Dactyl 5x7 Joy-Con — 第一层键位 / 矩阵 / GPIO 接线图</text>
+  <text class="title" x="60" y="55">Kinesis Dactyl 5x7 PMW3360 轨迹球 — 第一层键位 / 矩阵 / GPIO 接线图</text>
   <text class="subtitle" x="60" y="79">
-    每键四行：第一层键位 / 侧与 QMK 全局坐标 / 本地 R-C / 行 GPIO 与列 GPIO。拇指区矩阵隐藏，左侧改接 Joy-Con。
+    每键四行：第一层键位 / 侧与 QMK 全局坐标 / 本地 R-C / 行 GPIO 与列 GPIO。拇指区矩阵隐藏，左侧改接 Ogen Lite。
   </text>
   <text class="section left-label" x="60" y="94">左半</text>
   <text class="section right-label" x="1640" y="94" text-anchor="end">右半</text>
@@ -776,14 +776,14 @@
     <text class="key-matrix" x="1095" y="333">R2 C6</text>
     <text class="key-pins" x="1095" y="352">GP26 / GP8</text>
   </g>
-  <g class="joycon-module" transform="rotate(10 640 780)">
-    <rect class="joycon-body" x="520" y="660" width="250" height="220" rx="34"/>
-    <circle class="joycon-stick-outer" cx="645" cy="750" r="64"/>
-    <circle class="joycon-stick-inner" cx="645" cy="750" r="34"/>
-    <text class="joycon-title" x="645" y="842">左侧 Joy-Con</text>
-    <text class="joycon-note" x="645" y="862">GP28=X / GP29=Y</text>
+  <g class="trackball-module" transform="rotate(10 640 780)">
+    <rect class="trackball-body" x="520" y="660" width="250" height="220" rx="34"/>
+    <circle class="trackball-outer" cx="645" cy="750" r="64"/>
+    <circle class="trackball-inner" cx="645" cy="750" r="46"/>
+    <text class="trackball-title" x="645" y="842">左侧 Ogen Lite 轨迹球</text>
+    <text class="trackball-note" x="645" y="862">PMW3360 / GP10–GP13 / SPI1</text>
   </g>
-  <g class="joycon-module" transform="rotate(-10 1160 780)">
+  <g class="trackball-module" transform="rotate(-10 1160 780)">
     <rect class="disabled-thumb-body" x="1035" y="660" width="250" height="220" rx="34"/>
     <text class="disabled-thumb-title" x="1160" y="746">右侧拇指区停用</text>
     <text class="disabled-thumb-note" x="1160" y="774">R5 = NO_PIN</text>
@@ -794,14 +794,14 @@
     <text class="section" x="0" y="0">引脚总表</text>
     <text class="legend" x="0" y="29">行：R0=GP14　R1=GP15　R2=GP26　R3=GP27　R4=GP9　R5=NO_PIN（拇指区停用）</text>
     <text class="legend" x="0" y="55">列：C0=GP2　C1=GP3　C2=GP4　C3=GP5　C4=GP6　C5=GP7　C6=GP8</text>
-    <text class="warning" x="0" y="86">COL2ROW：列 GPIO → 开关 → 二极管无环端 → 二极管带环端 → 行 GPIO；Joy-Con：X=GP28，Y=GP29</text>
+    <text class="warning" x="0" y="86">COL2ROW：列 GPIO → 开关 → 二极管无环端 → 二极管带环端 → 行 GPIO；轨迹球使用 SPI1：GP10–GP13</text>
   </g>
 
   <g transform="translate(930 965)">
     <text class="section" x="0" y="0">QMK 保留、Vial 隐藏且无需接线的位置</text>
     <text class="legend" x="0" y="29">左：[3,6]、[4,5]、[4,6]、整行 [5,0]–[5,6]</text>
     <text class="legend" x="0" y="55">右：[9,6]、[10,5]、[10,6]、整行 [11,0]–[11,6]</text>
-    <text class="warning" x="0" y="86">R4 已从 GP28 改到 GP9；GP28/GP29 专用于左侧 Joy-Con ADC。</text>
+    <text class="warning" x="0" y="86">R4 保持 GP9；GP28/GP29 在轨迹球测试分支中不使用。</text>
   </g>
 
   <line class="divider" x1="60" y1="1128" x2="1690" y2="1128"/>
@@ -1828,45 +1828,51 @@
     <circle class="col-junction" cx="1067" cy="1472" r="4"/>
     <circle class="row-junction" cx="1126" cy="1472" r="4"/>
   </g>
-  <g class="joycon-wiring" transform="translate(60 1660)">
-    <text class="hardware-title" x="0" y="0">左侧 Joy-Con 接线</text>
-    <text class="subtitle" x="0" y="26">Joy-Con 只接左侧主控；拇指区矩阵 R5 不接线。SW/BTN 暂不接。</text>
+  <g class="trackball-wiring" transform="translate(60 1660)">
+    <text class="hardware-title" x="0" y="0">左侧 Ogen Lite V1.3 / PMW3360 接线</text>
+    <text class="subtitle" x="0" y="26">轨迹球只接左侧 USB 主控；R5 继续停用。Ogen Lite 只能使用 3.3V 电源和逻辑。</text>
 
     <rect class="controller-body" x="0" y="62" width="360" height="250" rx="18"/>
     <text class="controller-title" x="180" y="94">左 RP2040-Zero</text>
-    <text class="controller-note" x="180" y="118">只使用 3.3V 模拟输入，不能把 Joy-Con 接 5V</text>
+    <text class="controller-note" x="180" y="118">SPI1 使用 GP10–GP13；不要接 5V</text>
 
-    <g class="pin-list" transform="translate(42 146)">
+    <g class="pin-list" transform="translate(42 142)">
       <circle class="pin-vcc" cx="0" cy="0" r="7"/><text class="pin-label" x="18" y="5">3V3</text>
-      <circle class="pin-gnd" cx="0" cy="42" r="7"/><text class="pin-label" x="18" y="47">GND</text>
-      <circle class="pin-x" cx="0" cy="84" r="7"/><text class="pin-label" x="18" y="89">GP28 / ADC2 / X</text>
-      <circle class="pin-y" cx="0" cy="126" r="7"/><text class="pin-label" x="18" y="131">GP29 / ADC3 / Y</text>
+      <circle class="pin-gnd" cx="0" cy="30" r="7"/><text class="pin-label" x="18" y="35">GND</text>
+      <circle class="pin-sclk" cx="0" cy="60" r="7"/><text class="pin-label" x="18" y="65">GP10 / SCLK</text>
+      <circle class="pin-mosi" cx="0" cy="90" r="7"/><text class="pin-label" x="18" y="95">GP11 / MOSI</text>
+      <circle class="pin-miso" cx="0" cy="120" r="7"/><text class="pin-label" x="18" y="125">GP12 / MISO</text>
+      <circle class="pin-ss" cx="0" cy="150" r="7"/><text class="pin-label" x="18" y="155">GP13 / CS</text>
     </g>
 
     <rect class="breakout-body" x="690" y="62" width="330" height="250" rx="18"/>
-    <text class="controller-title" x="855" y="94">Joy-Con 5P FPC 转接板</text>
-    <text class="controller-note" x="855" y="118">按你转接板丝印为准：VCC/GND/X/Y/SW</text>
+    <text class="controller-title" x="855" y="94">Ogen Lite V1.3</text>
+    <text class="controller-note" x="855" y="118">按板上丝印连接；MOT 与 RES 留空</text>
 
-    <g class="pin-list" transform="translate(740 146)">
+    <g class="pin-list" transform="translate(740 142)">
       <circle class="pin-vcc" cx="0" cy="0" r="7"/><text class="pin-label" x="18" y="5">VCC</text>
-      <circle class="pin-gnd" cx="0" cy="42" r="7"/><text class="pin-label" x="18" y="47">GND</text>
-      <circle class="pin-x" cx="0" cy="84" r="7"/><text class="pin-label" x="18" y="89">X / VRX</text>
-      <circle class="pin-y" cx="0" cy="126" r="7"/><text class="pin-label" x="18" y="131">Y / VRY</text>
-      <circle class="pin-unused" cx="0" cy="168" r="7"/><text class="pin-label muted" x="18" y="173">SW / BTN 不接</text>
+      <circle class="pin-gnd" cx="0" cy="30" r="7"/><text class="pin-label" x="18" y="35">GND</text>
+      <circle class="pin-sclk" cx="0" cy="60" r="7"/><text class="pin-label" x="18" y="65">SCL</text>
+      <circle class="pin-mosi" cx="0" cy="90" r="7"/><text class="pin-label" x="18" y="95">MOS</text>
+      <circle class="pin-miso" cx="0" cy="120" r="7"/><text class="pin-label" x="18" y="125">MIS</text>
+      <circle class="pin-ss" cx="0" cy="150" r="7"/><text class="pin-label" x="18" y="155">SS</text>
+      <text class="pin-label muted" x="145" y="65">MOT：不接</text>
+      <text class="pin-label muted" x="145" y="95">RES：不接</text>
     </g>
 
-    <path class="wire-vcc" d="M42 146 C260 120, 520 120, 740 146"/>
-    <path class="wire-gnd" d="M42 188 C260 176, 520 176, 740 188"/>
-    <path class="wire-x" d="M42 230 C260 232, 520 232, 740 230"/>
-    <path class="wire-y" d="M42 272 C260 288, 520 288, 740 272"/>
+    <path class="wire-vcc" d="M42 142 C260 118, 520 118, 740 142"/>
+    <path class="wire-gnd" d="M42 172 C260 156, 520 156, 740 172"/>
+    <path class="wire-sclk" d="M42 202 C260 194, 520 194, 740 202"/>
+    <path class="wire-mosi" d="M42 232 C260 232, 520 232, 740 232"/>
+    <path class="wire-miso" d="M42 262 C260 270, 520 270, 740 262"/>
+    <path class="wire-ss" d="M42 292 C260 308, 520 308, 740 292"/>
 
-    <rect class="wasd-box" x="1110" y="62" width="520" height="250" rx="18"/>
-    <text class="controller-title" x="1370" y="94">固件映射</text>
-    <text class="controller-note" x="1370" y="122">X 轴：左=A，右=D；Y 轴：上=W，下=S</text>
-    <text class="controller-note" x="1370" y="150">支持斜向：左上=A+W，右下=D+S</text>
-    <text class="controller-note" x="1370" y="178">上电静置约 1 秒：32 个稳定样本自动校准中心</text>
-    <text class="controller-note" x="1370" y="204">按下阈值 ±110，释放阈值 ±70，带低通滤波和滞回</text>
-    <text class="controller-warning" x="1370" y="238">如果方向相反，先改 keymap.c 的轴方向逻辑，不要改到 5V。</text>
+    <rect class="sensor-box" x="1110" y="62" width="520" height="250" rx="18"/>
+    <text class="controller-title" x="1370" y="94">最小测试固件</text>
+    <text class="controller-note" x="1370" y="126">QMK 原生 PMW3360 驱动，默认 1600 CPI</text>
+    <text class="controller-note" x="1370" y="158">只输出光标 X/Y 移动，不配置鼠标按键或滚轮</text>
+    <text class="controller-note" x="1370" y="190">Ogen 丝印 UP 朝键盘顶部；若方向不对再调整旋转宏</text>
+    <text class="controller-warning" x="1370" y="232">MOT/RES 不接；VCC 绝对不要接到 5V。</text>
   </g>
 
   <rect class="wiring-legend-box" x="60" y="2090" width="1630" height="82" rx="14"/>
@@ -1877,6 +1883,6 @@
   <rect class="legend-diode" x="740" y="2108" width="46" height="24" rx="12"/>
   <rect class="legend-diode-band" x="776" y="2108" width="7" height="24"/>
   <text class="wiring-note" x="798" y="2126">黑色带环端接蓝色行线</text>
-  <text class="wiring-emphasis" x="90" y="2158">R4 改接 GP9；左侧 Joy-Con：VCC→3V3，GND→GND，X→GP28，Y→GP29，SW/BTN 不接。</text>
+  <text class="wiring-emphasis" x="90" y="2158">左侧 Ogen Lite：VCC→3V3，GND→GND，SCL→GP10，MOS→GP11，MIS→GP12，SS→GP13。</text>
   <text class="wiring-note" x="1210" y="2158">行列线交叉处绝缘，不直接相连。</text>
 </svg>

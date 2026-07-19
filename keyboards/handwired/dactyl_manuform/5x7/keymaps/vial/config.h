@@ -8,3 +8,12 @@
 // Physical Escape (left R2/C0) + Right Shift (right R3/C0).
 #define VIAL_UNLOCK_COMBO_ROWS { 2, 9 }
 #define VIAL_UNLOCK_COMBO_COLS { 0, 0 }
+
+// Ogen Lite V1.3 / PMW3360 on the left (USB master) half.
+#define POINTING_DEVICE_LEFT
+#define SPI_DRIVER SPID1
+#define SPI_SCK_PIN GP10
+#define SPI_MOSI_PIN GP11
+#define SPI_MISO_PIN GP12
+#define PMW33XX_CS_PIN GP13
+#define PMW33XX_CPI 1600U
