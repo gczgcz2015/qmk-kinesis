@@ -10,10 +10,11 @@
 #define VIAL_UNLOCK_COMBO_COLS { 0, 0 }
 
 // Ogen Lite V1.3 / PMW3360 on the left (USB master) half.
+#define SPLIT_POINTING_ENABLE
 #define POINTING_DEVICE_LEFT
-#define SPI_DRIVER SPID1
-#define SPI_SCK_PIN GP10
-#define SPI_MOSI_PIN GP11
-#define SPI_MISO_PIN GP12
-#define PMW33XX_CS_PIN GP13
+#define SPI_DRIVER SPID0
+#define SPI_SCK_PIN GP2
+#define SPI_MOSI_PIN GP3
+#define SPI_MISO_PIN GP4
+#define PMW33XX_CS_PIN GP5
 #define PMW33XX_CPI 1600U

@@ -36,7 +36,8 @@ KEYMAP_C = (
 OUTPUT = ROOT / "docs" / "wiring-layout.svg"
 
 ROW_PINS = ("GP14", "GP15", "GP26", "GP27", "GP9", "NO_PIN")
-COL_PINS = ("GP2", "GP3", "GP4", "GP5", "GP6", "GP7", "GP8")
+COL_PINS = ("NO_PIN", "NO_PIN", "NO_PIN", "NO_PIN", "GP6", "GP7", "GP8")
+ACTIVE_COLS = tuple(index for index, pin in enumerate(COL_PINS) if pin != "NO_PIN")
 
 KEY_W = 90
 KEY_H = 84
@@ -110,7 +111,7 @@ def trackball_layout_svg() -> str:
     <circle class="trackball-outer" cx="645" cy="750" r="64"/>
     <circle class="trackball-inner" cx="645" cy="750" r="46"/>
     <text class="trackball-title" x="645" y="842">左侧 Ogen Lite 轨迹球</text>
-    <text class="trackball-note" x="645" y="862">PMW3360 / GP10–GP13 / SPI1</text>
+    <text class="trackball-note" x="645" y="862">PMW3360 / GP2–GP5 / SPI0</text>
   </g>
   <g class="trackball-module" transform="rotate(-10 1160 780)">
     <rect class="disabled-thumb-body" x="1035" y="660" width="250" height="220" rx="34"/>
@@ -128,15 +129,15 @@ def trackball_wiring_svg() -> str:
 
     <rect class="controller-body" x="0" y="62" width="360" height="250" rx="18"/>
     <text class="controller-title" x="180" y="94">左 RP2040-Zero</text>
-    <text class="controller-note" x="180" y="118">SPI1 使用 GP10–GP13；不要接 5V</text>
+    <text class="controller-note" x="180" y="118">SPI0 使用 GP2–GP5；不要接 5V</text>
 
     <g class="pin-list" transform="translate(42 142)">
       <circle class="pin-vcc" cx="0" cy="0" r="7"/><text class="pin-label" x="18" y="5">3V3</text>
       <circle class="pin-gnd" cx="0" cy="30" r="7"/><text class="pin-label" x="18" y="35">GND</text>
-      <circle class="pin-sclk" cx="0" cy="60" r="7"/><text class="pin-label" x="18" y="65">GP10 / SCLK</text>
-      <circle class="pin-mosi" cx="0" cy="90" r="7"/><text class="pin-label" x="18" y="95">GP11 / MOSI</text>
-      <circle class="pin-miso" cx="0" cy="120" r="7"/><text class="pin-label" x="18" y="125">GP12 / MISO</text>
-      <circle class="pin-ss" cx="0" cy="150" r="7"/><text class="pin-label" x="18" y="155">GP13 / CS</text>
+      <circle class="pin-sclk" cx="0" cy="60" r="7"/><text class="pin-label" x="18" y="65">GP2 / SCLK</text>
+      <circle class="pin-mosi" cx="0" cy="90" r="7"/><text class="pin-label" x="18" y="95">GP3 / MOSI</text>
+      <circle class="pin-miso" cx="0" cy="120" r="7"/><text class="pin-label" x="18" y="125">GP4 / MISO</text>
+      <circle class="pin-ss" cx="0" cy="150" r="7"/><text class="pin-label" x="18" y="155">GP5 / CS</text>
     </g>
 
     <rect class="breakout-body" x="690" y="62" width="330" height="250" rx="18"/>
@@ -367,7 +368,7 @@ def wiring_overlay_svg(keys: list[Key], offset_y: int) -> str:
 
     for side in ("L", "R"):
         side_keys = [key for key in keys if key.side == side]
-        for col in range(7):
+        for col in ACTIVE_COLS:
             points = [
                 wiring_points(key, offset_y)[0] for key in side_keys if key.col == col
             ]
@@ -402,7 +403,7 @@ def wiring_overlay_svg(keys: list[Key], offset_y: int) -> str:
                 f'y="{label_y - 14:.1f}">{label}</text>'
             )
 
-    parts.extend(wiring_key_component_svg(key, offset_y) for key in keys)
+    parts.extend(wiring_key_component_svg(key, offset_y) for key in keys if key.col in ACTIVE_COLS)
     return "\n".join(parts)
 
 
@@ -748,8 +749,8 @@ def generate_svg(keys: list[Key], keycodes: dict[tuple[int, int], str]) -> str:
   <g transform="translate(60 965)">
     <text class="section" x="0" y="0">引脚总表</text>
     <text class="legend" x="0" y="29">行：R0=GP14　R1=GP15　R2=GP26　R3=GP27　R4=GP9　R5=NO_PIN（拇指区停用）</text>
-    <text class="legend" x="0" y="55">列：C0=GP2　C1=GP3　C2=GP4　C3=GP5　C4=GP6　C5=GP7　C6=GP8</text>
-    <text class="warning" x="0" y="86">COL2ROW：列 GPIO → 开关 → 二极管无环端 → 二极管带环端 → 行 GPIO；轨迹球使用 SPI1：GP10–GP13</text>
+    <text class="legend" x="0" y="55">列：C0–C3=NO_PIN（测试分支停用）　C4=GP6　C5=GP7　C6=GP8</text>
+    <text class="warning" x="0" y="86">轨迹球复用原列引脚：SPI0 GP2–GP5；必须把 C0–C3 列线从控制器断开。</text>
   </g>
 
   <g transform="translate(930 965)">
@@ -770,13 +771,13 @@ def generate_svg(keys: list[Key], keycodes: dict[tuple[int, int], str]) -> str:
 
   <rect class="wiring-legend-box" x="60" y="2090" width="1630" height="82" rx="14"/>
   <line class="legend-col-line" x1="90" y1="2121" x2="145" y2="2121"/>
-  <text class="wiring-note" x="158" y="2126">黄色：同一列 C0–C6 相连</text>
+  <text class="wiring-note" x="158" y="2126">黄色：当前仅 C4–C6 接入矩阵</text>
   <line class="legend-row-line" x1="400" y1="2121" x2="455" y2="2121"/>
   <text class="wiring-note" x="468" y="2126">蓝色：同一行 R0–R4 相连</text>
   <rect class="legend-diode" x="740" y="2108" width="46" height="24" rx="12"/>
   <rect class="legend-diode-band" x="776" y="2108" width="7" height="24"/>
   <text class="wiring-note" x="798" y="2126">黑色带环端接蓝色行线</text>
-  <text class="wiring-emphasis" x="90" y="2158">左侧 Ogen Lite：VCC→3V3，GND→GND，SCL→GP10，MOS→GP11，MIS→GP12，SS→GP13。</text>
+  <text class="wiring-emphasis" x="90" y="2158">左侧 Ogen Lite：VCC→3V3，GND→GND，SCL→GP2，MOS→GP3，MIS→GP4，SS→GP5。</text>
   <text class="wiring-note" x="1210" y="2158">行列线交叉处绝缘，不直接相连。</text>
 </svg>
 """

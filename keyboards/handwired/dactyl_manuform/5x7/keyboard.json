@@ -23,7 +23,7 @@
         "matrix": [0, 0]
     },
     "matrix_pins": {
-        "cols": ["GP2", "GP3", "GP4", "GP5", "GP6", "GP7", "GP8"],
+        "cols": ["NO_PIN", "NO_PIN", "NO_PIN", "NO_PIN", "GP6", "GP7", "GP8"],
         "rows": ["GP14", "GP15", "GP26", "GP27", "GP9", "NO_PIN"]
     },
     "split": {

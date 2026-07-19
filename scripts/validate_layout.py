@@ -164,6 +164,9 @@ def main() -> None:
     assert vial["lighting"] == "none"
     assert via["vendorId"] == keyboard["usb"]["vid"]
     assert via["productId"] == keyboard["usb"]["pid"]
+    assert keyboard["matrix_pins"]["cols"] == [
+        "NO_PIN", "NO_PIN", "NO_PIN", "NO_PIN", "GP6", "GP7", "GP8"
+    ], "C0-C3 must be disabled while GP2-GP5 are assigned to the trackball"
     matrix_order = [tuple(key["matrix"]) for key in layout]
 
     parsed_keymaps: dict[str, list[list[str]]] = {}
@@ -206,18 +209,30 @@ def main() -> None:
     assert unlock_coordinates == EXPECTED_UNLOCK_COORDINATES, (
         "Vial unlock combo must stay on the physical Escape and Right Shift keys"
     )
+    assert re.search(r"^#define\s+SPLIT_POINTING_ENABLE$", vial_config, re.MULTILINE), (
+        "split pointing must be enabled as a config.h preprocessor macro"
+    )
+    for macro, value in {
+        "SPI_DRIVER": "SPID0",
+        "SPI_SCK_PIN": "GP2",
+        "SPI_MOSI_PIN": "GP3",
+        "SPI_MISO_PIN": "GP4",
+        "PMW33XX_CS_PIN": "GP5",
+    }.items():
+        assert re.search(rf"^#define\s+{macro}\s+{value}$", vial_config, re.MULTILINE), (
+            f"{macro} must be {value} for the GP2-GP5 PMW3360 test wiring"
+        )
 
     vial_rules = VIAL_RULES.read_text(encoding="utf-8")
     assert re.search(r"^VIA_ENABLE\s*=\s*yes$", vial_rules, re.MULTILINE)
     assert re.search(r"^VIAL_ENABLE\s*=\s*yes$", vial_rules, re.MULTILINE)
     assert re.search(r"^POINTING_DEVICE_ENABLE\s*=\s*yes$", vial_rules, re.MULTILINE)
     assert re.search(r"^POINTING_DEVICE_DRIVER\s*=\s*pmw3360$", vial_rules, re.MULTILINE)
-    assert re.search(r"^SPLIT_POINTING_ENABLE\s*=\s*yes$", vial_rules, re.MULTILINE)
 
     print(
         "layout validation passed: 84 QMK matrix positions, "
-        "64 wired/VIA/Vial-visible keys, 20 unused and hidden, "
-        "4 synchronized layers"
+        "64 VIA/Vial-visible keys, C0-C3 disabled for PMW3360 SPI0, "
+        "20 unused and hidden positions, 4 synchronized layers"
     )
 
 
