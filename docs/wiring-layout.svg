@@ -2,7 +2,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1680" viewBox="0 0 1440 1680"
      role="img" aria-labelledby="title description">
   <title id="title">左手 29 键 Plum Twist 与 Joy-Con 焊接接线图</title>
-  <desc id="description">RP2040-Zero 单手 5 行 6 列 ROW2COL 矩阵，最后一行缺最右键；Plum Twist 板载二极管阴极朝列；Joy-Con X、Y 与按压接线。</desc>
+  <desc id="description">RP2040-Zero 单手 5 行 6 列 ROW2COL 矩阵，最后一行缺最右键；Plum Twist 贴片二极管需要焊接，焊接面条纹端朝左和中央开关孔；Joy-Con X、Y 与按压接线。</desc>
   <style>
     text { font-family: Inter, "SF Pro Text", "PingFang SC", "Microsoft YaHei", sans-serif; fill: #e9eef7; }
     .bg { fill: #151922; }
@@ -233,7 +233,7 @@
     <text class="key-pin" x="720" y="610">GP9 / GP6</text>
   </g>
   <rect class="warning-box" x="978" y="142" width="390" height="475" rx="18"/>
-  <text class="section" x="1008" y="180">Plum Twist 单键 PCB</text>
+  <text class="section" x="1008" y="180">Plum Twist D1 二极管</text>
   <text class="note" x="1008" y="204">视角：热插拔座/焊盘侧（实际焊接面）</text>
   <rect class="controller" x="1042" y="235" width="260" height="170" rx="54"/>
   <circle class="row-pad" cx="1082" cy="320" r="17"/>
@@ -242,14 +242,14 @@
   <text class="pad-letter" x="1262" y="325">C</text>
   <rect class="switch" x="1131" y="296" width="46" height="48" rx="7"/>
   <rect class="diode" x="1193" y="306" width="42" height="28" rx="14"/>
-  <rect class="diode-band" x="1225" y="306" width="7" height="28"/>
+  <rect class="diode-band" x="1196" y="306" width="7" height="28"/>
   <path class="flow" d="M1099 320 H1125 M1178 320 H1188 M1236 320 H1241"/>
-  <text class="flow-label" x="1172" y="372">R → 开关 → 板载二极管 → C</text>
+  <text class="flow-label" x="1172" y="372">电气：R → 开关 → A | K → C</text>
   <text class="warning" x="1008" y="438">QMK 必须设置：ROW2COL</text>
-  <text class="warning" x="1008" y="466">二极管阴极/条纹端固定朝 Column</text>
-  <text class="note" x="1008" y="498">不需要外接 1N4148。</text>
-  <text class="note" x="1008" y="524">每块 PCB：R 焊盘接同行蓝线；</text>
-  <text class="note" x="1008" y="547">C 焊盘接同列黄线。</text>
+  <text class="warning" x="1008" y="466">焊接面：条纹 K 朝左、朝中央开关孔</text>
+  <text class="note" x="1008" y="498">每块 PCB 都需要焊 1 颗贴片二极管。</text>
+  <text class="note" x="1008" y="524">R 焊盘接同行蓝线；C 焊盘接同列黄线。</text>
+  <text class="note" x="1008" y="547">官方 v0.2：SOD-323 / 1N4148W。</text>
   <text class="note" x="1008" y="576">+ / − / I / O（RGB）全部留空。</text>
 
   <line x1="58" y1="650" x2="1382" y2="650" stroke="#536075" stroke-width="2"/>
@@ -291,7 +291,7 @@
     <text class="pad-letter" x="200" y="825">C</text>
     <rect class="switch" x="154" y="807" width="26" height="28" rx="5"/>
     <path class="internal" d="M142 821 H154 M180 821 H192"/>
-    <rect class="band" x="187" y="812" width="5" height="18"/>
+    <rect class="band" x="155" y="812" width="5" height="18"/>
     <text class="pcb-index" x="167" y="851">R0C0</text>
   </g>
   <g class="pcb">
@@ -302,7 +302,7 @@
     <text class="pad-letter" x="346" y="825">C</text>
     <rect class="switch" x="300" y="807" width="26" height="28" rx="5"/>
     <path class="internal" d="M288 821 H300 M326 821 H338"/>
-    <rect class="band" x="333" y="812" width="5" height="18"/>
+    <rect class="band" x="301" y="812" width="5" height="18"/>
     <text class="pcb-index" x="313" y="851">R0C1</text>
   </g>
   <g class="pcb">
@@ -313,7 +313,7 @@
     <text class="pad-letter" x="492" y="825">C</text>
     <rect class="switch" x="446" y="807" width="26" height="28" rx="5"/>
     <path class="internal" d="M434 821 H446 M472 821 H484"/>
-    <rect class="band" x="479" y="812" width="5" height="18"/>
+    <rect class="band" x="447" y="812" width="5" height="18"/>
     <text class="pcb-index" x="459" y="851">R0C2</text>
   </g>
   <g class="pcb">
@@ -324,7 +324,7 @@
     <text class="pad-letter" x="638" y="825">C</text>
     <rect class="switch" x="592" y="807" width="26" height="28" rx="5"/>
     <path class="internal" d="M580 821 H592 M618 821 H630"/>
-    <rect class="band" x="625" y="812" width="5" height="18"/>
+    <rect class="band" x="593" y="812" width="5" height="18"/>
     <text class="pcb-index" x="605" y="851">R0C3</text>
   </g>
   <g class="pcb">
@@ -335,7 +335,7 @@
     <text class="pad-letter" x="784" y="825">C</text>
     <rect class="switch" x="738" y="807" width="26" height="28" rx="5"/>
     <path class="internal" d="M726 821 H738 M764 821 H776"/>
-    <rect class="band" x="771" y="812" width="5" height="18"/>
+    <rect class="band" x="739" y="812" width="5" height="18"/>
     <text class="pcb-index" x="751" y="851">R0C4</text>
   </g>
   <g class="pcb">
@@ -346,7 +346,7 @@
     <text class="pad-letter" x="930" y="825">C</text>
     <rect class="switch" x="884" y="807" width="26" height="28" rx="5"/>
     <path class="internal" d="M872 821 H884 M910 821 H922"/>
-    <rect class="band" x="917" y="812" width="5" height="18"/>
+    <rect class="band" x="885" y="812" width="5" height="18"/>
     <text class="pcb-index" x="897" y="851">R0C5</text>
   </g>
   <g class="pcb">
@@ -357,7 +357,7 @@
     <text class="pad-letter" x="200" y="937">C</text>
     <rect class="switch" x="154" y="919" width="26" height="28" rx="5"/>
     <path class="internal" d="M142 933 H154 M180 933 H192"/>
-    <rect class="band" x="187" y="924" width="5" height="18"/>
+    <rect class="band" x="155" y="924" width="5" height="18"/>
     <text class="pcb-index" x="167" y="963">R1C0</text>
   </g>
   <g class="pcb">
@@ -368,7 +368,7 @@
     <text class="pad-letter" x="346" y="937">C</text>
     <rect class="switch" x="300" y="919" width="26" height="28" rx="5"/>
     <path class="internal" d="M288 933 H300 M326 933 H338"/>
-    <rect class="band" x="333" y="924" width="5" height="18"/>
+    <rect class="band" x="301" y="924" width="5" height="18"/>
     <text class="pcb-index" x="313" y="963">R1C1</text>
   </g>
   <g class="pcb">
@@ -379,7 +379,7 @@
     <text class="pad-letter" x="492" y="937">C</text>
     <rect class="switch" x="446" y="919" width="26" height="28" rx="5"/>
     <path class="internal" d="M434 933 H446 M472 933 H484"/>
-    <rect class="band" x="479" y="924" width="5" height="18"/>
+    <rect class="band" x="447" y="924" width="5" height="18"/>
     <text class="pcb-index" x="459" y="963">R1C2</text>
   </g>
   <g class="pcb">
@@ -390,7 +390,7 @@
     <text class="pad-letter" x="638" y="937">C</text>
     <rect class="switch" x="592" y="919" width="26" height="28" rx="5"/>
     <path class="internal" d="M580 933 H592 M618 933 H630"/>
-    <rect class="band" x="625" y="924" width="5" height="18"/>
+    <rect class="band" x="593" y="924" width="5" height="18"/>
     <text class="pcb-index" x="605" y="963">R1C3</text>
   </g>
   <g class="pcb">
@@ -401,7 +401,7 @@
     <text class="pad-letter" x="784" y="937">C</text>
     <rect class="switch" x="738" y="919" width="26" height="28" rx="5"/>
     <path class="internal" d="M726 933 H738 M764 933 H776"/>
-    <rect class="band" x="771" y="924" width="5" height="18"/>
+    <rect class="band" x="739" y="924" width="5" height="18"/>
     <text class="pcb-index" x="751" y="963">R1C4</text>
   </g>
   <g class="pcb">
@@ -412,7 +412,7 @@
     <text class="pad-letter" x="930" y="937">C</text>
     <rect class="switch" x="884" y="919" width="26" height="28" rx="5"/>
     <path class="internal" d="M872 933 H884 M910 933 H922"/>
-    <rect class="band" x="917" y="924" width="5" height="18"/>
+    <rect class="band" x="885" y="924" width="5" height="18"/>
     <text class="pcb-index" x="897" y="963">R1C5</text>
   </g>
   <g class="pcb">
@@ -423,7 +423,7 @@
     <text class="pad-letter" x="200" y="1049">C</text>
     <rect class="switch" x="154" y="1031" width="26" height="28" rx="5"/>
     <path class="internal" d="M142 1045 H154 M180 1045 H192"/>
-    <rect class="band" x="187" y="1036" width="5" height="18"/>
+    <rect class="band" x="155" y="1036" width="5" height="18"/>
     <text class="pcb-index" x="167" y="1075">R2C0</text>
   </g>
   <g class="pcb">
@@ -434,7 +434,7 @@
     <text class="pad-letter" x="346" y="1049">C</text>
     <rect class="switch" x="300" y="1031" width="26" height="28" rx="5"/>
     <path class="internal" d="M288 1045 H300 M326 1045 H338"/>
-    <rect class="band" x="333" y="1036" width="5" height="18"/>
+    <rect class="band" x="301" y="1036" width="5" height="18"/>
     <text class="pcb-index" x="313" y="1075">R2C1</text>
   </g>
   <g class="pcb">
@@ -445,7 +445,7 @@
     <text class="pad-letter" x="492" y="1049">C</text>
     <rect class="switch" x="446" y="1031" width="26" height="28" rx="5"/>
     <path class="internal" d="M434 1045 H446 M472 1045 H484"/>
-    <rect class="band" x="479" y="1036" width="5" height="18"/>
+    <rect class="band" x="447" y="1036" width="5" height="18"/>
     <text class="pcb-index" x="459" y="1075">R2C2</text>
   </g>
   <g class="pcb">
@@ -456,7 +456,7 @@
     <text class="pad-letter" x="638" y="1049">C</text>
     <rect class="switch" x="592" y="1031" width="26" height="28" rx="5"/>
     <path class="internal" d="M580 1045 H592 M618 1045 H630"/>
-    <rect class="band" x="625" y="1036" width="5" height="18"/>
+    <rect class="band" x="593" y="1036" width="5" height="18"/>
     <text class="pcb-index" x="605" y="1075">R2C3</text>
   </g>
   <g class="pcb">
@@ -467,7 +467,7 @@
     <text class="pad-letter" x="784" y="1049">C</text>
     <rect class="switch" x="738" y="1031" width="26" height="28" rx="5"/>
     <path class="internal" d="M726 1045 H738 M764 1045 H776"/>
-    <rect class="band" x="771" y="1036" width="5" height="18"/>
+    <rect class="band" x="739" y="1036" width="5" height="18"/>
     <text class="pcb-index" x="751" y="1075">R2C4</text>
   </g>
   <g class="pcb">
@@ -478,7 +478,7 @@
     <text class="pad-letter" x="930" y="1049">C</text>
     <rect class="switch" x="884" y="1031" width="26" height="28" rx="5"/>
     <path class="internal" d="M872 1045 H884 M910 1045 H922"/>
-    <rect class="band" x="917" y="1036" width="5" height="18"/>
+    <rect class="band" x="885" y="1036" width="5" height="18"/>
     <text class="pcb-index" x="897" y="1075">R2C5</text>
   </g>
   <g class="pcb">
@@ -489,7 +489,7 @@
     <text class="pad-letter" x="200" y="1161">C</text>
     <rect class="switch" x="154" y="1143" width="26" height="28" rx="5"/>
     <path class="internal" d="M142 1157 H154 M180 1157 H192"/>
-    <rect class="band" x="187" y="1148" width="5" height="18"/>
+    <rect class="band" x="155" y="1148" width="5" height="18"/>
     <text class="pcb-index" x="167" y="1187">R3C0</text>
   </g>
   <g class="pcb">
@@ -500,7 +500,7 @@
     <text class="pad-letter" x="346" y="1161">C</text>
     <rect class="switch" x="300" y="1143" width="26" height="28" rx="5"/>
     <path class="internal" d="M288 1157 H300 M326 1157 H338"/>
-    <rect class="band" x="333" y="1148" width="5" height="18"/>
+    <rect class="band" x="301" y="1148" width="5" height="18"/>
     <text class="pcb-index" x="313" y="1187">R3C1</text>
   </g>
   <g class="pcb">
@@ -511,7 +511,7 @@
     <text class="pad-letter" x="492" y="1161">C</text>
     <rect class="switch" x="446" y="1143" width="26" height="28" rx="5"/>
     <path class="internal" d="M434 1157 H446 M472 1157 H484"/>
-    <rect class="band" x="479" y="1148" width="5" height="18"/>
+    <rect class="band" x="447" y="1148" width="5" height="18"/>
     <text class="pcb-index" x="459" y="1187">R3C2</text>
   </g>
   <g class="pcb">
@@ -522,7 +522,7 @@
     <text class="pad-letter" x="638" y="1161">C</text>
     <rect class="switch" x="592" y="1143" width="26" height="28" rx="5"/>
     <path class="internal" d="M580 1157 H592 M618 1157 H630"/>
-    <rect class="band" x="625" y="1148" width="5" height="18"/>
+    <rect class="band" x="593" y="1148" width="5" height="18"/>
     <text class="pcb-index" x="605" y="1187">R3C3</text>
   </g>
   <g class="pcb">
@@ -533,7 +533,7 @@
     <text class="pad-letter" x="784" y="1161">C</text>
     <rect class="switch" x="738" y="1143" width="26" height="28" rx="5"/>
     <path class="internal" d="M726 1157 H738 M764 1157 H776"/>
-    <rect class="band" x="771" y="1148" width="5" height="18"/>
+    <rect class="band" x="739" y="1148" width="5" height="18"/>
     <text class="pcb-index" x="751" y="1187">R3C4</text>
   </g>
   <g class="pcb">
@@ -544,7 +544,7 @@
     <text class="pad-letter" x="930" y="1161">C</text>
     <rect class="switch" x="884" y="1143" width="26" height="28" rx="5"/>
     <path class="internal" d="M872 1157 H884 M910 1157 H922"/>
-    <rect class="band" x="917" y="1148" width="5" height="18"/>
+    <rect class="band" x="885" y="1148" width="5" height="18"/>
     <text class="pcb-index" x="897" y="1187">R3C5</text>
   </g>
   <g class="pcb">
@@ -555,7 +555,7 @@
     <text class="pad-letter" x="200" y="1273">C</text>
     <rect class="switch" x="154" y="1255" width="26" height="28" rx="5"/>
     <path class="internal" d="M142 1269 H154 M180 1269 H192"/>
-    <rect class="band" x="187" y="1260" width="5" height="18"/>
+    <rect class="band" x="155" y="1260" width="5" height="18"/>
     <text class="pcb-index" x="167" y="1299">R4C0</text>
   </g>
   <g class="pcb">
@@ -566,7 +566,7 @@
     <text class="pad-letter" x="346" y="1273">C</text>
     <rect class="switch" x="300" y="1255" width="26" height="28" rx="5"/>
     <path class="internal" d="M288 1269 H300 M326 1269 H338"/>
-    <rect class="band" x="333" y="1260" width="5" height="18"/>
+    <rect class="band" x="301" y="1260" width="5" height="18"/>
     <text class="pcb-index" x="313" y="1299">R4C1</text>
   </g>
   <g class="pcb">
@@ -577,7 +577,7 @@
     <text class="pad-letter" x="492" y="1273">C</text>
     <rect class="switch" x="446" y="1255" width="26" height="28" rx="5"/>
     <path class="internal" d="M434 1269 H446 M472 1269 H484"/>
-    <rect class="band" x="479" y="1260" width="5" height="18"/>
+    <rect class="band" x="447" y="1260" width="5" height="18"/>
     <text class="pcb-index" x="459" y="1299">R4C2</text>
   </g>
   <g class="pcb">
@@ -588,7 +588,7 @@
     <text class="pad-letter" x="638" y="1273">C</text>
     <rect class="switch" x="592" y="1255" width="26" height="28" rx="5"/>
     <path class="internal" d="M580 1269 H592 M618 1269 H630"/>
-    <rect class="band" x="625" y="1260" width="5" height="18"/>
+    <rect class="band" x="593" y="1260" width="5" height="18"/>
     <text class="pcb-index" x="605" y="1299">R4C3</text>
   </g>
   <g class="pcb">
@@ -599,7 +599,7 @@
     <text class="pad-letter" x="784" y="1273">C</text>
     <rect class="switch" x="738" y="1255" width="26" height="28" rx="5"/>
     <path class="internal" d="M726 1269 H738 M764 1269 H776"/>
-    <rect class="band" x="771" y="1260" width="5" height="18"/>
+    <rect class="band" x="739" y="1260" width="5" height="18"/>
     <text class="pcb-index" x="751" y="1299">R4C4</text>
   </g>
 

@@ -143,7 +143,7 @@ def wiring_board_svg(key: Key) -> str:
     <text class="pad-letter" x="{x + 85}" y="{y + 40}">C</text>
     <rect class="switch" x="{x + 39}" y="{y + 22}" width="26" height="28" rx="5"/>
     <path class="internal" d="M{x + 27} {y + 36} H{x + 39} M{x + 65} {y + 36} H{x + 77}"/>
-    <rect class="band" x="{x + 72}" y="{y + 27}" width="5" height="18"/>
+    <rect class="band" x="{x + 40}" y="{y + 27}" width="5" height="18"/>
     <text class="pcb-index" x="{x + 52}" y="{y + 66}">R{key.qmk_row}C{key.col}</text>
   </g>"""
 
@@ -182,7 +182,7 @@ def generate_svg(keys: list[Key], keycodes: dict[tuple[int, int], str]) -> str:
 <svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1680" viewBox="0 0 1440 1680"
      role="img" aria-labelledby="title description">
   <title id="title">左手 29 键 Plum Twist 与 Joy-Con 焊接接线图</title>
-  <desc id="description">RP2040-Zero 单手 5 行 6 列 ROW2COL 矩阵，最后一行缺最右键；Plum Twist 板载二极管阴极朝列；Joy-Con X、Y 与按压接线。</desc>
+  <desc id="description">RP2040-Zero 单手 5 行 6 列 ROW2COL 矩阵，最后一行缺最右键；Plum Twist 贴片二极管需要焊接，焊接面条纹端朝左和中央开关孔；Joy-Con X、Y 与按压接线。</desc>
   <style>
     text {{ font-family: Inter, "SF Pro Text", "PingFang SC", "Microsoft YaHei", sans-serif; fill: #e9eef7; }}
     .bg {{ fill: #151922; }}
@@ -240,7 +240,7 @@ def generate_svg(keys: list[Key], keycodes: dict[tuple[int, int], str]) -> str:
   <text class="section" x="58" y="128">第一层键位与 GPIO</text>
 {key_markup}
   <rect class="warning-box" x="978" y="142" width="390" height="475" rx="18"/>
-  <text class="section" x="1008" y="180">Plum Twist 单键 PCB</text>
+  <text class="section" x="1008" y="180">Plum Twist D1 二极管</text>
   <text class="note" x="1008" y="204">视角：热插拔座/焊盘侧（实际焊接面）</text>
   <rect class="controller" x="1042" y="235" width="260" height="170" rx="54"/>
   <circle class="row-pad" cx="1082" cy="320" r="17"/>
@@ -249,14 +249,14 @@ def generate_svg(keys: list[Key], keycodes: dict[tuple[int, int], str]) -> str:
   <text class="pad-letter" x="1262" y="325">C</text>
   <rect class="switch" x="1131" y="296" width="46" height="48" rx="7"/>
   <rect class="diode" x="1193" y="306" width="42" height="28" rx="14"/>
-  <rect class="diode-band" x="1225" y="306" width="7" height="28"/>
+  <rect class="diode-band" x="1196" y="306" width="7" height="28"/>
   <path class="flow" d="M1099 320 H1125 M1178 320 H1188 M1236 320 H1241"/>
-  <text class="flow-label" x="1172" y="372">R → 开关 → 板载二极管 → C</text>
+  <text class="flow-label" x="1172" y="372">电气：R → 开关 → A | K → C</text>
   <text class="warning" x="1008" y="438">QMK 必须设置：ROW2COL</text>
-  <text class="warning" x="1008" y="466">二极管阴极/条纹端固定朝 Column</text>
-  <text class="note" x="1008" y="498">不需要外接 1N4148。</text>
-  <text class="note" x="1008" y="524">每块 PCB：R 焊盘接同行蓝线；</text>
-  <text class="note" x="1008" y="547">C 焊盘接同列黄线。</text>
+  <text class="warning" x="1008" y="466">焊接面：条纹 K 朝左、朝中央开关孔</text>
+  <text class="note" x="1008" y="498">每块 PCB 都需要焊 1 颗贴片二极管。</text>
+  <text class="note" x="1008" y="524">R 焊盘接同行蓝线；C 焊盘接同列黄线。</text>
+  <text class="note" x="1008" y="547">官方 v0.2：SOD-323 / 1N4148W。</text>
   <text class="note" x="1008" y="576">+ / − / I / O（RGB）全部留空。</text>
 
   <line x1="58" y1="650" x2="1382" y2="650" stroke="#536075" stroke-width="2"/>
