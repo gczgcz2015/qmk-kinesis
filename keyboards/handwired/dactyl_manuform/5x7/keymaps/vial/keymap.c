@@ -4,10 +4,6 @@
 #include QMK_KEYBOARD_H
 #include "analog.h"
 
-#ifdef SPLIT_KEYBOARD
-#    include "split_util.h"
-#endif
-
 enum layer_names {
     _BASE,
     _KEYPAD,
@@ -16,120 +12,55 @@ enum layer_names {
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-    [_BASE] = LAYOUT_5x7(
-        // Left key well: 7 / 7 / 7 / 6 / 5 visible keys.
-        KC_EQL,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,    TG(_KEYPAD),
-        KC_TAB,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,    MO(_FN),
-        KC_ESC,  KC_A,    KC_S,    KC_D,    KC_F,    KC_G,    MO(_NAV_MEDIA),
-        KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,    XXXXXXX,
-        MO(_NAV_MEDIA), KC_GRV, KC_CAPS, KC_LEFT, KC_RGHT, XXXXXXX, XXXXXXX,
-
-        // Left thumb row is disabled on the Joy-Con branch.
-        XXXXXXX,
-        XXXXXXX, XXXXXXX,
-        XXXXXXX, XXXXXXX,
-        XXXXXXX, XXXXXXX,
-
-        // Right key well: mirrored, with a three-key inner function column.
-        TG(_KEYPAD), KC_6, KC_7,    KC_8,    KC_9,    KC_0,    KC_MINS,
-        MO(_FN), KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSLS,
-        MO(_NAV_MEDIA), KC_H, KC_J, KC_K,    KC_L,    KC_SCLN, KC_QUOT,
-        XXXXXXX, KC_N,    KC_M,    KC_COMM, KC_DOT,  KC_SLSH, KC_RSFT,
-        XXXXXXX, XXXXXXX, KC_UP,   KC_DOWN, KC_LBRC, KC_RBRC, MO(_NAV_MEDIA),
-
-        // Right thumb row is disabled on the Joy-Con branch.
-        XXXXXXX,
-        XXXXXXX, XXXXXXX,
-        XXXXXXX, XXXXXXX,
-        XXXXXXX, XXXXXXX
+    [_BASE] = LAYOUT_5x6(
+        KC_EQL,  KC_1,    KC_2,    KC_3,    KC_4,    KC_5,
+        KC_TAB,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,
+        KC_ESC,  KC_A,    KC_S,    KC_D,    KC_F,    KC_G,
+        KC_LSFT, KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,
+        MO(_NAV_MEDIA), KC_GRV, KC_CAPS, KC_LEFT, KC_RGHT
     ),
 
-    [_KEYPAD] = LAYOUT_5x7(
-        _______, _______, _______, _______, _______, _______, _______,
-        _______, _______, _______, _______, _______, _______, _______,
-        _______, _______, _______, _______, _______, _______, _______,
-        _______, _______, _______, _______, _______, _______, XXXXXXX,
-        _______, _______, _______, _______, _______, XXXXXXX, XXXXXXX,
-
-        XXXXXXX,
-        XXXXXXX, XXXXXXX,
-        XXXXXXX, XXXXXXX,
-        XXXXXXX, XXXXXXX,
-
-        _______, _______, _______, _______, _______, _______, _______,
-        _______, KC_P7,   KC_P8,   KC_P9,   KC_PMNS, KC_PSLS, _______,
-        _______, KC_P4,   KC_P5,   KC_P6,   KC_PPLS, KC_PAST, _______,
-        XXXXXXX, KC_P1,   KC_P2,   KC_P3,   KC_PENT, KC_PDOT, _______,
-        XXXXXXX, XXXXXXX, _______, _______, KC_P0,   _______, _______,
-
-        XXXXXXX,
-        XXXXXXX, XXXXXXX,
-        XXXXXXX, XXXXXXX,
-        XXXXXXX, XXXXXXX
+    [_KEYPAD] = LAYOUT_5x6(
+        _______, _______, _______, _______, _______, _______,
+        _______, _______, _______, _______, _______, _______,
+        _______, _______, _______, _______, _______, _______,
+        _______, _______, _______, _______, _______, _______,
+        _______, _______, _______, _______, _______
     ),
 
-    [_FN] = LAYOUT_5x7(
-        KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,   _______,
-        _______, _______, _______, _______, _______, _______, _______,
-        _______, _______, _______, _______, _______, _______, _______,
-        _______, _______, _______, _______, _______, _______, XXXXXXX,
-        _______, _______, _______, _______, _______, XXXXXXX, XXXXXXX,
-
-        XXXXXXX,
-        XXXXXXX, XXXXXXX,
-        XXXXXXX, XXXXXXX,
-        XXXXXXX, XXXXXXX,
-
-        _______, KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,  KC_F12,
-        _______, _______, _______, _______, _______, _______, _______,
-        _______, _______, _______, _______, _______, _______, _______,
-        XXXXXXX, _______, _______, _______, _______, _______, _______,
-        XXXXXXX, XXXXXXX, KC_VOLU, KC_VOLD, KC_MUTE, _______, _______,
-
-        XXXXXXX,
-        XXXXXXX, XXXXXXX,
-        XXXXXXX, XXXXXXX,
-        XXXXXXX, XXXXXXX
+    [_FN] = LAYOUT_5x6(
+        KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,   KC_F6,
+        _______, _______, _______, _______, _______, _______,
+        _______, _______, _______, _______, _______, _______,
+        _______, _______, _______, _______, _______, _______,
+        _______, _______, _______, _______, _______
     ),
 
-    [_NAV_MEDIA] = LAYOUT_5x7(
-        _______, _______, _______, _______, _______, _______, _______,
-        _______, _______, KC_HOME, KC_UP,   KC_END,  KC_PGUP, _______,
-        _______, _______, KC_LEFT, KC_DOWN, KC_RGHT, KC_PGDN, _______,
-        _______, _______, _______, _______, _______, _______, XXXXXXX,
-        _______, _______, _______, _______, _______, XXXXXXX, XXXXXXX,
-
-        XXXXXXX,
-        XXXXXXX, XXXXXXX,
-        XXXXXXX, XXXXXXX,
-        XXXXXXX, XXXXXXX,
-
-        _______, _______, _______, _______, _______, _______, _______,
-        _______, KC_MPRV, KC_MPLY, KC_MNXT, KC_VOLU, _______, _______,
-        _______, KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT, KC_VOLD, _______,
-        XXXXXXX, _______, _______, _______, KC_MUTE, _______, _______,
-        XXXXXXX, XXXXXXX, _______, _______, _______, _______, _______,
-
-        XXXXXXX,
-        XXXXXXX, XXXXXXX,
-        XXXXXXX, XXXXXXX,
-        XXXXXXX, XXXXXXX
+    [_NAV_MEDIA] = LAYOUT_5x6(
+        _______, _______, _______, _______, _______, _______,
+        _______, _______, KC_HOME, KC_UP,   KC_END,  KC_PGUP,
+        _______, _______, KC_LEFT, KC_DOWN, KC_RGHT, KC_PGDN,
+        _______, _______, _______, _______, _______, _______,
+        _______, _______, _______, _______, _______
     )
 };
 
-enum joycon_wasd_index {
+enum joycon_input_index {
     JOYCON_LEFT,
     JOYCON_RIGHT,
     JOYCON_UP,
     JOYCON_DOWN,
+    JOYCON_PRESS,
 };
 
 #define JOYCON_X_PIN GP28
 #define JOYCON_Y_PIN GP29
+#define JOYCON_SW_PIN GP8
 #define JOYCON_ADC_DEFAULT_CENTER 512
 #define JOYCON_PRESS_DELTA 110
 #define JOYCON_RELEASE_DELTA 70
 #define JOYCON_POLL_INTERVAL_MS 5
+#define JOYCON_SW_DEBOUNCE_MS 10
 #define JOYCON_CALIBRATION_DELAY_MS 250
 #define JOYCON_CALIBRATION_SAMPLES 32
 #define JOYCON_CALIBRATION_MAX_SPAN 24
@@ -137,8 +68,11 @@ enum joycon_wasd_index {
 #define JOYCON_CALIBRATION_CENTER_MAX 768
 #define JOYCON_FILTER_DIVISOR 2
 
-static bool     joycon_wasd_pressed[4];
+static bool     joycon_pressed[5];
 static uint16_t joycon_last_poll;
+static bool     joycon_sw_raw_pressed;
+static bool     joycon_sw_debounced_pressed;
+static uint16_t joycon_sw_timer;
 static bool     joycon_calibration_timer_started;
 static uint16_t joycon_calibration_timer;
 static bool     joycon_calibrated;
@@ -155,11 +89,11 @@ static int16_t  joycon_x_filtered = JOYCON_ADC_DEFAULT_CENTER;
 static int16_t  joycon_y_filtered = JOYCON_ADC_DEFAULT_CENTER;
 
 static void joycon_set_key(uint8_t index, uint16_t keycode, bool pressed) {
-    if (pressed == joycon_wasd_pressed[index]) {
+    if (pressed == joycon_pressed[index]) {
         return;
     }
 
-    joycon_wasd_pressed[index] = pressed;
+    joycon_pressed[index] = pressed;
     if (pressed) {
         register_code16(keycode);
     } else {
@@ -177,11 +111,26 @@ static bool joycon_axis_positive(int16_t delta, bool currently_pressed) {
     return delta > threshold;
 }
 
-static void joycon_release_all(void) {
+static void joycon_release_directions(void) {
     joycon_set_key(JOYCON_LEFT, KC_A, false);
     joycon_set_key(JOYCON_RIGHT, KC_D, false);
     joycon_set_key(JOYCON_UP, KC_W, false);
     joycon_set_key(JOYCON_DOWN, KC_S, false);
+}
+
+static void joycon_update_button(void) {
+    const bool pressed = !gpio_read_pin(JOYCON_SW_PIN);
+    if (pressed != joycon_sw_raw_pressed) {
+        joycon_sw_raw_pressed = pressed;
+        joycon_sw_timer       = timer_read();
+        return;
+    }
+
+    if (pressed != joycon_sw_debounced_pressed &&
+        timer_elapsed(joycon_sw_timer) >= JOYCON_SW_DEBOUNCE_MS) {
+        joycon_sw_debounced_pressed = pressed;
+        joycon_set_key(JOYCON_PRESS, KC_SPC, pressed);
+    }
 }
 
 static void joycon_reset_calibration_samples(void) {
@@ -241,14 +190,11 @@ static int16_t joycon_filter_sample(int16_t filtered, int16_t raw) {
     return filtered + (raw - filtered) / JOYCON_FILTER_DIVISOR;
 }
 
-void matrix_scan_user(void) {
-#ifdef SPLIT_KEYBOARD
-    if (!is_keyboard_master()) {
-        joycon_release_all();
-        return;
-    }
-#endif
+void keyboard_post_init_user(void) {
+    gpio_set_pin_input_high(JOYCON_SW_PIN);
+}
 
+void matrix_scan_user(void) {
     if (!joycon_calibration_timer_started) {
         joycon_calibration_timer         = timer_read();
         joycon_calibration_timer_started = true;
@@ -259,9 +205,10 @@ void matrix_scan_user(void) {
         return;
     }
     joycon_last_poll = timer_read();
+    joycon_update_button();
 
     if (timer_elapsed(joycon_calibration_timer) < JOYCON_CALIBRATION_DELAY_MS) {
-        joycon_release_all();
+        joycon_release_directions();
         return;
     }
 
@@ -270,7 +217,7 @@ void matrix_scan_user(void) {
 
     if (!joycon_calibrated) {
         joycon_add_calibration_sample(x_raw, y_raw);
-        joycon_release_all();
+        joycon_release_directions();
         return;
     }
 
@@ -283,21 +230,21 @@ void matrix_scan_user(void) {
     joycon_set_key(
         JOYCON_LEFT,
         KC_A,
-        joycon_axis_negative(x_delta, joycon_wasd_pressed[JOYCON_LEFT])
+        joycon_axis_negative(x_delta, joycon_pressed[JOYCON_LEFT])
     );
     joycon_set_key(
         JOYCON_RIGHT,
         KC_D,
-        joycon_axis_positive(x_delta, joycon_wasd_pressed[JOYCON_RIGHT])
+        joycon_axis_positive(x_delta, joycon_pressed[JOYCON_RIGHT])
     );
     joycon_set_key(
         JOYCON_UP,
         KC_W,
-        joycon_axis_negative(y_delta, joycon_wasd_pressed[JOYCON_UP])
+        joycon_axis_negative(y_delta, joycon_pressed[JOYCON_UP])
     );
     joycon_set_key(
         JOYCON_DOWN,
         KC_S,
-        joycon_axis_positive(y_delta, joycon_wasd_pressed[JOYCON_DOWN])
+        joycon_axis_positive(y_delta, joycon_pressed[JOYCON_DOWN])
     );
 }

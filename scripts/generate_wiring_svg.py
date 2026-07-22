@@ -1,46 +1,30 @@
 #!/usr/bin/env python3
-"""Generate the per-key matrix/GPIO wiring diagram."""
+"""Generate the standalone left-hand Plum Twist wiring diagram."""
 
 from __future__ import annotations
 
 import html
 import json
-import math
 import re
 from dataclasses import dataclass
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-VIAL_JSON = (
-    ROOT
-    / "keyboards"
-    / "handwired"
-    / "dactyl_manuform"
-    / "5x7"
-    / "keymaps"
-    / "vial"
-    / "vial.json"
-)
-KEYBOARD_JSON = ROOT / "keyboards" / "handwired" / "dactyl_manuform" / "5x7" / "keyboard.json"
-KEYMAP_C = (
-    ROOT
-    / "keyboards"
-    / "handwired"
-    / "dactyl_manuform"
-    / "5x7"
-    / "keymaps"
-    / "vial"
-    / "keymap.c"
-)
-OUTPUT = ROOT / "docs" / "wiring-layout.svg"
+KEYBOARD_DIR = ROOT / "keyboards/handwired/dactyl_manuform/5x7"
+VIAL_JSON = KEYBOARD_DIR / "keymaps/vial/vial.json"
+KEYBOARD_JSON = KEYBOARD_DIR / "keyboard.json"
+KEYMAP_C = KEYBOARD_DIR / "keymaps/vial/keymap.c"
+OUTPUT = ROOT / "docs/wiring-layout.svg"
 
-ROW_PINS = ("GP14", "GP15", "GP26", "GP27", "GP9", "NO_PIN")
-COL_PINS = ("GP2", "GP3", "GP4", "GP5", "GP6", "GP7", "GP8")
+ROW_PINS = ("GP14", "GP15", "GP26", "GP27", "GP9")
+COL_PINS = ("GP2", "GP3", "GP4", "GP5", "GP6", "GP7")
 
-KEY_W = 90
+KEY_W = 132
 KEY_H = 84
-PITCH = 96
+KEY_GAP = 14
+KEY_X = 70
+KEY_Y = 148
 
 
 @dataclass(frozen=True)
@@ -49,119 +33,15 @@ class Key:
     col: int
     x: int
     y: int
-    height: int = KEY_H
-    rotation: int = 0
-    pivot_x: int = 0
-    pivot_y: int = 0
-
-    @property
-    def side(self) -> str:
-        return "L" if self.qmk_row < 6 else "R"
-
-    @property
-    def local_row(self) -> int:
-        return self.qmk_row if self.qmk_row < 6 else self.qmk_row - 6
 
 
 def main_keys() -> list[Key]:
-    keys: list[Key] = []
-    y_by_row = (100, 190, 280, 370, 460)
-
-    left_cols = {
-        0: range(0, 6),
-        1: range(0, 6),
-        2: range(0, 6),
-        3: range(0, 6),
-        4: range(0, 5),
-    }
-    for row, cols in left_cols.items():
-        for col in cols:
-            keys.append(Key(row, col, 60 + col * PITCH, y_by_row[row]))
-    for qmk_row, visual_row in ((0, 0), (1, 1), (2, 2)):
-        keys.append(Key(qmk_row, 6, 60 + 6 * PITCH, y_by_row[visual_row]))
-
-    right_cols = {
-        0: (5, 4, 3, 2, 1, 0),
-        1: (5, 4, 3, 2, 1, 0),
-        2: (5, 4, 3, 2, 1, 0),
-        3: (5, 4, 3, 2, 1, 0),
-        4: (4, 3, 2, 1, 0),
-    }
-    start_x = {0: 1146, 1: 1146, 2: 1146, 3: 1146, 4: 1242}
-    for local_row, cols in right_cols.items():
-        for index, col in enumerate(cols):
-            keys.append(
-                Key(6 + local_row, col, start_x[local_row] + index * PITCH, y_by_row[local_row])
-            )
-    for local_row, visual_row in ((0, 0), (1, 1), (2, 2)):
-        keys.append(Key(6 + local_row, 6, 1050, y_by_row[visual_row]))
-
-    return keys
-
-
-def thumb_keys() -> list[Key]:
-    return []
-
-
-def joycon_layout_svg() -> str:
-    return """\
-  <g class="joycon-module" transform="rotate(10 640 780)">
-    <rect class="joycon-body" x="520" y="660" width="250" height="220" rx="34"/>
-    <circle class="joycon-stick-outer" cx="645" cy="750" r="64"/>
-    <circle class="joycon-stick-inner" cx="645" cy="750" r="34"/>
-    <text class="joycon-title" x="645" y="842">左侧 Joy-Con</text>
-    <text class="joycon-note" x="645" y="862">GP28=X / GP29=Y</text>
-  </g>
-  <g class="joycon-module" transform="rotate(-10 1160 780)">
-    <rect class="disabled-thumb-body" x="1035" y="660" width="250" height="220" rx="34"/>
-    <text class="disabled-thumb-title" x="1160" y="746">右侧拇指区停用</text>
-    <text class="disabled-thumb-note" x="1160" y="774">R5 = NO_PIN</text>
-    <text class="disabled-thumb-note" x="1160" y="796">不安装开关 / 不接矩阵</text>
-  </g>"""
-
-
-def joycon_wiring_svg() -> str:
-    return """\
-  <g class="joycon-wiring" transform="translate(60 1660)">
-    <text class="hardware-title" x="0" y="0">左侧 Joy-Con 接线</text>
-    <text class="subtitle" x="0" y="26">Joy-Con 只接左侧主控；拇指区矩阵 R5 不接线。SW/BTN 暂不接。</text>
-
-    <rect class="controller-body" x="0" y="62" width="360" height="250" rx="18"/>
-    <text class="controller-title" x="180" y="94">左 RP2040-Zero</text>
-    <text class="controller-note" x="180" y="118">只使用 3.3V 模拟输入，不能把 Joy-Con 接 5V</text>
-
-    <g class="pin-list" transform="translate(42 146)">
-      <circle class="pin-vcc" cx="0" cy="0" r="7"/><text class="pin-label" x="18" y="5">3V3</text>
-      <circle class="pin-gnd" cx="0" cy="42" r="7"/><text class="pin-label" x="18" y="47">GND</text>
-      <circle class="pin-x" cx="0" cy="84" r="7"/><text class="pin-label" x="18" y="89">GP28 / ADC2 / X</text>
-      <circle class="pin-y" cx="0" cy="126" r="7"/><text class="pin-label" x="18" y="131">GP29 / ADC3 / Y</text>
-    </g>
-
-    <rect class="breakout-body" x="690" y="62" width="330" height="250" rx="18"/>
-    <text class="controller-title" x="855" y="94">Joy-Con 5P FPC 转接板</text>
-    <text class="controller-note" x="855" y="118">按你转接板丝印为准：VCC/GND/X/Y/SW</text>
-
-    <g class="pin-list" transform="translate(740 146)">
-      <circle class="pin-vcc" cx="0" cy="0" r="7"/><text class="pin-label" x="18" y="5">VCC</text>
-      <circle class="pin-gnd" cx="0" cy="42" r="7"/><text class="pin-label" x="18" y="47">GND</text>
-      <circle class="pin-x" cx="0" cy="84" r="7"/><text class="pin-label" x="18" y="89">X / VRX</text>
-      <circle class="pin-y" cx="0" cy="126" r="7"/><text class="pin-label" x="18" y="131">Y / VRY</text>
-      <circle class="pin-unused" cx="0" cy="168" r="7"/><text class="pin-label muted" x="18" y="173">SW / BTN 不接</text>
-    </g>
-
-    <path class="wire-vcc" d="M42 146 C260 120, 520 120, 740 146"/>
-    <path class="wire-gnd" d="M42 188 C260 176, 520 176, 740 188"/>
-    <path class="wire-x" d="M42 230 C260 232, 520 232, 740 230"/>
-    <path class="wire-y" d="M42 272 C260 288, 520 288, 740 272"/>
-
-    <rect class="wasd-box" x="1110" y="62" width="520" height="250" rx="18"/>
-    <text class="controller-title" x="1370" y="94">固件映射</text>
-    <text class="controller-note" x="1370" y="122">X 轴：左=A，右=D；Y 轴：上=W，下=S</text>
-    <text class="controller-note" x="1370" y="150">支持斜向：左上=A+W，右下=D+S</text>
-    <text class="controller-note" x="1370" y="178">上电静置约 1 秒：32 个稳定样本自动校准中心</text>
-    <text class="controller-note" x="1370" y="204">按下阈值 ±110，释放阈值 ±70，带低通滤波和滞回</text>
-    <text class="controller-warning" x="1370" y="238">如果方向相反，先改 keymap.c 的轴方向逻辑，不要改到 5V。</text>
-  </g>"""
+    return [
+        Key(row, col, KEY_X + col * (KEY_W + KEY_GAP), KEY_Y + row * (KEY_H + KEY_GAP))
+        for row in range(5)
+        for col in range(6)
+        if (row, col) != (4, 5)
+    ]
 
 
 def vial_visible_coordinates() -> set[tuple[int, int]]:
@@ -186,11 +66,11 @@ def vial_visible_coordinates() -> set[tuple[int, int]]:
 
 def base_keycodes() -> dict[tuple[int, int], str]:
     keyboard = json.loads(KEYBOARD_JSON.read_text(encoding="utf-8"))
-    layout = keyboard["layouts"]["LAYOUT_5x7"]["layout"]
+    layout = keyboard["layouts"]["LAYOUT_5x6"]["layout"]
     coordinates = [tuple(item["matrix"]) for item in layout]
 
     source = re.sub(r"//.*", "", KEYMAP_C.read_text(encoding="utf-8"))
-    marker = "[_BASE] = LAYOUT_5x7("
+    marker = "[_BASE] = LAYOUT_5x6("
     start = source.index(marker) + len(marker)
     depth = 1
     token: list[str] = []
@@ -214,7 +94,7 @@ def base_keycodes() -> dict[tuple[int, int], str]:
 
     if len(coordinates) != len(arguments):
         raise SystemExit(
-            f"LAYOUT_5x7/base key count mismatch: {len(coordinates)} coordinates, "
+            f"LAYOUT_5x6/base key count mismatch: {len(coordinates)} coordinates, "
             f"{len(arguments)} keycodes"
         )
     return dict(zip(coordinates, arguments))
@@ -223,41 +103,14 @@ def base_keycodes() -> dict[tuple[int, int], str]:
 def keycode_label(keycode: str) -> str:
     labels = {
         "KC_EQL": "=",
-        "KC_MINS": "-",
         "KC_TAB": "Tab",
         "KC_ESC": "Esc",
         "KC_LSFT": "L Shift",
-        "KC_RSFT": "R Shift",
         "KC_GRV": "`",
         "KC_CAPS": "Caps",
         "KC_LEFT": "←",
         "KC_RGHT": "→",
-        "KC_UP": "↑",
-        "KC_DOWN": "↓",
-        "KC_BSLS": "\\",
-        "KC_SCLN": ";",
-        "KC_QUOT": "'",
-        "KC_COMM": ",",
-        "KC_DOT": ".",
-        "KC_SLSH": "/",
-        "KC_LBRC": "[",
-        "KC_RBRC": "]",
-        "KC_LCTL": "L Ctrl",
-        "KC_RCTL": "R Ctrl",
-        "KC_BSPC": "Backspace",
-        "KC_LALT": "L Alt",
-        "KC_DEL": "Delete",
-        "KC_HOME": "Home",
-        "KC_END": "End",
-        "KC_RGUI": "GUI/Win",
-        "KC_SPC": "Space",
-        "KC_PGUP": "Page Up",
-        "KC_ENT": "Enter",
-        "KC_PGDN": "Page Down",
-        "TG(_KEYPAD)": "Keypad",
-        "MO(_FN)": "Fn",
         "MO(_NAV_MEDIA)": "Nav/Media",
-        "XXXXXXX": "Disabled",
     }
     if keycode in labels:
         return labels[keycode]
@@ -266,531 +119,215 @@ def keycode_label(keycode: str) -> str:
     return keycode
 
 
-def key_svg(key: Key, keycodes: dict[tuple[int, int], str]) -> str:
-    side_class = "left" if key.side == "L" else "right"
-    thumb_class = " thumb" if key.qmk_row in (5, 11) else ""
-    transform = ""
-    if key.rotation:
-        transform = f' transform="rotate({key.rotation} {key.pivot_x} {key.pivot_y})"'
-
-    center_x = key.x + KEY_W / 2
-    if key.height > KEY_H:
-        text_y = key.y + key.height / 2 - 30
-    else:
-        text_y = key.y + 16
-
-    label = html.escape(keycode_label(keycodes[(key.qmk_row, key.col)]))
-    meta = html.escape(f"{key.side} · [{key.qmk_row},{key.col}]")
-    matrix = f"R{key.local_row} C{key.col}"
-    pins = f"{ROW_PINS[key.local_row]} / {COL_PINS[key.col]}"
-
+def key_svg(key: Key, keycode: str) -> str:
+    cx = key.x + KEY_W / 2
+    label = html.escape(keycode_label(keycode))
     return f"""\
-  <g class="key {side_class}{thumb_class}"{transform}>
-    <rect class="key-shape" x="{key.x}" y="{key.y}" width="{KEY_W}" height="{key.height}" rx="9"/>
-    <text class="key-label" x="{center_x:g}" y="{text_y:g}">{label}</text>
-    <text class="key-meta" x="{center_x:g}" y="{text_y + 18:g}">{meta}</text>
-    <text class="key-matrix" x="{center_x:g}" y="{text_y + 37:g}">{matrix}</text>
-    <text class="key-pins" x="{center_x:g}" y="{text_y + 56:g}">{pins}</text>
+  <g class="key">
+    <rect x="{key.x}" y="{key.y}" width="{KEY_W}" height="{KEY_H}" rx="12"/>
+    <text class="key-label" x="{cx:g}" y="{key.y + 28}">{label}</text>
+    <text class="key-meta" x="{cx:g}" y="{key.y + 51}">R{key.qmk_row}C{key.col}</text>
+    <text class="key-pin" x="{cx:g}" y="{key.y + 70}">{ROW_PINS[key.qmk_row]} / {COL_PINS[key.col]}</text>
   </g>"""
 
 
-def rotate_point(x: float, y: float, angle: int, pivot_x: float, pivot_y: float) -> tuple[float, float]:
-    if not angle:
-        return x, y
-    radians = math.radians(angle)
-    dx = x - pivot_x
-    dy = y - pivot_y
-    return (
-        pivot_x + dx * math.cos(radians) - dy * math.sin(radians),
-        pivot_y + dx * math.sin(radians) + dy * math.cos(radians),
-    )
-
-
-def wiring_points(key: Key, offset_y: int) -> tuple[tuple[float, float], tuple[float, float]]:
-    center_x = key.x + KEY_W / 2
-    center_y = key.y + offset_y + key.height / 2
-    pivot_y = key.pivot_y + offset_y
-    col_point = rotate_point(
-        center_x - 28, center_y, key.rotation, key.pivot_x, pivot_y
-    )
-    row_point = rotate_point(
-        center_x + 31, center_y, key.rotation, key.pivot_x, pivot_y
-    )
-    return col_point, row_point
-
-
-def wiring_key_shape_svg(key: Key, offset_y: int) -> str:
-    y = key.y + offset_y
-    transform = ""
-    if key.rotation:
-        transform = (
-            f' transform="rotate({key.rotation} {key.pivot_x} {key.pivot_y + offset_y})"'
-        )
-    return (
-        f'  <g class="wiring-key"{transform}>\n'
-        f'    <rect class="wiring-key-shape" x="{key.x}" y="{y}" '
-        f'width="{KEY_W}" height="{key.height}" rx="9"/>\n'
-        f"  </g>"
-    )
-
-
-def wiring_key_component_svg(key: Key, offset_y: int) -> str:
-    center_x = key.x + KEY_W / 2
-    center_y = key.y + offset_y + key.height / 2
-    transform = ""
-    if key.rotation:
-        transform = (
-            f' transform="rotate({key.rotation} {key.pivot_x} {key.pivot_y + offset_y})"'
-        )
-
+def wiring_board_svg(key: Key) -> str:
+    x = 115 + key.col * 146
+    y = 785 + key.qmk_row * 112
     return f"""\
-  <g class="wiring-component"{transform}>
-    <line class="component-col-wire" x1="{center_x - 28:g}" y1="{center_y:g}" x2="{center_x - 15:g}" y2="{center_y:g}"/>
-    <rect class="wiring-switch" x="{center_x - 15:g}" y="{center_y - 9:g}" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="{center_x + 7:g}" y1="{center_y:g}" x2="{center_x + 11:g}" y2="{center_y:g}"/>
-    <rect class="wiring-diode" x="{center_x + 11:g}" y="{center_y - 7:g}" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="{center_x + 22:g}" y="{center_y - 7:g}" width="4" height="14"/>
-    <line class="component-row-wire" x1="{center_x + 27:g}" y1="{center_y:g}" x2="{center_x + 31:g}" y2="{center_y:g}"/>
-    <circle class="col-junction" cx="{center_x - 28:g}" cy="{center_y:g}" r="4"/>
-    <circle class="row-junction" cx="{center_x + 31:g}" cy="{center_y:g}" r="4"/>
+  <g class="pcb">
+    <rect x="{x}" y="{y}" width="104" height="72" rx="18"/>
+    <circle class="row-pad" cx="{x + 19}" cy="{y + 36}" r="8"/>
+    <circle class="col-pad" cx="{x + 85}" cy="{y + 36}" r="8"/>
+    <text class="pad-letter" x="{x + 19}" y="{y + 40}">R</text>
+    <text class="pad-letter" x="{x + 85}" y="{y + 40}">C</text>
+    <rect class="switch" x="{x + 39}" y="{y + 22}" width="26" height="28" rx="5"/>
+    <path class="internal" d="M{x + 27} {y + 36} H{x + 39} M{x + 65} {y + 36} H{x + 77}"/>
+    <rect class="band" x="{x + 72}" y="{y + 27}" width="5" height="18"/>
+    <text class="pcb-index" x="{x + 52}" y="{y + 66}">R{key.qmk_row}C{key.col}</text>
   </g>"""
 
 
-def wiring_overlay_svg(keys: list[Key], offset_y: int) -> str:
-    parts = [wiring_key_shape_svg(key, offset_y) for key in keys]
+def wiring_bus_svg(keys: list[Key]) -> str:
+    parts: list[str] = []
+    for row, pin in enumerate(ROW_PINS):
+        row_keys = [key for key in keys if key.qmk_row == row]
+        points = [(115 + key.col * 146 + 19, 785 + row * 112 + 36) for key in row_keys]
+        start_x = points[0][0] - 45
+        end_x = points[-1][0]
+        y = points[0][1]
+        parts.append(f'<path class="row-wire" d="M{start_x} {y} H{end_x}"/>')
+        parts.append(f'<text class="row-label" x="{start_x - 10}" y="{y + 5}">R{row} · {pin}</text>')
 
-    for side in ("L", "R"):
-        side_keys = [key for key in keys if key.side == side]
-        for col in range(7):
-            points = [
-                wiring_points(key, offset_y)[0] for key in side_keys if key.col == col
-            ]
-            points.sort(key=lambda point: (point[1], point[0]))
-            point_text = " ".join(f"{x:.1f},{y:.1f}" for x, y in points)
-            parts.append(f'  <polyline class="wiring-col-line" points="{point_text}"/>')
-            for x, y in points:
-                parts.append(f'  <circle class="col-junction" cx="{x:.1f}" cy="{y:.1f}" r="4"/>')
-            label_x, label_y = points[0]
-            parts.append(
-                f'  <text class="wiring-col-label" x="{label_x:.1f}" '
-                f'y="{label_y - 55:.1f}">C{col}</text>'
-            )
-
-        for local_row in range(5):
-            points = [
-                wiring_points(key, offset_y)[1]
-                for key in side_keys
-                if key.local_row == local_row
-            ]
-            points.sort(key=lambda point: point[0])
-            point_text = " ".join(f"{x:.1f},{y:.1f}" for x, y in points)
-            parts.append(f'  <polyline class="wiring-row-halo" points="{point_text}"/>')
-            row_class = "wiring-row-line wiring-thumb-row" if local_row == 5 else "wiring-row-line"
-            parts.append(f'  <polyline class="{row_class}" points="{point_text}"/>')
-            for x, y in points:
-                parts.append(f'  <circle class="row-junction" cx="{x:.1f}" cy="{y:.1f}" r="4"/>')
-            label_x, label_y = points[0]
-            label = f"R{local_row}"
-            parts.append(
-                f'  <text class="wiring-row-label" x="{label_x - 85:.1f}" '
-                f'y="{label_y - 14:.1f}">{label}</text>'
-            )
-
-    parts.extend(wiring_key_component_svg(key, offset_y) for key in keys)
+    for col, pin in enumerate(COL_PINS):
+        col_keys = [key for key in keys if key.col == col]
+        x = 115 + col * 146 + 85
+        start_y = 785 + col_keys[0].qmk_row * 112 + 36
+        end_y = 785 + col_keys[-1].qmk_row * 112 + 36
+        parts.append(f'<path class="col-wire" d="M{x} {start_y - 42} V{end_y}"/>')
+        parts.append(f'<text class="col-label" x="{x}" y="{start_y - 53}">C{col}</text>')
+        parts.append(f'<text class="col-pin-label" x="{x}" y="{start_y - 34}">{pin}</text>')
     return "\n".join(parts)
 
 
 def generate_svg(keys: list[Key], keycodes: dict[tuple[int, int], str]) -> str:
-    key_markup = "\n".join(key_svg(key, keycodes) for key in keys)
-    wiring_markup = wiring_overlay_svg(keys, 1150)
-    joycon_markup = joycon_layout_svg()
-    joycon_wiring_markup = joycon_wiring_svg()
+    key_markup = "\n".join(
+        key_svg(key, keycodes[(key.qmk_row, key.col)]) for key in keys
+    )
+    bus_markup = wiring_bus_svg(keys)
+    board_markup = "\n".join(wiring_board_svg(key) for key in keys)
+
     return f"""\
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1750" height="2220" viewBox="0 0 1750 2220"
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1680" viewBox="0 0 1440 1680"
      role="img" aria-labelledby="title description">
-  <title id="title">Kinesis Dactyl 5x7 Joy-Con 分支第一层键位、矩阵、GPIO 与接线图</title>
-  <desc id="description">64 个 Vial 可见主键的第一层键位、矩阵坐标、GPIO 引脚对，以及每侧行列总线、二极管方向和左侧 Joy-Con 接线。</desc>
+  <title id="title">左手 29 键 Plum Twist 与 Joy-Con 焊接接线图</title>
+  <desc id="description">RP2040-Zero 单手 5 行 6 列 ROW2COL 矩阵，最后一行缺最右键；Plum Twist 板载二极管阴极朝列；Joy-Con X、Y 与按压接线。</desc>
   <style>
-    :root {{
-      color-scheme: dark;
-    }}
-    text {{
-      font-family: Inter, "SF Pro Text", "PingFang SC", "Microsoft YaHei", sans-serif;
-      fill: #e8edf5;
-    }}
-    .background {{
-      fill: #171b22;
-    }}
-    .frame {{
-      fill: #202630;
-      stroke: #697386;
-      stroke-width: 2;
-    }}
-    .key-shape {{
-      fill: #303946;
-      stroke: #79879a;
-      stroke-width: 2;
-    }}
-    .left .key-shape {{
-      fill: #263b4a;
-      stroke: #6fa8c7;
-    }}
-    .right .key-shape {{
-      fill: #3a304b;
-      stroke: #a68ac7;
-    }}
-    .thumb .key-shape {{
-      stroke-width: 3;
-    }}
-    .joycon-body {{
-      fill: #3c3836;
-      stroke: #d65d0e;
-      stroke-width: 4;
-    }}
-    .joycon-stick-outer {{
-      fill: #504945;
-      stroke: #fabd2f;
-      stroke-width: 4;
-    }}
-    .joycon-stick-inner {{
-      fill: #282828;
-      stroke: #ebdbb2;
-      stroke-width: 3;
-    }}
-    .joycon-title, .disabled-thumb-title {{
-      text-anchor: middle;
-      dominant-baseline: middle;
-      font-size: 17px;
-      font-weight: 800;
-    }}
-    .joycon-title {{
-      fill: #fabd2f;
-    }}
-    .joycon-note, .disabled-thumb-note {{
-      text-anchor: middle;
-      dominant-baseline: middle;
-      font-size: 12px;
-      font-weight: 650;
-    }}
-    .joycon-note {{
-      fill: #ebdbb2;
-    }}
-    .disabled-thumb-body {{
-      fill: #2a2f38;
-      stroke: #928374;
-      stroke-width: 3;
-      stroke-dasharray: 10 8;
-    }}
-    .disabled-thumb-title {{
-      fill: #d5c4a1;
-    }}
-    .disabled-thumb-note {{
-      fill: #a89984;
-    }}
-    .key-label, .key-meta, .key-matrix, .key-pins {{
-      text-anchor: middle;
-      dominant-baseline: middle;
-    }}
-    .key-label {{
-      fill: #ffffff;
-      font-size: 14px;
-      font-weight: 750;
-    }}
-    .key-meta {{
-      fill: #b8c2d1;
-      font-size: 8px;
-      font-weight: 500;
-    }}
-    .key-matrix {{
-      fill: #dce5f1;
-      font-size: 13px;
-      font-weight: 700;
-    }}
-    .key-pins {{
-      fill: #ffd479;
-      font-size: 10px;
-      font-weight: 650;
-    }}
-    .title {{
-      font-size: 30px;
-      font-weight: 750;
-    }}
-    .subtitle {{
-      fill: #bbc5d4;
-      font-size: 14px;
-    }}
-    .section {{
-      font-size: 17px;
-      font-weight: 700;
-    }}
-    .legend {{
-      fill: #c8d0dc;
-      font-size: 14px;
-    }}
-    .warning {{
-      fill: #ffce72;
-      font-size: 14px;
-      font-weight: 600;
-    }}
-    .divider {{
-      stroke: #566174;
-      stroke-width: 2;
-    }}
-    .hardware-title {{
-      font-size: 25px;
-      font-weight: 750;
-    }}
-    .wiring-key-shape {{
-      fill: #252d38;
-      stroke: #68778b;
-      stroke-width: 2;
-    }}
-    .wiring-col-line {{
-      fill: none;
-      stroke: #e4b85f;
-      stroke-width: 4;
-      stroke-linejoin: round;
-      stroke-linecap: round;
-    }}
-    .wiring-row-halo {{
-      fill: none;
-      stroke: #202630;
-      stroke-width: 11;
-      stroke-linejoin: round;
-      stroke-linecap: round;
-    }}
-    .wiring-row-line {{
-      fill: none;
-      stroke: #6fb7df;
-      stroke-width: 5;
-      stroke-linejoin: round;
-      stroke-linecap: round;
-    }}
-    .wiring-thumb-row {{
-      stroke: #67d8ff;
-      stroke-width: 7;
-    }}
-    .wiring-col-label {{
-      fill: #ffd479;
-      font-size: 15px;
-      font-weight: 700;
-      text-anchor: middle;
-      paint-order: stroke;
-      stroke: #202630;
-      stroke-width: 6px;
-    }}
-    .wiring-row-label {{
-      fill: #9bddf7;
-      font-size: 14px;
-      font-weight: 700;
-      text-anchor: end;
-      paint-order: stroke;
-      stroke: #202630;
-      stroke-width: 6px;
-    }}
-    .component-col-wire {{
-      stroke: #e4b85f;
-      stroke-width: 3;
-    }}
-    .component-row-wire {{
-      stroke: #6fb7df;
-      stroke-width: 3;
-    }}
-    .component-wire {{
-      stroke: #d5deea;
-      stroke-width: 2;
-    }}
-    .wiring-switch {{
-      fill: #3a4554;
-      stroke: #e2e8f0;
-      stroke-width: 2;
-    }}
-    .wiring-diode {{
-      fill: #e09c4d;
-      stroke: #ffca78;
-      stroke-width: 1;
-    }}
-    .wiring-diode-band {{
-      fill: #11151b;
-    }}
-    .col-junction {{
-      fill: #ffd479;
-      stroke: #202630;
-      stroke-width: 1;
-    }}
-    .row-junction {{
-      fill: #8bd0f4;
-      stroke: #202630;
-      stroke-width: 1;
-    }}
-    .wiring-legend-box {{
-      fill: #252d39;
-      stroke: #68778b;
-      stroke-width: 2;
-    }}
-    .legend-col-line {{
-      stroke: #e4b85f;
-      stroke-width: 5;
-    }}
-    .legend-row-line {{
-      stroke: #67d8ff;
-      stroke-width: 7;
-    }}
-    .legend-diode {{
-      fill: #e09c4d;
-      stroke: #ffca78;
-      stroke-width: 2;
-    }}
-    .legend-diode-band {{
-      fill: #11151b;
-    }}
-    .wiring-note {{
-      fill: #c3cedc;
-      font-size: 14px;
-    }}
-    .wiring-emphasis {{
-      fill: #ffd479;
-      font-size: 16px;
-      font-weight: 750;
-    }}
-    .left-label {{
-      fill: #8dc9e8;
-    }}
-    .right-label {{
-      fill: #c4a5e5;
-    }}
-    .controller-body, .breakout-body, .wasd-box {{
-      fill: #252d39;
-      stroke: #68778b;
-      stroke-width: 2;
-    }}
-    .controller-title {{
-      fill: #ebdbb2;
-      font-size: 18px;
-      font-weight: 800;
-      text-anchor: middle;
-    }}
-    .controller-note {{
-      fill: #c3cedc;
-      font-size: 14px;
-      text-anchor: middle;
-    }}
-    .controller-warning {{
-      fill: #fabd2f;
-      font-size: 14px;
-      font-weight: 750;
-      text-anchor: middle;
-    }}
-    .pin-label {{
-      fill: #ebdbb2;
-      font-size: 14px;
-      font-weight: 700;
-    }}
-    .muted {{
-      fill: #928374;
-    }}
-    .pin-vcc {{
-      fill: #cc241d;
-    }}
-    .pin-gnd {{
-      fill: #3c3836;
-      stroke: #ebdbb2;
-      stroke-width: 1.5;
-    }}
-    .pin-x {{
-      fill: #98971a;
-    }}
-    .pin-y {{
-      fill: #458588;
-    }}
-    .pin-unused {{
-      fill: #928374;
-    }}
-    .wire-vcc, .wire-gnd, .wire-x, .wire-y {{
-      fill: none;
-      stroke-width: 5;
-      stroke-linecap: round;
-    }}
-    .wire-vcc {{
-      stroke: #cc241d;
-    }}
-    .wire-gnd {{
-      stroke: #3c3836;
-    }}
-    .wire-x {{
-      stroke: #98971a;
-    }}
-    .wire-y {{
-      stroke: #458588;
-    }}
+    text {{ font-family: Inter, "SF Pro Text", "PingFang SC", "Microsoft YaHei", sans-serif; fill: #e9eef7; }}
+    .bg {{ fill: #151922; }}
+    .panel {{ fill: #202735; stroke: #536075; stroke-width: 2; }}
+    .title {{ font-size: 32px; font-weight: 800; }}
+    .subtitle {{ fill: #b9c5d6; font-size: 15px; }}
+    .section {{ font-size: 22px; font-weight: 800; }}
+    .key rect {{ fill: #29394a; stroke: #77b9dc; stroke-width: 2; }}
+    .key-label {{ font-size: 18px; font-weight: 800; text-anchor: middle; }}
+    .key-meta {{ fill: #bcd8e8; font-size: 13px; font-weight: 700; text-anchor: middle; }}
+    .key-pin {{ fill: #ffd47b; font-size: 11px; font-weight: 650; text-anchor: middle; }}
+    .warning-box {{ fill: #3a3022; stroke: #f0b65a; stroke-width: 2; }}
+    .warning {{ fill: #ffd47b; font-size: 15px; font-weight: 700; }}
+    .note {{ fill: #c4cfdd; font-size: 14px; }}
+    .pcb rect:first-child {{ fill: #34303e; stroke: #ad8fc7; stroke-width: 2; }}
+    .row-pad {{ fill: #69bde8; stroke: #d8f2ff; stroke-width: 1.5; }}
+    .col-pad {{ fill: #e7b555; stroke: #fff0bd; stroke-width: 1.5; }}
+    .pad-letter {{ fill: #151922; font-size: 11px; font-weight: 900; text-anchor: middle; }}
+    .switch {{ fill: #505a6a; stroke: #dfe7ef; stroke-width: 1.5; }}
+    .internal {{ stroke: #dfe7ef; stroke-width: 3; }}
+    .band {{ fill: #11151b; }}
+    .pcb-index {{ fill: #b7c1cf; font-size: 9px; text-anchor: middle; }}
+    .row-wire {{ fill: none; stroke: #69bde8; stroke-width: 7; stroke-linecap: round; }}
+    .col-wire {{ fill: none; stroke: #e7b555; stroke-width: 6; stroke-linecap: round; }}
+    .row-label {{ fill: #9bdcff; font-size: 13px; font-weight: 800; text-anchor: end; }}
+    .col-label {{ fill: #ffd47b; font-size: 13px; font-weight: 800; text-anchor: middle; }}
+    .col-pin-label {{ fill: #e6c984; font-size: 11px; font-weight: 700; text-anchor: middle; }}
+    .controller {{ fill: #252d3b; stroke: #7a879b; stroke-width: 2; }}
+    .controller-title {{ font-size: 19px; font-weight: 800; text-anchor: middle; }}
+    .pin {{ font-size: 13px; font-weight: 700; }}
+    .joy {{ fill: #34302e; stroke: #dc7e39; stroke-width: 3; }}
+    .joy-stick {{ fill: #4b4642; stroke: #f1c25f; stroke-width: 3; }}
+    .wire-vcc {{ stroke: #ef5350; }}
+    .wire-gnd {{ stroke: #aeb6c2; }}
+    .wire-x {{ stroke: #9dbb4b; }}
+    .wire-y {{ stroke: #55a6ad; }}
+    .wire-sw {{ stroke: #c185d8; }}
+    .joy-wire {{ fill: none; stroke-width: 5; stroke-linecap: round; }}
+    .flow {{ stroke: #e7edf5; stroke-width: 3; fill: none; marker-end: url(#arrow); }}
+    .diode {{ fill: #d99749; stroke: #ffd18b; stroke-width: 2; }}
+    .diode-band {{ fill: #11151b; }}
+    .flow-label {{ font-size: 14px; font-weight: 800; text-anchor: middle; }}
   </style>
+  <defs>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#e7edf5"/>
+    </marker>
+  </defs>
 
-  <rect class="background" width="1750" height="2220"/>
-  <rect class="frame" x="22" y="18" width="1706" height="2180" rx="24"/>
+  <rect class="bg" width="1440" height="1680"/>
+  <rect class="panel" x="24" y="20" width="1392" height="1640" rx="24"/>
+  <text class="title" x="58" y="62">左手 29 键 + Joy-Con · Plum Twist 焊接接线图</text>
+  <text class="subtitle" x="58" y="88">单手 RP2040-Zero · 5×6 矩阵（R4C5 不安装）· 从热插拔座/焊盘侧观察 · RGB 焊盘留空</text>
 
-  <text class="title" x="60" y="55">Kinesis Dactyl 5x7 Joy-Con — 第一层键位 / 矩阵 / GPIO 接线图</text>
-  <text class="subtitle" x="60" y="79">
-    每键四行：第一层键位 / 侧与 QMK 全局坐标 / 本地 R-C / 行 GPIO 与列 GPIO。拇指区矩阵隐藏，左侧改接 Joy-Con。
-  </text>
-  <text class="section left-label" x="60" y="94">左半</text>
-  <text class="section right-label" x="1640" y="94" text-anchor="end">右半</text>
-
+  <text class="section" x="58" y="128">第一层键位与 GPIO</text>
 {key_markup}
-{joycon_markup}
+  <rect class="warning-box" x="978" y="142" width="390" height="475" rx="18"/>
+  <text class="section" x="1008" y="180">Plum Twist 单键 PCB</text>
+  <text class="note" x="1008" y="204">视角：热插拔座/焊盘侧（实际焊接面）</text>
+  <rect class="controller" x="1042" y="235" width="260" height="170" rx="54"/>
+  <circle class="row-pad" cx="1082" cy="320" r="17"/>
+  <circle class="col-pad" cx="1262" cy="320" r="17"/>
+  <text class="pad-letter" x="1082" y="325">R</text>
+  <text class="pad-letter" x="1262" y="325">C</text>
+  <rect class="switch" x="1131" y="296" width="46" height="48" rx="7"/>
+  <rect class="diode" x="1193" y="306" width="42" height="28" rx="14"/>
+  <rect class="diode-band" x="1225" y="306" width="7" height="28"/>
+  <path class="flow" d="M1099 320 H1125 M1178 320 H1188 M1236 320 H1241"/>
+  <text class="flow-label" x="1172" y="372">R → 开关 → 板载二极管 → C</text>
+  <text class="warning" x="1008" y="438">QMK 必须设置：ROW2COL</text>
+  <text class="warning" x="1008" y="466">二极管阴极/条纹端固定朝 Column</text>
+  <text class="note" x="1008" y="498">不需要外接 1N4148。</text>
+  <text class="note" x="1008" y="524">每块 PCB：R 焊盘接同行蓝线；</text>
+  <text class="note" x="1008" y="547">C 焊盘接同列黄线。</text>
+  <text class="note" x="1008" y="576">+ / − / I / O（RGB）全部留空。</text>
 
-  <g transform="translate(60 965)">
-    <text class="section" x="0" y="0">引脚总表</text>
-    <text class="legend" x="0" y="29">行：R0=GP14　R1=GP15　R2=GP26　R3=GP27　R4=GP9　R5=NO_PIN（拇指区停用）</text>
-    <text class="legend" x="0" y="55">列：C0=GP2　C1=GP3　C2=GP4　C3=GP5　C4=GP6　C5=GP7　C6=GP8</text>
-    <text class="warning" x="0" y="86">COL2ROW：列 GPIO → 开关 → 二极管无环端 → 二极管带环端 → 行 GPIO；Joy-Con：X=GP28，Y=GP29</text>
-  </g>
+  <line x1="58" y1="650" x2="1382" y2="650" stroke="#536075" stroke-width="2"/>
+  <text class="section" x="58" y="690">29 块 PCB 的行列总线</text>
+  <text class="subtitle" x="58" y="716">蓝色连接所有 R 焊盘；黄色连接所有 C 焊盘。交叉处不焊接，必须绝缘。</text>
+{bus_markup}
+{board_markup}
 
-  <g transform="translate(930 965)">
-    <text class="section" x="0" y="0">QMK 保留、Vial 隐藏且无需接线的位置</text>
-    <text class="legend" x="0" y="29">左：[3,6]、[4,5]、[4,6]、整行 [5,0]–[5,6]</text>
-    <text class="legend" x="0" y="55">右：[9,6]、[10,5]、[10,6]、整行 [11,0]–[11,6]</text>
-    <text class="warning" x="0" y="86">R4 已从 GP28 改到 GP9；GP28/GP29 专用于左侧 Joy-Con ADC。</text>
-  </g>
+  <rect class="controller" x="1010" y="750" width="355" height="540" rx="18"/>
+  <text class="controller-title" x="1188" y="788">RP2040-Zero 引脚总表</text>
+  <text class="pin" x="1042" y="830">R0 → GP14</text>
+  <text class="pin" x="1042" y="858">R1 → GP15</text>
+  <text class="pin" x="1042" y="886">R2 → GP26</text>
+  <text class="pin" x="1042" y="914">R3 → GP27</text>
+  <text class="pin" x="1042" y="942">R4 → GP9</text>
+  <text class="pin" x="1190" y="830">C0 → GP2</text>
+  <text class="pin" x="1190" y="858">C1 → GP3</text>
+  <text class="pin" x="1190" y="886">C2 → GP4</text>
+  <text class="pin" x="1190" y="914">C3 → GP5</text>
+  <text class="pin" x="1190" y="942">C4 → GP6</text>
+  <text class="pin" x="1190" y="970">C5 → GP7</text>
+  <line x1="1038" y1="992" x2="1338" y2="992" stroke="#536075" stroke-width="2"/>
+  <text class="pin" x="1042" y="1028">Joy X → GP28 / ADC2</text>
+  <text class="pin" x="1042" y="1056">Joy Y → GP29 / ADC3</text>
+  <text class="pin" x="1042" y="1084">Joy SW → GP8（内部上拉）</text>
+  <text class="pin" x="1042" y="1112">Joy VCC → 3V3</text>
+  <text class="pin" x="1042" y="1140">Joy GND → GND</text>
+  <text class="warning" x="1042" y="1182">Joy-Con 绝对不要接 5V</text>
+  <text class="note" x="1042" y="1214">无右手、无 TRS、无分体数据线。</text>
+  <text class="note" x="1042" y="1240">GP0/GP1 保留；GP8 只给摇杆按压。</text>
 
-  <line class="divider" x1="60" y1="1128" x2="1690" y2="1128"/>
-  <text class="hardware-title" x="60" y="1172">按实际键位连接行线与列线</text>
-  <text class="subtitle" x="60" y="1198">
-    下图与上方主键区几何 1:1；拇指区不接矩阵。键帽内仅画开关与二极管。黄色连接同一列，蓝色连接同一行。
-  </text>
-
-{wiring_markup}
-{joycon_wiring_markup}
-
-  <rect class="wiring-legend-box" x="60" y="2090" width="1630" height="82" rx="14"/>
-  <line class="legend-col-line" x1="90" y1="2121" x2="145" y2="2121"/>
-  <text class="wiring-note" x="158" y="2126">黄色：同一列 C0–C6 相连</text>
-  <line class="legend-row-line" x1="400" y1="2121" x2="455" y2="2121"/>
-  <text class="wiring-note" x="468" y="2126">蓝色：同一行 R0–R4 相连</text>
-  <rect class="legend-diode" x="740" y="2108" width="46" height="24" rx="12"/>
-  <rect class="legend-diode-band" x="776" y="2108" width="7" height="24"/>
-  <text class="wiring-note" x="798" y="2126">黑色带环端接蓝色行线</text>
-  <text class="wiring-emphasis" x="90" y="2158">R4 改接 GP9；左侧 Joy-Con：VCC→3V3，GND→GND，X→GP28，Y→GP29，SW/BTN 不接。</text>
-  <text class="wiring-note" x="1210" y="2158">行列线交叉处绝缘，不直接相连。</text>
+  <line x1="58" y1="1332" x2="1382" y2="1332" stroke="#536075" stroke-width="2"/>
+  <text class="section" x="58" y="1372">Joy-Con 5 针转接板</text>
+  <rect class="joy" x="70" y="1410" width="260" height="185" rx="28"/>
+  <circle class="joy-stick" cx="200" cy="1483" r="48"/>
+  <text class="controller-title" x="200" y="1570">Joy-Con 摇杆</text>
+  <text class="note" x="200" y="1590" text-anchor="middle">5P FPC 转接板</text>
+  <rect class="controller" x="1040" y="1395" width="320" height="215" rx="18"/>
+  <text class="controller-title" x="1200" y="1430">RP2040-Zero</text>
+  <text class="pin" x="1080" y="1470">3V3</text>
+  <text class="pin" x="1080" y="1500">GND</text>
+  <text class="pin" x="1080" y="1530">GP28</text>
+  <text class="pin" x="1080" y="1560">GP29</text>
+  <text class="pin" x="1080" y="1590">GP8</text>
+  <path class="joy-wire wire-vcc" d="M330 1440 C600 1390 820 1390 1040 1470"/>
+  <path class="joy-wire wire-gnd" d="M330 1470 C600 1450 820 1450 1040 1500"/>
+  <path class="joy-wire wire-x" d="M330 1500 C600 1500 820 1500 1040 1530"/>
+  <path class="joy-wire wire-y" d="M330 1530 C600 1550 820 1550 1040 1560"/>
+  <path class="joy-wire wire-sw" d="M330 1560 C600 1610 820 1610 1040 1590"/>
+  <text class="pin" x="355" y="1422">VCC → 3V3</text>
+  <text class="pin" x="505" y="1472">GND → GND</text>
+  <text class="pin" x="640" y="1508">X → GP28</text>
+  <text class="pin" x="775" y="1552">Y → GP29</text>
+  <text class="pin" x="885" y="1600">SW → GP8</text>
+  <text class="warning" x="390" y="1640">固件：X/Y → WASD；SW 按下（接地）→ Space。上电时松开摇杆并静置约 1 秒。</text>
 </svg>
 """
 
 
 def main() -> None:
-    keys = main_keys() + thumb_keys()
+    keys = main_keys()
     keycodes = base_keycodes()
     generated_coordinates = {(key.qmk_row, key.col) for key in keys}
     visible_coordinates = vial_visible_coordinates()
 
-    if len(keys) != len(generated_coordinates):
-        raise SystemExit("duplicate matrix coordinate in SVG layout")
+    if len(keys) != 29 or len(keys) != len(generated_coordinates):
+        raise SystemExit("SVG layout must contain 29 unique keys")
     if generated_coordinates != visible_coordinates:
         missing = sorted(visible_coordinates - generated_coordinates)
         extra = sorted(generated_coordinates - visible_coordinates)
         raise SystemExit(f"SVG/Vial coordinate mismatch; missing={missing}, extra={extra}")
-    if not generated_coordinates.issubset(keycodes):
-        missing = sorted(generated_coordinates - keycodes.keys())
-        raise SystemExit(f"missing base-layer keycodes for SVG coordinates: {missing}")
 
     OUTPUT.write_text(generate_svg(keys, keycodes), encoding="utf-8")
     print(f"generated {OUTPUT.relative_to(ROOT)} with {len(keys)} visible keys")

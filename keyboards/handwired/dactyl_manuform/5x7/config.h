@@ -3,12 +3,6 @@
 
 #pragma once
 
-// The left half is always the USB master.
-#define MASTER_LEFT
-
-// RP2040 PIO half-duplex split transport over one TRS data conductor.
-#define SERIAL_USART_TX_PIN GP0
-
 // Four VIA/Vial-editable layers.
 #define DYNAMIC_KEYMAP_LAYER_COUNT 4
 

@@ -1,1882 +1,653 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1750" height="2220" viewBox="0 0 1750 2220"
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1680" viewBox="0 0 1440 1680"
      role="img" aria-labelledby="title description">
-  <title id="title">Kinesis Dactyl 5x7 Joy-Con 分支第一层键位、矩阵、GPIO 与接线图</title>
-  <desc id="description">64 个 Vial 可见主键的第一层键位、矩阵坐标、GPIO 引脚对，以及每侧行列总线、二极管方向和左侧 Joy-Con 接线。</desc>
+  <title id="title">左手 29 键 Plum Twist 与 Joy-Con 焊接接线图</title>
+  <desc id="description">RP2040-Zero 单手 5 行 6 列 ROW2COL 矩阵，最后一行缺最右键；Plum Twist 板载二极管阴极朝列；Joy-Con X、Y 与按压接线。</desc>
   <style>
-    :root {
-      color-scheme: dark;
-    }
-    text {
-      font-family: Inter, "SF Pro Text", "PingFang SC", "Microsoft YaHei", sans-serif;
-      fill: #e8edf5;
-    }
-    .background {
-      fill: #171b22;
-    }
-    .frame {
-      fill: #202630;
-      stroke: #697386;
-      stroke-width: 2;
-    }
-    .key-shape {
-      fill: #303946;
-      stroke: #79879a;
-      stroke-width: 2;
-    }
-    .left .key-shape {
-      fill: #263b4a;
-      stroke: #6fa8c7;
-    }
-    .right .key-shape {
-      fill: #3a304b;
-      stroke: #a68ac7;
-    }
-    .thumb .key-shape {
-      stroke-width: 3;
-    }
-    .joycon-body {
-      fill: #3c3836;
-      stroke: #d65d0e;
-      stroke-width: 4;
-    }
-    .joycon-stick-outer {
-      fill: #504945;
-      stroke: #fabd2f;
-      stroke-width: 4;
-    }
-    .joycon-stick-inner {
-      fill: #282828;
-      stroke: #ebdbb2;
-      stroke-width: 3;
-    }
-    .joycon-title, .disabled-thumb-title {
-      text-anchor: middle;
-      dominant-baseline: middle;
-      font-size: 17px;
-      font-weight: 800;
-    }
-    .joycon-title {
-      fill: #fabd2f;
-    }
-    .joycon-note, .disabled-thumb-note {
-      text-anchor: middle;
-      dominant-baseline: middle;
-      font-size: 12px;
-      font-weight: 650;
-    }
-    .joycon-note {
-      fill: #ebdbb2;
-    }
-    .disabled-thumb-body {
-      fill: #2a2f38;
-      stroke: #928374;
-      stroke-width: 3;
-      stroke-dasharray: 10 8;
-    }
-    .disabled-thumb-title {
-      fill: #d5c4a1;
-    }
-    .disabled-thumb-note {
-      fill: #a89984;
-    }
-    .key-label, .key-meta, .key-matrix, .key-pins {
-      text-anchor: middle;
-      dominant-baseline: middle;
-    }
-    .key-label {
-      fill: #ffffff;
-      font-size: 14px;
-      font-weight: 750;
-    }
-    .key-meta {
-      fill: #b8c2d1;
-      font-size: 8px;
-      font-weight: 500;
-    }
-    .key-matrix {
-      fill: #dce5f1;
-      font-size: 13px;
-      font-weight: 700;
-    }
-    .key-pins {
-      fill: #ffd479;
-      font-size: 10px;
-      font-weight: 650;
-    }
-    .title {
-      font-size: 30px;
-      font-weight: 750;
-    }
-    .subtitle {
-      fill: #bbc5d4;
-      font-size: 14px;
-    }
-    .section {
-      font-size: 17px;
-      font-weight: 700;
-    }
-    .legend {
-      fill: #c8d0dc;
-      font-size: 14px;
-    }
-    .warning {
-      fill: #ffce72;
-      font-size: 14px;
-      font-weight: 600;
-    }
-    .divider {
-      stroke: #566174;
-      stroke-width: 2;
-    }
-    .hardware-title {
-      font-size: 25px;
-      font-weight: 750;
-    }
-    .wiring-key-shape {
-      fill: #252d38;
-      stroke: #68778b;
-      stroke-width: 2;
-    }
-    .wiring-col-line {
-      fill: none;
-      stroke: #e4b85f;
-      stroke-width: 4;
-      stroke-linejoin: round;
-      stroke-linecap: round;
-    }
-    .wiring-row-halo {
-      fill: none;
-      stroke: #202630;
-      stroke-width: 11;
-      stroke-linejoin: round;
-      stroke-linecap: round;
-    }
-    .wiring-row-line {
-      fill: none;
-      stroke: #6fb7df;
-      stroke-width: 5;
-      stroke-linejoin: round;
-      stroke-linecap: round;
-    }
-    .wiring-thumb-row {
-      stroke: #67d8ff;
-      stroke-width: 7;
-    }
-    .wiring-col-label {
-      fill: #ffd479;
-      font-size: 15px;
-      font-weight: 700;
-      text-anchor: middle;
-      paint-order: stroke;
-      stroke: #202630;
-      stroke-width: 6px;
-    }
-    .wiring-row-label {
-      fill: #9bddf7;
-      font-size: 14px;
-      font-weight: 700;
-      text-anchor: end;
-      paint-order: stroke;
-      stroke: #202630;
-      stroke-width: 6px;
-    }
-    .component-col-wire {
-      stroke: #e4b85f;
-      stroke-width: 3;
-    }
-    .component-row-wire {
-      stroke: #6fb7df;
-      stroke-width: 3;
-    }
-    .component-wire {
-      stroke: #d5deea;
-      stroke-width: 2;
-    }
-    .wiring-switch {
-      fill: #3a4554;
-      stroke: #e2e8f0;
-      stroke-width: 2;
-    }
-    .wiring-diode {
-      fill: #e09c4d;
-      stroke: #ffca78;
-      stroke-width: 1;
-    }
-    .wiring-diode-band {
-      fill: #11151b;
-    }
-    .col-junction {
-      fill: #ffd479;
-      stroke: #202630;
-      stroke-width: 1;
-    }
-    .row-junction {
-      fill: #8bd0f4;
-      stroke: #202630;
-      stroke-width: 1;
-    }
-    .wiring-legend-box {
-      fill: #252d39;
-      stroke: #68778b;
-      stroke-width: 2;
-    }
-    .legend-col-line {
-      stroke: #e4b85f;
-      stroke-width: 5;
-    }
-    .legend-row-line {
-      stroke: #67d8ff;
-      stroke-width: 7;
-    }
-    .legend-diode {
-      fill: #e09c4d;
-      stroke: #ffca78;
-      stroke-width: 2;
-    }
-    .legend-diode-band {
-      fill: #11151b;
-    }
-    .wiring-note {
-      fill: #c3cedc;
-      font-size: 14px;
-    }
-    .wiring-emphasis {
-      fill: #ffd479;
-      font-size: 16px;
-      font-weight: 750;
-    }
-    .left-label {
-      fill: #8dc9e8;
-    }
-    .right-label {
-      fill: #c4a5e5;
-    }
-    .controller-body, .breakout-body, .wasd-box {
-      fill: #252d39;
-      stroke: #68778b;
-      stroke-width: 2;
-    }
-    .controller-title {
-      fill: #ebdbb2;
-      font-size: 18px;
-      font-weight: 800;
-      text-anchor: middle;
-    }
-    .controller-note {
-      fill: #c3cedc;
-      font-size: 14px;
-      text-anchor: middle;
-    }
-    .controller-warning {
-      fill: #fabd2f;
-      font-size: 14px;
-      font-weight: 750;
-      text-anchor: middle;
-    }
-    .pin-label {
-      fill: #ebdbb2;
-      font-size: 14px;
-      font-weight: 700;
-    }
-    .muted {
-      fill: #928374;
-    }
-    .pin-vcc {
-      fill: #cc241d;
-    }
-    .pin-gnd {
-      fill: #3c3836;
-      stroke: #ebdbb2;
-      stroke-width: 1.5;
-    }
-    .pin-x {
-      fill: #98971a;
-    }
-    .pin-y {
-      fill: #458588;
-    }
-    .pin-unused {
-      fill: #928374;
-    }
-    .wire-vcc, .wire-gnd, .wire-x, .wire-y {
-      fill: none;
-      stroke-width: 5;
-      stroke-linecap: round;
-    }
-    .wire-vcc {
-      stroke: #cc241d;
-    }
-    .wire-gnd {
-      stroke: #3c3836;
-    }
-    .wire-x {
-      stroke: #98971a;
-    }
-    .wire-y {
-      stroke: #458588;
-    }
+    text { font-family: Inter, "SF Pro Text", "PingFang SC", "Microsoft YaHei", sans-serif; fill: #e9eef7; }
+    .bg { fill: #151922; }
+    .panel { fill: #202735; stroke: #536075; stroke-width: 2; }
+    .title { font-size: 32px; font-weight: 800; }
+    .subtitle { fill: #b9c5d6; font-size: 15px; }
+    .section { font-size: 22px; font-weight: 800; }
+    .key rect { fill: #29394a; stroke: #77b9dc; stroke-width: 2; }
+    .key-label { font-size: 18px; font-weight: 800; text-anchor: middle; }
+    .key-meta { fill: #bcd8e8; font-size: 13px; font-weight: 700; text-anchor: middle; }
+    .key-pin { fill: #ffd47b; font-size: 11px; font-weight: 650; text-anchor: middle; }
+    .warning-box { fill: #3a3022; stroke: #f0b65a; stroke-width: 2; }
+    .warning { fill: #ffd47b; font-size: 15px; font-weight: 700; }
+    .note { fill: #c4cfdd; font-size: 14px; }
+    .pcb rect:first-child { fill: #34303e; stroke: #ad8fc7; stroke-width: 2; }
+    .row-pad { fill: #69bde8; stroke: #d8f2ff; stroke-width: 1.5; }
+    .col-pad { fill: #e7b555; stroke: #fff0bd; stroke-width: 1.5; }
+    .pad-letter { fill: #151922; font-size: 11px; font-weight: 900; text-anchor: middle; }
+    .switch { fill: #505a6a; stroke: #dfe7ef; stroke-width: 1.5; }
+    .internal { stroke: #dfe7ef; stroke-width: 3; }
+    .band { fill: #11151b; }
+    .pcb-index { fill: #b7c1cf; font-size: 9px; text-anchor: middle; }
+    .row-wire { fill: none; stroke: #69bde8; stroke-width: 7; stroke-linecap: round; }
+    .col-wire { fill: none; stroke: #e7b555; stroke-width: 6; stroke-linecap: round; }
+    .row-label { fill: #9bdcff; font-size: 13px; font-weight: 800; text-anchor: end; }
+    .col-label { fill: #ffd47b; font-size: 13px; font-weight: 800; text-anchor: middle; }
+    .col-pin-label { fill: #e6c984; font-size: 11px; font-weight: 700; text-anchor: middle; }
+    .controller { fill: #252d3b; stroke: #7a879b; stroke-width: 2; }
+    .controller-title { font-size: 19px; font-weight: 800; text-anchor: middle; }
+    .pin { font-size: 13px; font-weight: 700; }
+    .joy { fill: #34302e; stroke: #dc7e39; stroke-width: 3; }
+    .joy-stick { fill: #4b4642; stroke: #f1c25f; stroke-width: 3; }
+    .wire-vcc { stroke: #ef5350; }
+    .wire-gnd { stroke: #aeb6c2; }
+    .wire-x { stroke: #9dbb4b; }
+    .wire-y { stroke: #55a6ad; }
+    .wire-sw { stroke: #c185d8; }
+    .joy-wire { fill: none; stroke-width: 5; stroke-linecap: round; }
+    .flow { stroke: #e7edf5; stroke-width: 3; fill: none; marker-end: url(#arrow); }
+    .diode { fill: #d99749; stroke: #ffd18b; stroke-width: 2; }
+    .diode-band { fill: #11151b; }
+    .flow-label { font-size: 14px; font-weight: 800; text-anchor: middle; }
   </style>
+  <defs>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L8,3 z" fill="#e7edf5"/>
+    </marker>
+  </defs>
 
-  <rect class="background" width="1750" height="2220"/>
-  <rect class="frame" x="22" y="18" width="1706" height="2180" rx="24"/>
+  <rect class="bg" width="1440" height="1680"/>
+  <rect class="panel" x="24" y="20" width="1392" height="1640" rx="24"/>
+  <text class="title" x="58" y="62">左手 29 键 + Joy-Con · Plum Twist 焊接接线图</text>
+  <text class="subtitle" x="58" y="88">单手 RP2040-Zero · 5×6 矩阵（R4C5 不安装）· 从热插拔座/焊盘侧观察 · RGB 焊盘留空</text>
 
-  <text class="title" x="60" y="55">Kinesis Dactyl 5x7 Joy-Con — 第一层键位 / 矩阵 / GPIO 接线图</text>
-  <text class="subtitle" x="60" y="79">
-    每键四行：第一层键位 / 侧与 QMK 全局坐标 / 本地 R-C / 行 GPIO 与列 GPIO。拇指区矩阵隐藏，左侧改接 Joy-Con。
-  </text>
-  <text class="section left-label" x="60" y="94">左半</text>
-  <text class="section right-label" x="1640" y="94" text-anchor="end">右半</text>
+  <text class="section" x="58" y="128">第一层键位与 GPIO</text>
+  <g class="key">
+    <rect x="70" y="148" width="132" height="84" rx="12"/>
+    <text class="key-label" x="136" y="176">=</text>
+    <text class="key-meta" x="136" y="199">R0C0</text>
+    <text class="key-pin" x="136" y="218">GP14 / GP2</text>
+  </g>
+  <g class="key">
+    <rect x="216" y="148" width="132" height="84" rx="12"/>
+    <text class="key-label" x="282" y="176">1</text>
+    <text class="key-meta" x="282" y="199">R0C1</text>
+    <text class="key-pin" x="282" y="218">GP14 / GP3</text>
+  </g>
+  <g class="key">
+    <rect x="362" y="148" width="132" height="84" rx="12"/>
+    <text class="key-label" x="428" y="176">2</text>
+    <text class="key-meta" x="428" y="199">R0C2</text>
+    <text class="key-pin" x="428" y="218">GP14 / GP4</text>
+  </g>
+  <g class="key">
+    <rect x="508" y="148" width="132" height="84" rx="12"/>
+    <text class="key-label" x="574" y="176">3</text>
+    <text class="key-meta" x="574" y="199">R0C3</text>
+    <text class="key-pin" x="574" y="218">GP14 / GP5</text>
+  </g>
+  <g class="key">
+    <rect x="654" y="148" width="132" height="84" rx="12"/>
+    <text class="key-label" x="720" y="176">4</text>
+    <text class="key-meta" x="720" y="199">R0C4</text>
+    <text class="key-pin" x="720" y="218">GP14 / GP6</text>
+  </g>
+  <g class="key">
+    <rect x="800" y="148" width="132" height="84" rx="12"/>
+    <text class="key-label" x="866" y="176">5</text>
+    <text class="key-meta" x="866" y="199">R0C5</text>
+    <text class="key-pin" x="866" y="218">GP14 / GP7</text>
+  </g>
+  <g class="key">
+    <rect x="70" y="246" width="132" height="84" rx="12"/>
+    <text class="key-label" x="136" y="274">Tab</text>
+    <text class="key-meta" x="136" y="297">R1C0</text>
+    <text class="key-pin" x="136" y="316">GP15 / GP2</text>
+  </g>
+  <g class="key">
+    <rect x="216" y="246" width="132" height="84" rx="12"/>
+    <text class="key-label" x="282" y="274">Q</text>
+    <text class="key-meta" x="282" y="297">R1C1</text>
+    <text class="key-pin" x="282" y="316">GP15 / GP3</text>
+  </g>
+  <g class="key">
+    <rect x="362" y="246" width="132" height="84" rx="12"/>
+    <text class="key-label" x="428" y="274">W</text>
+    <text class="key-meta" x="428" y="297">R1C2</text>
+    <text class="key-pin" x="428" y="316">GP15 / GP4</text>
+  </g>
+  <g class="key">
+    <rect x="508" y="246" width="132" height="84" rx="12"/>
+    <text class="key-label" x="574" y="274">E</text>
+    <text class="key-meta" x="574" y="297">R1C3</text>
+    <text class="key-pin" x="574" y="316">GP15 / GP5</text>
+  </g>
+  <g class="key">
+    <rect x="654" y="246" width="132" height="84" rx="12"/>
+    <text class="key-label" x="720" y="274">R</text>
+    <text class="key-meta" x="720" y="297">R1C4</text>
+    <text class="key-pin" x="720" y="316">GP15 / GP6</text>
+  </g>
+  <g class="key">
+    <rect x="800" y="246" width="132" height="84" rx="12"/>
+    <text class="key-label" x="866" y="274">T</text>
+    <text class="key-meta" x="866" y="297">R1C5</text>
+    <text class="key-pin" x="866" y="316">GP15 / GP7</text>
+  </g>
+  <g class="key">
+    <rect x="70" y="344" width="132" height="84" rx="12"/>
+    <text class="key-label" x="136" y="372">Esc</text>
+    <text class="key-meta" x="136" y="395">R2C0</text>
+    <text class="key-pin" x="136" y="414">GP26 / GP2</text>
+  </g>
+  <g class="key">
+    <rect x="216" y="344" width="132" height="84" rx="12"/>
+    <text class="key-label" x="282" y="372">A</text>
+    <text class="key-meta" x="282" y="395">R2C1</text>
+    <text class="key-pin" x="282" y="414">GP26 / GP3</text>
+  </g>
+  <g class="key">
+    <rect x="362" y="344" width="132" height="84" rx="12"/>
+    <text class="key-label" x="428" y="372">S</text>
+    <text class="key-meta" x="428" y="395">R2C2</text>
+    <text class="key-pin" x="428" y="414">GP26 / GP4</text>
+  </g>
+  <g class="key">
+    <rect x="508" y="344" width="132" height="84" rx="12"/>
+    <text class="key-label" x="574" y="372">D</text>
+    <text class="key-meta" x="574" y="395">R2C3</text>
+    <text class="key-pin" x="574" y="414">GP26 / GP5</text>
+  </g>
+  <g class="key">
+    <rect x="654" y="344" width="132" height="84" rx="12"/>
+    <text class="key-label" x="720" y="372">F</text>
+    <text class="key-meta" x="720" y="395">R2C4</text>
+    <text class="key-pin" x="720" y="414">GP26 / GP6</text>
+  </g>
+  <g class="key">
+    <rect x="800" y="344" width="132" height="84" rx="12"/>
+    <text class="key-label" x="866" y="372">G</text>
+    <text class="key-meta" x="866" y="395">R2C5</text>
+    <text class="key-pin" x="866" y="414">GP26 / GP7</text>
+  </g>
+  <g class="key">
+    <rect x="70" y="442" width="132" height="84" rx="12"/>
+    <text class="key-label" x="136" y="470">L Shift</text>
+    <text class="key-meta" x="136" y="493">R3C0</text>
+    <text class="key-pin" x="136" y="512">GP27 / GP2</text>
+  </g>
+  <g class="key">
+    <rect x="216" y="442" width="132" height="84" rx="12"/>
+    <text class="key-label" x="282" y="470">Z</text>
+    <text class="key-meta" x="282" y="493">R3C1</text>
+    <text class="key-pin" x="282" y="512">GP27 / GP3</text>
+  </g>
+  <g class="key">
+    <rect x="362" y="442" width="132" height="84" rx="12"/>
+    <text class="key-label" x="428" y="470">X</text>
+    <text class="key-meta" x="428" y="493">R3C2</text>
+    <text class="key-pin" x="428" y="512">GP27 / GP4</text>
+  </g>
+  <g class="key">
+    <rect x="508" y="442" width="132" height="84" rx="12"/>
+    <text class="key-label" x="574" y="470">C</text>
+    <text class="key-meta" x="574" y="493">R3C3</text>
+    <text class="key-pin" x="574" y="512">GP27 / GP5</text>
+  </g>
+  <g class="key">
+    <rect x="654" y="442" width="132" height="84" rx="12"/>
+    <text class="key-label" x="720" y="470">V</text>
+    <text class="key-meta" x="720" y="493">R3C4</text>
+    <text class="key-pin" x="720" y="512">GP27 / GP6</text>
+  </g>
+  <g class="key">
+    <rect x="800" y="442" width="132" height="84" rx="12"/>
+    <text class="key-label" x="866" y="470">B</text>
+    <text class="key-meta" x="866" y="493">R3C5</text>
+    <text class="key-pin" x="866" y="512">GP27 / GP7</text>
+  </g>
+  <g class="key">
+    <rect x="70" y="540" width="132" height="84" rx="12"/>
+    <text class="key-label" x="136" y="568">Nav/Media</text>
+    <text class="key-meta" x="136" y="591">R4C0</text>
+    <text class="key-pin" x="136" y="610">GP9 / GP2</text>
+  </g>
+  <g class="key">
+    <rect x="216" y="540" width="132" height="84" rx="12"/>
+    <text class="key-label" x="282" y="568">`</text>
+    <text class="key-meta" x="282" y="591">R4C1</text>
+    <text class="key-pin" x="282" y="610">GP9 / GP3</text>
+  </g>
+  <g class="key">
+    <rect x="362" y="540" width="132" height="84" rx="12"/>
+    <text class="key-label" x="428" y="568">Caps</text>
+    <text class="key-meta" x="428" y="591">R4C2</text>
+    <text class="key-pin" x="428" y="610">GP9 / GP4</text>
+  </g>
+  <g class="key">
+    <rect x="508" y="540" width="132" height="84" rx="12"/>
+    <text class="key-label" x="574" y="568">←</text>
+    <text class="key-meta" x="574" y="591">R4C3</text>
+    <text class="key-pin" x="574" y="610">GP9 / GP5</text>
+  </g>
+  <g class="key">
+    <rect x="654" y="540" width="132" height="84" rx="12"/>
+    <text class="key-label" x="720" y="568">→</text>
+    <text class="key-meta" x="720" y="591">R4C4</text>
+    <text class="key-pin" x="720" y="610">GP9 / GP6</text>
+  </g>
+  <rect class="warning-box" x="978" y="142" width="390" height="475" rx="18"/>
+  <text class="section" x="1008" y="180">Plum Twist 单键 PCB</text>
+  <text class="note" x="1008" y="204">视角：热插拔座/焊盘侧（实际焊接面）</text>
+  <rect class="controller" x="1042" y="235" width="260" height="170" rx="54"/>
+  <circle class="row-pad" cx="1082" cy="320" r="17"/>
+  <circle class="col-pad" cx="1262" cy="320" r="17"/>
+  <text class="pad-letter" x="1082" y="325">R</text>
+  <text class="pad-letter" x="1262" y="325">C</text>
+  <rect class="switch" x="1131" y="296" width="46" height="48" rx="7"/>
+  <rect class="diode" x="1193" y="306" width="42" height="28" rx="14"/>
+  <rect class="diode-band" x="1225" y="306" width="7" height="28"/>
+  <path class="flow" d="M1099 320 H1125 M1178 320 H1188 M1236 320 H1241"/>
+  <text class="flow-label" x="1172" y="372">R → 开关 → 板载二极管 → C</text>
+  <text class="warning" x="1008" y="438">QMK 必须设置：ROW2COL</text>
+  <text class="warning" x="1008" y="466">二极管阴极/条纹端固定朝 Column</text>
+  <text class="note" x="1008" y="498">不需要外接 1N4148。</text>
+  <text class="note" x="1008" y="524">每块 PCB：R 焊盘接同行蓝线；</text>
+  <text class="note" x="1008" y="547">C 焊盘接同列黄线。</text>
+  <text class="note" x="1008" y="576">+ / − / I / O（RGB）全部留空。</text>
 
-  <g class="key left">
-    <rect class="key-shape" x="60" y="100" width="90" height="84" rx="9"/>
-    <text class="key-label" x="105" y="116">=</text>
-    <text class="key-meta" x="105" y="134">L · [0,0]</text>
-    <text class="key-matrix" x="105" y="153">R0 C0</text>
-    <text class="key-pins" x="105" y="172">GP14 / GP2</text>
-  </g>
-  <g class="key left">
-    <rect class="key-shape" x="156" y="100" width="90" height="84" rx="9"/>
-    <text class="key-label" x="201" y="116">1</text>
-    <text class="key-meta" x="201" y="134">L · [0,1]</text>
-    <text class="key-matrix" x="201" y="153">R0 C1</text>
-    <text class="key-pins" x="201" y="172">GP14 / GP3</text>
-  </g>
-  <g class="key left">
-    <rect class="key-shape" x="252" y="100" width="90" height="84" rx="9"/>
-    <text class="key-label" x="297" y="116">2</text>
-    <text class="key-meta" x="297" y="134">L · [0,2]</text>
-    <text class="key-matrix" x="297" y="153">R0 C2</text>
-    <text class="key-pins" x="297" y="172">GP14 / GP4</text>
-  </g>
-  <g class="key left">
-    <rect class="key-shape" x="348" y="100" width="90" height="84" rx="9"/>
-    <text class="key-label" x="393" y="116">3</text>
-    <text class="key-meta" x="393" y="134">L · [0,3]</text>
-    <text class="key-matrix" x="393" y="153">R0 C3</text>
-    <text class="key-pins" x="393" y="172">GP14 / GP5</text>
-  </g>
-  <g class="key left">
-    <rect class="key-shape" x="444" y="100" width="90" height="84" rx="9"/>
-    <text class="key-label" x="489" y="116">4</text>
-    <text class="key-meta" x="489" y="134">L · [0,4]</text>
-    <text class="key-matrix" x="489" y="153">R0 C4</text>
-    <text class="key-pins" x="489" y="172">GP14 / GP6</text>
-  </g>
-  <g class="key left">
-    <rect class="key-shape" x="540" y="100" width="90" height="84" rx="9"/>
-    <text class="key-label" x="585" y="116">5</text>
-    <text class="key-meta" x="585" y="134">L · [0,5]</text>
-    <text class="key-matrix" x="585" y="153">R0 C5</text>
-    <text class="key-pins" x="585" y="172">GP14 / GP7</text>
-  </g>
-  <g class="key left">
-    <rect class="key-shape" x="60" y="190" width="90" height="84" rx="9"/>
-    <text class="key-label" x="105" y="206">Tab</text>
-    <text class="key-meta" x="105" y="224">L · [1,0]</text>
-    <text class="key-matrix" x="105" y="243">R1 C0</text>
-    <text class="key-pins" x="105" y="262">GP15 / GP2</text>
-  </g>
-  <g class="key left">
-    <rect class="key-shape" x="156" y="190" width="90" height="84" rx="9"/>
-    <text class="key-label" x="201" y="206">Q</text>
-    <text class="key-meta" x="201" y="224">L · [1,1]</text>
-    <text class="key-matrix" x="201" y="243">R1 C1</text>
-    <text class="key-pins" x="201" y="262">GP15 / GP3</text>
-  </g>
-  <g class="key left">
-    <rect class="key-shape" x="252" y="190" width="90" height="84" rx="9"/>
-    <text class="key-label" x="297" y="206">W</text>
-    <text class="key-meta" x="297" y="224">L · [1,2]</text>
-    <text class="key-matrix" x="297" y="243">R1 C2</text>
-    <text class="key-pins" x="297" y="262">GP15 / GP4</text>
-  </g>
-  <g class="key left">
-    <rect class="key-shape" x="348" y="190" width="90" height="84" rx="9"/>
-    <text class="key-label" x="393" y="206">E</text>
-    <text class="key-meta" x="393" y="224">L · [1,3]</text>
-    <text class="key-matrix" x="393" y="243">R1 C3</text>
-    <text class="key-pins" x="393" y="262">GP15 / GP5</text>
-  </g>
-  <g class="key left">
-    <rect class="key-shape" x="444" y="190" width="90" height="84" rx="9"/>
-    <text class="key-label" x="489" y="206">R</text>
-    <text class="key-meta" x="489" y="224">L · [1,4]</text>
-    <text class="key-matrix" x="489" y="243">R1 C4</text>
-    <text class="key-pins" x="489" y="262">GP15 / GP6</text>
-  </g>
-  <g class="key left">
-    <rect class="key-shape" x="540" y="190" width="90" height="84" rx="9"/>
-    <text class="key-label" x="585" y="206">T</text>
-    <text class="key-meta" x="585" y="224">L · [1,5]</text>
-    <text class="key-matrix" x="585" y="243">R1 C5</text>
-    <text class="key-pins" x="585" y="262">GP15 / GP7</text>
-  </g>
-  <g class="key left">
-    <rect class="key-shape" x="60" y="280" width="90" height="84" rx="9"/>
-    <text class="key-label" x="105" y="296">Esc</text>
-    <text class="key-meta" x="105" y="314">L · [2,0]</text>
-    <text class="key-matrix" x="105" y="333">R2 C0</text>
-    <text class="key-pins" x="105" y="352">GP26 / GP2</text>
-  </g>
-  <g class="key left">
-    <rect class="key-shape" x="156" y="280" width="90" height="84" rx="9"/>
-    <text class="key-label" x="201" y="296">A</text>
-    <text class="key-meta" x="201" y="314">L · [2,1]</text>
-    <text class="key-matrix" x="201" y="333">R2 C1</text>
-    <text class="key-pins" x="201" y="352">GP26 / GP3</text>
-  </g>
-  <g class="key left">
-    <rect class="key-shape" x="252" y="280" width="90" height="84" rx="9"/>
-    <text class="key-label" x="297" y="296">S</text>
-    <text class="key-meta" x="297" y="314">L · [2,2]</text>
-    <text class="key-matrix" x="297" y="333">R2 C2</text>
-    <text class="key-pins" x="297" y="352">GP26 / GP4</text>
-  </g>
-  <g class="key left">
-    <rect class="key-shape" x="348" y="280" width="90" height="84" rx="9"/>
-    <text class="key-label" x="393" y="296">D</text>
-    <text class="key-meta" x="393" y="314">L · [2,3]</text>
-    <text class="key-matrix" x="393" y="333">R2 C3</text>
-    <text class="key-pins" x="393" y="352">GP26 / GP5</text>
-  </g>
-  <g class="key left">
-    <rect class="key-shape" x="444" y="280" width="90" height="84" rx="9"/>
-    <text class="key-label" x="489" y="296">F</text>
-    <text class="key-meta" x="489" y="314">L · [2,4]</text>
-    <text class="key-matrix" x="489" y="333">R2 C4</text>
-    <text class="key-pins" x="489" y="352">GP26 / GP6</text>
-  </g>
-  <g class="key left">
-    <rect class="key-shape" x="540" y="280" width="90" height="84" rx="9"/>
-    <text class="key-label" x="585" y="296">G</text>
-    <text class="key-meta" x="585" y="314">L · [2,5]</text>
-    <text class="key-matrix" x="585" y="333">R2 C5</text>
-    <text class="key-pins" x="585" y="352">GP26 / GP7</text>
-  </g>
-  <g class="key left">
-    <rect class="key-shape" x="60" y="370" width="90" height="84" rx="9"/>
-    <text class="key-label" x="105" y="386">L Shift</text>
-    <text class="key-meta" x="105" y="404">L · [3,0]</text>
-    <text class="key-matrix" x="105" y="423">R3 C0</text>
-    <text class="key-pins" x="105" y="442">GP27 / GP2</text>
-  </g>
-  <g class="key left">
-    <rect class="key-shape" x="156" y="370" width="90" height="84" rx="9"/>
-    <text class="key-label" x="201" y="386">Z</text>
-    <text class="key-meta" x="201" y="404">L · [3,1]</text>
-    <text class="key-matrix" x="201" y="423">R3 C1</text>
-    <text class="key-pins" x="201" y="442">GP27 / GP3</text>
-  </g>
-  <g class="key left">
-    <rect class="key-shape" x="252" y="370" width="90" height="84" rx="9"/>
-    <text class="key-label" x="297" y="386">X</text>
-    <text class="key-meta" x="297" y="404">L · [3,2]</text>
-    <text class="key-matrix" x="297" y="423">R3 C2</text>
-    <text class="key-pins" x="297" y="442">GP27 / GP4</text>
-  </g>
-  <g class="key left">
-    <rect class="key-shape" x="348" y="370" width="90" height="84" rx="9"/>
-    <text class="key-label" x="393" y="386">C</text>
-    <text class="key-meta" x="393" y="404">L · [3,3]</text>
-    <text class="key-matrix" x="393" y="423">R3 C3</text>
-    <text class="key-pins" x="393" y="442">GP27 / GP5</text>
-  </g>
-  <g class="key left">
-    <rect class="key-shape" x="444" y="370" width="90" height="84" rx="9"/>
-    <text class="key-label" x="489" y="386">V</text>
-    <text class="key-meta" x="489" y="404">L · [3,4]</text>
-    <text class="key-matrix" x="489" y="423">R3 C4</text>
-    <text class="key-pins" x="489" y="442">GP27 / GP6</text>
-  </g>
-  <g class="key left">
-    <rect class="key-shape" x="540" y="370" width="90" height="84" rx="9"/>
-    <text class="key-label" x="585" y="386">B</text>
-    <text class="key-meta" x="585" y="404">L · [3,5]</text>
-    <text class="key-matrix" x="585" y="423">R3 C5</text>
-    <text class="key-pins" x="585" y="442">GP27 / GP7</text>
-  </g>
-  <g class="key left">
-    <rect class="key-shape" x="60" y="460" width="90" height="84" rx="9"/>
-    <text class="key-label" x="105" y="476">Nav/Media</text>
-    <text class="key-meta" x="105" y="494">L · [4,0]</text>
-    <text class="key-matrix" x="105" y="513">R4 C0</text>
-    <text class="key-pins" x="105" y="532">GP9 / GP2</text>
-  </g>
-  <g class="key left">
-    <rect class="key-shape" x="156" y="460" width="90" height="84" rx="9"/>
-    <text class="key-label" x="201" y="476">`</text>
-    <text class="key-meta" x="201" y="494">L · [4,1]</text>
-    <text class="key-matrix" x="201" y="513">R4 C1</text>
-    <text class="key-pins" x="201" y="532">GP9 / GP3</text>
-  </g>
-  <g class="key left">
-    <rect class="key-shape" x="252" y="460" width="90" height="84" rx="9"/>
-    <text class="key-label" x="297" y="476">Caps</text>
-    <text class="key-meta" x="297" y="494">L · [4,2]</text>
-    <text class="key-matrix" x="297" y="513">R4 C2</text>
-    <text class="key-pins" x="297" y="532">GP9 / GP4</text>
-  </g>
-  <g class="key left">
-    <rect class="key-shape" x="348" y="460" width="90" height="84" rx="9"/>
-    <text class="key-label" x="393" y="476">←</text>
-    <text class="key-meta" x="393" y="494">L · [4,3]</text>
-    <text class="key-matrix" x="393" y="513">R4 C3</text>
-    <text class="key-pins" x="393" y="532">GP9 / GP5</text>
-  </g>
-  <g class="key left">
-    <rect class="key-shape" x="444" y="460" width="90" height="84" rx="9"/>
-    <text class="key-label" x="489" y="476">→</text>
-    <text class="key-meta" x="489" y="494">L · [4,4]</text>
-    <text class="key-matrix" x="489" y="513">R4 C4</text>
-    <text class="key-pins" x="489" y="532">GP9 / GP6</text>
-  </g>
-  <g class="key left">
-    <rect class="key-shape" x="636" y="100" width="90" height="84" rx="9"/>
-    <text class="key-label" x="681" y="116">Keypad</text>
-    <text class="key-meta" x="681" y="134">L · [0,6]</text>
-    <text class="key-matrix" x="681" y="153">R0 C6</text>
-    <text class="key-pins" x="681" y="172">GP14 / GP8</text>
-  </g>
-  <g class="key left">
-    <rect class="key-shape" x="636" y="190" width="90" height="84" rx="9"/>
-    <text class="key-label" x="681" y="206">Fn</text>
-    <text class="key-meta" x="681" y="224">L · [1,6]</text>
-    <text class="key-matrix" x="681" y="243">R1 C6</text>
-    <text class="key-pins" x="681" y="262">GP15 / GP8</text>
-  </g>
-  <g class="key left">
-    <rect class="key-shape" x="636" y="280" width="90" height="84" rx="9"/>
-    <text class="key-label" x="681" y="296">Nav/Media</text>
-    <text class="key-meta" x="681" y="314">L · [2,6]</text>
-    <text class="key-matrix" x="681" y="333">R2 C6</text>
-    <text class="key-pins" x="681" y="352">GP26 / GP8</text>
-  </g>
-  <g class="key right">
-    <rect class="key-shape" x="1146" y="100" width="90" height="84" rx="9"/>
-    <text class="key-label" x="1191" y="116">6</text>
-    <text class="key-meta" x="1191" y="134">R · [6,5]</text>
-    <text class="key-matrix" x="1191" y="153">R0 C5</text>
-    <text class="key-pins" x="1191" y="172">GP14 / GP7</text>
-  </g>
-  <g class="key right">
-    <rect class="key-shape" x="1242" y="100" width="90" height="84" rx="9"/>
-    <text class="key-label" x="1287" y="116">7</text>
-    <text class="key-meta" x="1287" y="134">R · [6,4]</text>
-    <text class="key-matrix" x="1287" y="153">R0 C4</text>
-    <text class="key-pins" x="1287" y="172">GP14 / GP6</text>
-  </g>
-  <g class="key right">
-    <rect class="key-shape" x="1338" y="100" width="90" height="84" rx="9"/>
-    <text class="key-label" x="1383" y="116">8</text>
-    <text class="key-meta" x="1383" y="134">R · [6,3]</text>
-    <text class="key-matrix" x="1383" y="153">R0 C3</text>
-    <text class="key-pins" x="1383" y="172">GP14 / GP5</text>
-  </g>
-  <g class="key right">
-    <rect class="key-shape" x="1434" y="100" width="90" height="84" rx="9"/>
-    <text class="key-label" x="1479" y="116">9</text>
-    <text class="key-meta" x="1479" y="134">R · [6,2]</text>
-    <text class="key-matrix" x="1479" y="153">R0 C2</text>
-    <text class="key-pins" x="1479" y="172">GP14 / GP4</text>
-  </g>
-  <g class="key right">
-    <rect class="key-shape" x="1530" y="100" width="90" height="84" rx="9"/>
-    <text class="key-label" x="1575" y="116">0</text>
-    <text class="key-meta" x="1575" y="134">R · [6,1]</text>
-    <text class="key-matrix" x="1575" y="153">R0 C1</text>
-    <text class="key-pins" x="1575" y="172">GP14 / GP3</text>
-  </g>
-  <g class="key right">
-    <rect class="key-shape" x="1626" y="100" width="90" height="84" rx="9"/>
-    <text class="key-label" x="1671" y="116">-</text>
-    <text class="key-meta" x="1671" y="134">R · [6,0]</text>
-    <text class="key-matrix" x="1671" y="153">R0 C0</text>
-    <text class="key-pins" x="1671" y="172">GP14 / GP2</text>
-  </g>
-  <g class="key right">
-    <rect class="key-shape" x="1146" y="190" width="90" height="84" rx="9"/>
-    <text class="key-label" x="1191" y="206">Y</text>
-    <text class="key-meta" x="1191" y="224">R · [7,5]</text>
-    <text class="key-matrix" x="1191" y="243">R1 C5</text>
-    <text class="key-pins" x="1191" y="262">GP15 / GP7</text>
-  </g>
-  <g class="key right">
-    <rect class="key-shape" x="1242" y="190" width="90" height="84" rx="9"/>
-    <text class="key-label" x="1287" y="206">U</text>
-    <text class="key-meta" x="1287" y="224">R · [7,4]</text>
-    <text class="key-matrix" x="1287" y="243">R1 C4</text>
-    <text class="key-pins" x="1287" y="262">GP15 / GP6</text>
-  </g>
-  <g class="key right">
-    <rect class="key-shape" x="1338" y="190" width="90" height="84" rx="9"/>
-    <text class="key-label" x="1383" y="206">I</text>
-    <text class="key-meta" x="1383" y="224">R · [7,3]</text>
-    <text class="key-matrix" x="1383" y="243">R1 C3</text>
-    <text class="key-pins" x="1383" y="262">GP15 / GP5</text>
-  </g>
-  <g class="key right">
-    <rect class="key-shape" x="1434" y="190" width="90" height="84" rx="9"/>
-    <text class="key-label" x="1479" y="206">O</text>
-    <text class="key-meta" x="1479" y="224">R · [7,2]</text>
-    <text class="key-matrix" x="1479" y="243">R1 C2</text>
-    <text class="key-pins" x="1479" y="262">GP15 / GP4</text>
-  </g>
-  <g class="key right">
-    <rect class="key-shape" x="1530" y="190" width="90" height="84" rx="9"/>
-    <text class="key-label" x="1575" y="206">P</text>
-    <text class="key-meta" x="1575" y="224">R · [7,1]</text>
-    <text class="key-matrix" x="1575" y="243">R1 C1</text>
-    <text class="key-pins" x="1575" y="262">GP15 / GP3</text>
-  </g>
-  <g class="key right">
-    <rect class="key-shape" x="1626" y="190" width="90" height="84" rx="9"/>
-    <text class="key-label" x="1671" y="206">\</text>
-    <text class="key-meta" x="1671" y="224">R · [7,0]</text>
-    <text class="key-matrix" x="1671" y="243">R1 C0</text>
-    <text class="key-pins" x="1671" y="262">GP15 / GP2</text>
-  </g>
-  <g class="key right">
-    <rect class="key-shape" x="1146" y="280" width="90" height="84" rx="9"/>
-    <text class="key-label" x="1191" y="296">H</text>
-    <text class="key-meta" x="1191" y="314">R · [8,5]</text>
-    <text class="key-matrix" x="1191" y="333">R2 C5</text>
-    <text class="key-pins" x="1191" y="352">GP26 / GP7</text>
-  </g>
-  <g class="key right">
-    <rect class="key-shape" x="1242" y="280" width="90" height="84" rx="9"/>
-    <text class="key-label" x="1287" y="296">J</text>
-    <text class="key-meta" x="1287" y="314">R · [8,4]</text>
-    <text class="key-matrix" x="1287" y="333">R2 C4</text>
-    <text class="key-pins" x="1287" y="352">GP26 / GP6</text>
-  </g>
-  <g class="key right">
-    <rect class="key-shape" x="1338" y="280" width="90" height="84" rx="9"/>
-    <text class="key-label" x="1383" y="296">K</text>
-    <text class="key-meta" x="1383" y="314">R · [8,3]</text>
-    <text class="key-matrix" x="1383" y="333">R2 C3</text>
-    <text class="key-pins" x="1383" y="352">GP26 / GP5</text>
-  </g>
-  <g class="key right">
-    <rect class="key-shape" x="1434" y="280" width="90" height="84" rx="9"/>
-    <text class="key-label" x="1479" y="296">L</text>
-    <text class="key-meta" x="1479" y="314">R · [8,2]</text>
-    <text class="key-matrix" x="1479" y="333">R2 C2</text>
-    <text class="key-pins" x="1479" y="352">GP26 / GP4</text>
-  </g>
-  <g class="key right">
-    <rect class="key-shape" x="1530" y="280" width="90" height="84" rx="9"/>
-    <text class="key-label" x="1575" y="296">;</text>
-    <text class="key-meta" x="1575" y="314">R · [8,1]</text>
-    <text class="key-matrix" x="1575" y="333">R2 C1</text>
-    <text class="key-pins" x="1575" y="352">GP26 / GP3</text>
-  </g>
-  <g class="key right">
-    <rect class="key-shape" x="1626" y="280" width="90" height="84" rx="9"/>
-    <text class="key-label" x="1671" y="296">&#x27;</text>
-    <text class="key-meta" x="1671" y="314">R · [8,0]</text>
-    <text class="key-matrix" x="1671" y="333">R2 C0</text>
-    <text class="key-pins" x="1671" y="352">GP26 / GP2</text>
-  </g>
-  <g class="key right">
-    <rect class="key-shape" x="1146" y="370" width="90" height="84" rx="9"/>
-    <text class="key-label" x="1191" y="386">N</text>
-    <text class="key-meta" x="1191" y="404">R · [9,5]</text>
-    <text class="key-matrix" x="1191" y="423">R3 C5</text>
-    <text class="key-pins" x="1191" y="442">GP27 / GP7</text>
-  </g>
-  <g class="key right">
-    <rect class="key-shape" x="1242" y="370" width="90" height="84" rx="9"/>
-    <text class="key-label" x="1287" y="386">M</text>
-    <text class="key-meta" x="1287" y="404">R · [9,4]</text>
-    <text class="key-matrix" x="1287" y="423">R3 C4</text>
-    <text class="key-pins" x="1287" y="442">GP27 / GP6</text>
-  </g>
-  <g class="key right">
-    <rect class="key-shape" x="1338" y="370" width="90" height="84" rx="9"/>
-    <text class="key-label" x="1383" y="386">,</text>
-    <text class="key-meta" x="1383" y="404">R · [9,3]</text>
-    <text class="key-matrix" x="1383" y="423">R3 C3</text>
-    <text class="key-pins" x="1383" y="442">GP27 / GP5</text>
-  </g>
-  <g class="key right">
-    <rect class="key-shape" x="1434" y="370" width="90" height="84" rx="9"/>
-    <text class="key-label" x="1479" y="386">.</text>
-    <text class="key-meta" x="1479" y="404">R · [9,2]</text>
-    <text class="key-matrix" x="1479" y="423">R3 C2</text>
-    <text class="key-pins" x="1479" y="442">GP27 / GP4</text>
-  </g>
-  <g class="key right">
-    <rect class="key-shape" x="1530" y="370" width="90" height="84" rx="9"/>
-    <text class="key-label" x="1575" y="386">/</text>
-    <text class="key-meta" x="1575" y="404">R · [9,1]</text>
-    <text class="key-matrix" x="1575" y="423">R3 C1</text>
-    <text class="key-pins" x="1575" y="442">GP27 / GP3</text>
-  </g>
-  <g class="key right">
-    <rect class="key-shape" x="1626" y="370" width="90" height="84" rx="9"/>
-    <text class="key-label" x="1671" y="386">R Shift</text>
-    <text class="key-meta" x="1671" y="404">R · [9,0]</text>
-    <text class="key-matrix" x="1671" y="423">R3 C0</text>
-    <text class="key-pins" x="1671" y="442">GP27 / GP2</text>
-  </g>
-  <g class="key right">
-    <rect class="key-shape" x="1242" y="460" width="90" height="84" rx="9"/>
-    <text class="key-label" x="1287" y="476">↑</text>
-    <text class="key-meta" x="1287" y="494">R · [10,4]</text>
-    <text class="key-matrix" x="1287" y="513">R4 C4</text>
-    <text class="key-pins" x="1287" y="532">GP9 / GP6</text>
-  </g>
-  <g class="key right">
-    <rect class="key-shape" x="1338" y="460" width="90" height="84" rx="9"/>
-    <text class="key-label" x="1383" y="476">↓</text>
-    <text class="key-meta" x="1383" y="494">R · [10,3]</text>
-    <text class="key-matrix" x="1383" y="513">R4 C3</text>
-    <text class="key-pins" x="1383" y="532">GP9 / GP5</text>
-  </g>
-  <g class="key right">
-    <rect class="key-shape" x="1434" y="460" width="90" height="84" rx="9"/>
-    <text class="key-label" x="1479" y="476">[</text>
-    <text class="key-meta" x="1479" y="494">R · [10,2]</text>
-    <text class="key-matrix" x="1479" y="513">R4 C2</text>
-    <text class="key-pins" x="1479" y="532">GP9 / GP4</text>
-  </g>
-  <g class="key right">
-    <rect class="key-shape" x="1530" y="460" width="90" height="84" rx="9"/>
-    <text class="key-label" x="1575" y="476">]</text>
-    <text class="key-meta" x="1575" y="494">R · [10,1]</text>
-    <text class="key-matrix" x="1575" y="513">R4 C1</text>
-    <text class="key-pins" x="1575" y="532">GP9 / GP3</text>
-  </g>
-  <g class="key right">
-    <rect class="key-shape" x="1626" y="460" width="90" height="84" rx="9"/>
-    <text class="key-label" x="1671" y="476">Nav/Media</text>
-    <text class="key-meta" x="1671" y="494">R · [10,0]</text>
-    <text class="key-matrix" x="1671" y="513">R4 C0</text>
-    <text class="key-pins" x="1671" y="532">GP9 / GP2</text>
-  </g>
-  <g class="key right">
-    <rect class="key-shape" x="1050" y="100" width="90" height="84" rx="9"/>
-    <text class="key-label" x="1095" y="116">Keypad</text>
-    <text class="key-meta" x="1095" y="134">R · [6,6]</text>
-    <text class="key-matrix" x="1095" y="153">R0 C6</text>
-    <text class="key-pins" x="1095" y="172">GP14 / GP8</text>
-  </g>
-  <g class="key right">
-    <rect class="key-shape" x="1050" y="190" width="90" height="84" rx="9"/>
-    <text class="key-label" x="1095" y="206">Fn</text>
-    <text class="key-meta" x="1095" y="224">R · [7,6]</text>
-    <text class="key-matrix" x="1095" y="243">R1 C6</text>
-    <text class="key-pins" x="1095" y="262">GP15 / GP8</text>
-  </g>
-  <g class="key right">
-    <rect class="key-shape" x="1050" y="280" width="90" height="84" rx="9"/>
-    <text class="key-label" x="1095" y="296">Nav/Media</text>
-    <text class="key-meta" x="1095" y="314">R · [8,6]</text>
-    <text class="key-matrix" x="1095" y="333">R2 C6</text>
-    <text class="key-pins" x="1095" y="352">GP26 / GP8</text>
-  </g>
-  <g class="joycon-module" transform="rotate(10 640 780)">
-    <rect class="joycon-body" x="520" y="660" width="250" height="220" rx="34"/>
-    <circle class="joycon-stick-outer" cx="645" cy="750" r="64"/>
-    <circle class="joycon-stick-inner" cx="645" cy="750" r="34"/>
-    <text class="joycon-title" x="645" y="842">左侧 Joy-Con</text>
-    <text class="joycon-note" x="645" y="862">GP28=X / GP29=Y</text>
-  </g>
-  <g class="joycon-module" transform="rotate(-10 1160 780)">
-    <rect class="disabled-thumb-body" x="1035" y="660" width="250" height="220" rx="34"/>
-    <text class="disabled-thumb-title" x="1160" y="746">右侧拇指区停用</text>
-    <text class="disabled-thumb-note" x="1160" y="774">R5 = NO_PIN</text>
-    <text class="disabled-thumb-note" x="1160" y="796">不安装开关 / 不接矩阵</text>
-  </g>
-
-  <g transform="translate(60 965)">
-    <text class="section" x="0" y="0">引脚总表</text>
-    <text class="legend" x="0" y="29">行：R0=GP14　R1=GP15　R2=GP26　R3=GP27　R4=GP9　R5=NO_PIN（拇指区停用）</text>
-    <text class="legend" x="0" y="55">列：C0=GP2　C1=GP3　C2=GP4　C3=GP5　C4=GP6　C5=GP7　C6=GP8</text>
-    <text class="warning" x="0" y="86">COL2ROW：列 GPIO → 开关 → 二极管无环端 → 二极管带环端 → 行 GPIO；Joy-Con：X=GP28，Y=GP29</text>
-  </g>
-
-  <g transform="translate(930 965)">
-    <text class="section" x="0" y="0">QMK 保留、Vial 隐藏且无需接线的位置</text>
-    <text class="legend" x="0" y="29">左：[3,6]、[4,5]、[4,6]、整行 [5,0]–[5,6]</text>
-    <text class="legend" x="0" y="55">右：[9,6]、[10,5]、[10,6]、整行 [11,0]–[11,6]</text>
-    <text class="warning" x="0" y="86">R4 已从 GP28 改到 GP9；GP28/GP29 专用于左侧 Joy-Con ADC。</text>
-  </g>
-
-  <line class="divider" x1="60" y1="1128" x2="1690" y2="1128"/>
-  <text class="hardware-title" x="60" y="1172">按实际键位连接行线与列线</text>
-  <text class="subtitle" x="60" y="1198">
-    下图与上方主键区几何 1:1；拇指区不接矩阵。键帽内仅画开关与二极管。黄色连接同一列，蓝色连接同一行。
-  </text>
-
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="60" y="1250" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="156" y="1250" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="252" y="1250" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="348" y="1250" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="444" y="1250" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="540" y="1250" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="60" y="1340" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="156" y="1340" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="252" y="1340" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="348" y="1340" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="444" y="1340" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="540" y="1340" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="60" y="1430" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="156" y="1430" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="252" y="1430" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="348" y="1430" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="444" y="1430" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="540" y="1430" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="60" y="1520" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="156" y="1520" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="252" y="1520" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="348" y="1520" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="444" y="1520" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="540" y="1520" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="60" y="1610" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="156" y="1610" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="252" y="1610" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="348" y="1610" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="444" y="1610" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="636" y="1250" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="636" y="1340" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="636" y="1430" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="1146" y="1250" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="1242" y="1250" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="1338" y="1250" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="1434" y="1250" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="1530" y="1250" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="1626" y="1250" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="1146" y="1340" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="1242" y="1340" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="1338" y="1340" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="1434" y="1340" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="1530" y="1340" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="1626" y="1340" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="1146" y="1430" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="1242" y="1430" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="1338" y="1430" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="1434" y="1430" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="1530" y="1430" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="1626" y="1430" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="1146" y="1520" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="1242" y="1520" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="1338" y="1520" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="1434" y="1520" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="1530" y="1520" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="1626" y="1520" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="1242" y="1610" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="1338" y="1610" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="1434" y="1610" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="1530" y="1610" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="1626" y="1610" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="1050" y="1250" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="1050" y="1340" width="90" height="84" rx="9"/>
-  </g>
-  <g class="wiring-key">
-    <rect class="wiring-key-shape" x="1050" y="1430" width="90" height="84" rx="9"/>
-  </g>
-  <polyline class="wiring-col-line" points="77.0,1292.0 77.0,1382.0 77.0,1472.0 77.0,1562.0 77.0,1652.0"/>
-  <circle class="col-junction" cx="77.0" cy="1292.0" r="4"/>
-  <circle class="col-junction" cx="77.0" cy="1382.0" r="4"/>
-  <circle class="col-junction" cx="77.0" cy="1472.0" r="4"/>
-  <circle class="col-junction" cx="77.0" cy="1562.0" r="4"/>
-  <circle class="col-junction" cx="77.0" cy="1652.0" r="4"/>
-  <text class="wiring-col-label" x="77.0" y="1237.0">C0</text>
-  <polyline class="wiring-col-line" points="173.0,1292.0 173.0,1382.0 173.0,1472.0 173.0,1562.0 173.0,1652.0"/>
-  <circle class="col-junction" cx="173.0" cy="1292.0" r="4"/>
-  <circle class="col-junction" cx="173.0" cy="1382.0" r="4"/>
-  <circle class="col-junction" cx="173.0" cy="1472.0" r="4"/>
-  <circle class="col-junction" cx="173.0" cy="1562.0" r="4"/>
-  <circle class="col-junction" cx="173.0" cy="1652.0" r="4"/>
-  <text class="wiring-col-label" x="173.0" y="1237.0">C1</text>
-  <polyline class="wiring-col-line" points="269.0,1292.0 269.0,1382.0 269.0,1472.0 269.0,1562.0 269.0,1652.0"/>
-  <circle class="col-junction" cx="269.0" cy="1292.0" r="4"/>
-  <circle class="col-junction" cx="269.0" cy="1382.0" r="4"/>
-  <circle class="col-junction" cx="269.0" cy="1472.0" r="4"/>
-  <circle class="col-junction" cx="269.0" cy="1562.0" r="4"/>
-  <circle class="col-junction" cx="269.0" cy="1652.0" r="4"/>
-  <text class="wiring-col-label" x="269.0" y="1237.0">C2</text>
-  <polyline class="wiring-col-line" points="365.0,1292.0 365.0,1382.0 365.0,1472.0 365.0,1562.0 365.0,1652.0"/>
-  <circle class="col-junction" cx="365.0" cy="1292.0" r="4"/>
-  <circle class="col-junction" cx="365.0" cy="1382.0" r="4"/>
-  <circle class="col-junction" cx="365.0" cy="1472.0" r="4"/>
-  <circle class="col-junction" cx="365.0" cy="1562.0" r="4"/>
-  <circle class="col-junction" cx="365.0" cy="1652.0" r="4"/>
-  <text class="wiring-col-label" x="365.0" y="1237.0">C3</text>
-  <polyline class="wiring-col-line" points="461.0,1292.0 461.0,1382.0 461.0,1472.0 461.0,1562.0 461.0,1652.0"/>
-  <circle class="col-junction" cx="461.0" cy="1292.0" r="4"/>
-  <circle class="col-junction" cx="461.0" cy="1382.0" r="4"/>
-  <circle class="col-junction" cx="461.0" cy="1472.0" r="4"/>
-  <circle class="col-junction" cx="461.0" cy="1562.0" r="4"/>
-  <circle class="col-junction" cx="461.0" cy="1652.0" r="4"/>
-  <text class="wiring-col-label" x="461.0" y="1237.0">C4</text>
-  <polyline class="wiring-col-line" points="557.0,1292.0 557.0,1382.0 557.0,1472.0 557.0,1562.0"/>
-  <circle class="col-junction" cx="557.0" cy="1292.0" r="4"/>
-  <circle class="col-junction" cx="557.0" cy="1382.0" r="4"/>
-  <circle class="col-junction" cx="557.0" cy="1472.0" r="4"/>
-  <circle class="col-junction" cx="557.0" cy="1562.0" r="4"/>
-  <text class="wiring-col-label" x="557.0" y="1237.0">C5</text>
-  <polyline class="wiring-col-line" points="653.0,1292.0 653.0,1382.0 653.0,1472.0"/>
-  <circle class="col-junction" cx="653.0" cy="1292.0" r="4"/>
-  <circle class="col-junction" cx="653.0" cy="1382.0" r="4"/>
-  <circle class="col-junction" cx="653.0" cy="1472.0" r="4"/>
-  <text class="wiring-col-label" x="653.0" y="1237.0">C6</text>
-  <polyline class="wiring-row-halo" points="136.0,1292.0 232.0,1292.0 328.0,1292.0 424.0,1292.0 520.0,1292.0 616.0,1292.0 712.0,1292.0"/>
-  <polyline class="wiring-row-line" points="136.0,1292.0 232.0,1292.0 328.0,1292.0 424.0,1292.0 520.0,1292.0 616.0,1292.0 712.0,1292.0"/>
-  <circle class="row-junction" cx="136.0" cy="1292.0" r="4"/>
-  <circle class="row-junction" cx="232.0" cy="1292.0" r="4"/>
-  <circle class="row-junction" cx="328.0" cy="1292.0" r="4"/>
-  <circle class="row-junction" cx="424.0" cy="1292.0" r="4"/>
-  <circle class="row-junction" cx="520.0" cy="1292.0" r="4"/>
-  <circle class="row-junction" cx="616.0" cy="1292.0" r="4"/>
-  <circle class="row-junction" cx="712.0" cy="1292.0" r="4"/>
-  <text class="wiring-row-label" x="51.0" y="1278.0">R0</text>
-  <polyline class="wiring-row-halo" points="136.0,1382.0 232.0,1382.0 328.0,1382.0 424.0,1382.0 520.0,1382.0 616.0,1382.0 712.0,1382.0"/>
-  <polyline class="wiring-row-line" points="136.0,1382.0 232.0,1382.0 328.0,1382.0 424.0,1382.0 520.0,1382.0 616.0,1382.0 712.0,1382.0"/>
-  <circle class="row-junction" cx="136.0" cy="1382.0" r="4"/>
-  <circle class="row-junction" cx="232.0" cy="1382.0" r="4"/>
-  <circle class="row-junction" cx="328.0" cy="1382.0" r="4"/>
-  <circle class="row-junction" cx="424.0" cy="1382.0" r="4"/>
-  <circle class="row-junction" cx="520.0" cy="1382.0" r="4"/>
-  <circle class="row-junction" cx="616.0" cy="1382.0" r="4"/>
-  <circle class="row-junction" cx="712.0" cy="1382.0" r="4"/>
-  <text class="wiring-row-label" x="51.0" y="1368.0">R1</text>
-  <polyline class="wiring-row-halo" points="136.0,1472.0 232.0,1472.0 328.0,1472.0 424.0,1472.0 520.0,1472.0 616.0,1472.0 712.0,1472.0"/>
-  <polyline class="wiring-row-line" points="136.0,1472.0 232.0,1472.0 328.0,1472.0 424.0,1472.0 520.0,1472.0 616.0,1472.0 712.0,1472.0"/>
-  <circle class="row-junction" cx="136.0" cy="1472.0" r="4"/>
-  <circle class="row-junction" cx="232.0" cy="1472.0" r="4"/>
-  <circle class="row-junction" cx="328.0" cy="1472.0" r="4"/>
-  <circle class="row-junction" cx="424.0" cy="1472.0" r="4"/>
-  <circle class="row-junction" cx="520.0" cy="1472.0" r="4"/>
-  <circle class="row-junction" cx="616.0" cy="1472.0" r="4"/>
-  <circle class="row-junction" cx="712.0" cy="1472.0" r="4"/>
-  <text class="wiring-row-label" x="51.0" y="1458.0">R2</text>
-  <polyline class="wiring-row-halo" points="136.0,1562.0 232.0,1562.0 328.0,1562.0 424.0,1562.0 520.0,1562.0 616.0,1562.0"/>
-  <polyline class="wiring-row-line" points="136.0,1562.0 232.0,1562.0 328.0,1562.0 424.0,1562.0 520.0,1562.0 616.0,1562.0"/>
-  <circle class="row-junction" cx="136.0" cy="1562.0" r="4"/>
-  <circle class="row-junction" cx="232.0" cy="1562.0" r="4"/>
-  <circle class="row-junction" cx="328.0" cy="1562.0" r="4"/>
-  <circle class="row-junction" cx="424.0" cy="1562.0" r="4"/>
-  <circle class="row-junction" cx="520.0" cy="1562.0" r="4"/>
-  <circle class="row-junction" cx="616.0" cy="1562.0" r="4"/>
-  <text class="wiring-row-label" x="51.0" y="1548.0">R3</text>
-  <polyline class="wiring-row-halo" points="136.0,1652.0 232.0,1652.0 328.0,1652.0 424.0,1652.0 520.0,1652.0"/>
-  <polyline class="wiring-row-line" points="136.0,1652.0 232.0,1652.0 328.0,1652.0 424.0,1652.0 520.0,1652.0"/>
-  <circle class="row-junction" cx="136.0" cy="1652.0" r="4"/>
-  <circle class="row-junction" cx="232.0" cy="1652.0" r="4"/>
-  <circle class="row-junction" cx="328.0" cy="1652.0" r="4"/>
-  <circle class="row-junction" cx="424.0" cy="1652.0" r="4"/>
-  <circle class="row-junction" cx="520.0" cy="1652.0" r="4"/>
-  <text class="wiring-row-label" x="51.0" y="1638.0">R4</text>
-  <polyline class="wiring-col-line" points="1643.0,1292.0 1643.0,1382.0 1643.0,1472.0 1643.0,1562.0 1643.0,1652.0"/>
-  <circle class="col-junction" cx="1643.0" cy="1292.0" r="4"/>
-  <circle class="col-junction" cx="1643.0" cy="1382.0" r="4"/>
-  <circle class="col-junction" cx="1643.0" cy="1472.0" r="4"/>
-  <circle class="col-junction" cx="1643.0" cy="1562.0" r="4"/>
-  <circle class="col-junction" cx="1643.0" cy="1652.0" r="4"/>
-  <text class="wiring-col-label" x="1643.0" y="1237.0">C0</text>
-  <polyline class="wiring-col-line" points="1547.0,1292.0 1547.0,1382.0 1547.0,1472.0 1547.0,1562.0 1547.0,1652.0"/>
-  <circle class="col-junction" cx="1547.0" cy="1292.0" r="4"/>
-  <circle class="col-junction" cx="1547.0" cy="1382.0" r="4"/>
-  <circle class="col-junction" cx="1547.0" cy="1472.0" r="4"/>
-  <circle class="col-junction" cx="1547.0" cy="1562.0" r="4"/>
-  <circle class="col-junction" cx="1547.0" cy="1652.0" r="4"/>
-  <text class="wiring-col-label" x="1547.0" y="1237.0">C1</text>
-  <polyline class="wiring-col-line" points="1451.0,1292.0 1451.0,1382.0 1451.0,1472.0 1451.0,1562.0 1451.0,1652.0"/>
-  <circle class="col-junction" cx="1451.0" cy="1292.0" r="4"/>
-  <circle class="col-junction" cx="1451.0" cy="1382.0" r="4"/>
-  <circle class="col-junction" cx="1451.0" cy="1472.0" r="4"/>
-  <circle class="col-junction" cx="1451.0" cy="1562.0" r="4"/>
-  <circle class="col-junction" cx="1451.0" cy="1652.0" r="4"/>
-  <text class="wiring-col-label" x="1451.0" y="1237.0">C2</text>
-  <polyline class="wiring-col-line" points="1355.0,1292.0 1355.0,1382.0 1355.0,1472.0 1355.0,1562.0 1355.0,1652.0"/>
-  <circle class="col-junction" cx="1355.0" cy="1292.0" r="4"/>
-  <circle class="col-junction" cx="1355.0" cy="1382.0" r="4"/>
-  <circle class="col-junction" cx="1355.0" cy="1472.0" r="4"/>
-  <circle class="col-junction" cx="1355.0" cy="1562.0" r="4"/>
-  <circle class="col-junction" cx="1355.0" cy="1652.0" r="4"/>
-  <text class="wiring-col-label" x="1355.0" y="1237.0">C3</text>
-  <polyline class="wiring-col-line" points="1259.0,1292.0 1259.0,1382.0 1259.0,1472.0 1259.0,1562.0 1259.0,1652.0"/>
-  <circle class="col-junction" cx="1259.0" cy="1292.0" r="4"/>
-  <circle class="col-junction" cx="1259.0" cy="1382.0" r="4"/>
-  <circle class="col-junction" cx="1259.0" cy="1472.0" r="4"/>
-  <circle class="col-junction" cx="1259.0" cy="1562.0" r="4"/>
-  <circle class="col-junction" cx="1259.0" cy="1652.0" r="4"/>
-  <text class="wiring-col-label" x="1259.0" y="1237.0">C4</text>
-  <polyline class="wiring-col-line" points="1163.0,1292.0 1163.0,1382.0 1163.0,1472.0 1163.0,1562.0"/>
-  <circle class="col-junction" cx="1163.0" cy="1292.0" r="4"/>
-  <circle class="col-junction" cx="1163.0" cy="1382.0" r="4"/>
-  <circle class="col-junction" cx="1163.0" cy="1472.0" r="4"/>
-  <circle class="col-junction" cx="1163.0" cy="1562.0" r="4"/>
-  <text class="wiring-col-label" x="1163.0" y="1237.0">C5</text>
-  <polyline class="wiring-col-line" points="1067.0,1292.0 1067.0,1382.0 1067.0,1472.0"/>
-  <circle class="col-junction" cx="1067.0" cy="1292.0" r="4"/>
-  <circle class="col-junction" cx="1067.0" cy="1382.0" r="4"/>
-  <circle class="col-junction" cx="1067.0" cy="1472.0" r="4"/>
-  <text class="wiring-col-label" x="1067.0" y="1237.0">C6</text>
-  <polyline class="wiring-row-halo" points="1126.0,1292.0 1222.0,1292.0 1318.0,1292.0 1414.0,1292.0 1510.0,1292.0 1606.0,1292.0 1702.0,1292.0"/>
-  <polyline class="wiring-row-line" points="1126.0,1292.0 1222.0,1292.0 1318.0,1292.0 1414.0,1292.0 1510.0,1292.0 1606.0,1292.0 1702.0,1292.0"/>
-  <circle class="row-junction" cx="1126.0" cy="1292.0" r="4"/>
-  <circle class="row-junction" cx="1222.0" cy="1292.0" r="4"/>
-  <circle class="row-junction" cx="1318.0" cy="1292.0" r="4"/>
-  <circle class="row-junction" cx="1414.0" cy="1292.0" r="4"/>
-  <circle class="row-junction" cx="1510.0" cy="1292.0" r="4"/>
-  <circle class="row-junction" cx="1606.0" cy="1292.0" r="4"/>
-  <circle class="row-junction" cx="1702.0" cy="1292.0" r="4"/>
-  <text class="wiring-row-label" x="1041.0" y="1278.0">R0</text>
-  <polyline class="wiring-row-halo" points="1126.0,1382.0 1222.0,1382.0 1318.0,1382.0 1414.0,1382.0 1510.0,1382.0 1606.0,1382.0 1702.0,1382.0"/>
-  <polyline class="wiring-row-line" points="1126.0,1382.0 1222.0,1382.0 1318.0,1382.0 1414.0,1382.0 1510.0,1382.0 1606.0,1382.0 1702.0,1382.0"/>
-  <circle class="row-junction" cx="1126.0" cy="1382.0" r="4"/>
-  <circle class="row-junction" cx="1222.0" cy="1382.0" r="4"/>
-  <circle class="row-junction" cx="1318.0" cy="1382.0" r="4"/>
-  <circle class="row-junction" cx="1414.0" cy="1382.0" r="4"/>
-  <circle class="row-junction" cx="1510.0" cy="1382.0" r="4"/>
-  <circle class="row-junction" cx="1606.0" cy="1382.0" r="4"/>
-  <circle class="row-junction" cx="1702.0" cy="1382.0" r="4"/>
-  <text class="wiring-row-label" x="1041.0" y="1368.0">R1</text>
-  <polyline class="wiring-row-halo" points="1126.0,1472.0 1222.0,1472.0 1318.0,1472.0 1414.0,1472.0 1510.0,1472.0 1606.0,1472.0 1702.0,1472.0"/>
-  <polyline class="wiring-row-line" points="1126.0,1472.0 1222.0,1472.0 1318.0,1472.0 1414.0,1472.0 1510.0,1472.0 1606.0,1472.0 1702.0,1472.0"/>
-  <circle class="row-junction" cx="1126.0" cy="1472.0" r="4"/>
-  <circle class="row-junction" cx="1222.0" cy="1472.0" r="4"/>
-  <circle class="row-junction" cx="1318.0" cy="1472.0" r="4"/>
-  <circle class="row-junction" cx="1414.0" cy="1472.0" r="4"/>
-  <circle class="row-junction" cx="1510.0" cy="1472.0" r="4"/>
-  <circle class="row-junction" cx="1606.0" cy="1472.0" r="4"/>
-  <circle class="row-junction" cx="1702.0" cy="1472.0" r="4"/>
-  <text class="wiring-row-label" x="1041.0" y="1458.0">R2</text>
-  <polyline class="wiring-row-halo" points="1222.0,1562.0 1318.0,1562.0 1414.0,1562.0 1510.0,1562.0 1606.0,1562.0 1702.0,1562.0"/>
-  <polyline class="wiring-row-line" points="1222.0,1562.0 1318.0,1562.0 1414.0,1562.0 1510.0,1562.0 1606.0,1562.0 1702.0,1562.0"/>
-  <circle class="row-junction" cx="1222.0" cy="1562.0" r="4"/>
-  <circle class="row-junction" cx="1318.0" cy="1562.0" r="4"/>
-  <circle class="row-junction" cx="1414.0" cy="1562.0" r="4"/>
-  <circle class="row-junction" cx="1510.0" cy="1562.0" r="4"/>
-  <circle class="row-junction" cx="1606.0" cy="1562.0" r="4"/>
-  <circle class="row-junction" cx="1702.0" cy="1562.0" r="4"/>
-  <text class="wiring-row-label" x="1137.0" y="1548.0">R3</text>
-  <polyline class="wiring-row-halo" points="1318.0,1652.0 1414.0,1652.0 1510.0,1652.0 1606.0,1652.0 1702.0,1652.0"/>
-  <polyline class="wiring-row-line" points="1318.0,1652.0 1414.0,1652.0 1510.0,1652.0 1606.0,1652.0 1702.0,1652.0"/>
-  <circle class="row-junction" cx="1318.0" cy="1652.0" r="4"/>
-  <circle class="row-junction" cx="1414.0" cy="1652.0" r="4"/>
-  <circle class="row-junction" cx="1510.0" cy="1652.0" r="4"/>
-  <circle class="row-junction" cx="1606.0" cy="1652.0" r="4"/>
-  <circle class="row-junction" cx="1702.0" cy="1652.0" r="4"/>
-  <text class="wiring-row-label" x="1233.0" y="1638.0">R4</text>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="77" y1="1292" x2="90" y2="1292"/>
-    <rect class="wiring-switch" x="90" y="1283" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="112" y1="1292" x2="116" y2="1292"/>
-    <rect class="wiring-diode" x="116" y="1285" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="127" y="1285" width="4" height="14"/>
-    <line class="component-row-wire" x1="132" y1="1292" x2="136" y2="1292"/>
-    <circle class="col-junction" cx="77" cy="1292" r="4"/>
-    <circle class="row-junction" cx="136" cy="1292" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="173" y1="1292" x2="186" y2="1292"/>
-    <rect class="wiring-switch" x="186" y="1283" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="208" y1="1292" x2="212" y2="1292"/>
-    <rect class="wiring-diode" x="212" y="1285" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="223" y="1285" width="4" height="14"/>
-    <line class="component-row-wire" x1="228" y1="1292" x2="232" y2="1292"/>
-    <circle class="col-junction" cx="173" cy="1292" r="4"/>
-    <circle class="row-junction" cx="232" cy="1292" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="269" y1="1292" x2="282" y2="1292"/>
-    <rect class="wiring-switch" x="282" y="1283" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="304" y1="1292" x2="308" y2="1292"/>
-    <rect class="wiring-diode" x="308" y="1285" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="319" y="1285" width="4" height="14"/>
-    <line class="component-row-wire" x1="324" y1="1292" x2="328" y2="1292"/>
-    <circle class="col-junction" cx="269" cy="1292" r="4"/>
-    <circle class="row-junction" cx="328" cy="1292" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="365" y1="1292" x2="378" y2="1292"/>
-    <rect class="wiring-switch" x="378" y="1283" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="400" y1="1292" x2="404" y2="1292"/>
-    <rect class="wiring-diode" x="404" y="1285" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="415" y="1285" width="4" height="14"/>
-    <line class="component-row-wire" x1="420" y1="1292" x2="424" y2="1292"/>
-    <circle class="col-junction" cx="365" cy="1292" r="4"/>
-    <circle class="row-junction" cx="424" cy="1292" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="461" y1="1292" x2="474" y2="1292"/>
-    <rect class="wiring-switch" x="474" y="1283" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="496" y1="1292" x2="500" y2="1292"/>
-    <rect class="wiring-diode" x="500" y="1285" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="511" y="1285" width="4" height="14"/>
-    <line class="component-row-wire" x1="516" y1="1292" x2="520" y2="1292"/>
-    <circle class="col-junction" cx="461" cy="1292" r="4"/>
-    <circle class="row-junction" cx="520" cy="1292" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="557" y1="1292" x2="570" y2="1292"/>
-    <rect class="wiring-switch" x="570" y="1283" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="592" y1="1292" x2="596" y2="1292"/>
-    <rect class="wiring-diode" x="596" y="1285" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="607" y="1285" width="4" height="14"/>
-    <line class="component-row-wire" x1="612" y1="1292" x2="616" y2="1292"/>
-    <circle class="col-junction" cx="557" cy="1292" r="4"/>
-    <circle class="row-junction" cx="616" cy="1292" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="77" y1="1382" x2="90" y2="1382"/>
-    <rect class="wiring-switch" x="90" y="1373" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="112" y1="1382" x2="116" y2="1382"/>
-    <rect class="wiring-diode" x="116" y="1375" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="127" y="1375" width="4" height="14"/>
-    <line class="component-row-wire" x1="132" y1="1382" x2="136" y2="1382"/>
-    <circle class="col-junction" cx="77" cy="1382" r="4"/>
-    <circle class="row-junction" cx="136" cy="1382" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="173" y1="1382" x2="186" y2="1382"/>
-    <rect class="wiring-switch" x="186" y="1373" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="208" y1="1382" x2="212" y2="1382"/>
-    <rect class="wiring-diode" x="212" y="1375" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="223" y="1375" width="4" height="14"/>
-    <line class="component-row-wire" x1="228" y1="1382" x2="232" y2="1382"/>
-    <circle class="col-junction" cx="173" cy="1382" r="4"/>
-    <circle class="row-junction" cx="232" cy="1382" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="269" y1="1382" x2="282" y2="1382"/>
-    <rect class="wiring-switch" x="282" y="1373" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="304" y1="1382" x2="308" y2="1382"/>
-    <rect class="wiring-diode" x="308" y="1375" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="319" y="1375" width="4" height="14"/>
-    <line class="component-row-wire" x1="324" y1="1382" x2="328" y2="1382"/>
-    <circle class="col-junction" cx="269" cy="1382" r="4"/>
-    <circle class="row-junction" cx="328" cy="1382" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="365" y1="1382" x2="378" y2="1382"/>
-    <rect class="wiring-switch" x="378" y="1373" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="400" y1="1382" x2="404" y2="1382"/>
-    <rect class="wiring-diode" x="404" y="1375" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="415" y="1375" width="4" height="14"/>
-    <line class="component-row-wire" x1="420" y1="1382" x2="424" y2="1382"/>
-    <circle class="col-junction" cx="365" cy="1382" r="4"/>
-    <circle class="row-junction" cx="424" cy="1382" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="461" y1="1382" x2="474" y2="1382"/>
-    <rect class="wiring-switch" x="474" y="1373" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="496" y1="1382" x2="500" y2="1382"/>
-    <rect class="wiring-diode" x="500" y="1375" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="511" y="1375" width="4" height="14"/>
-    <line class="component-row-wire" x1="516" y1="1382" x2="520" y2="1382"/>
-    <circle class="col-junction" cx="461" cy="1382" r="4"/>
-    <circle class="row-junction" cx="520" cy="1382" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="557" y1="1382" x2="570" y2="1382"/>
-    <rect class="wiring-switch" x="570" y="1373" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="592" y1="1382" x2="596" y2="1382"/>
-    <rect class="wiring-diode" x="596" y="1375" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="607" y="1375" width="4" height="14"/>
-    <line class="component-row-wire" x1="612" y1="1382" x2="616" y2="1382"/>
-    <circle class="col-junction" cx="557" cy="1382" r="4"/>
-    <circle class="row-junction" cx="616" cy="1382" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="77" y1="1472" x2="90" y2="1472"/>
-    <rect class="wiring-switch" x="90" y="1463" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="112" y1="1472" x2="116" y2="1472"/>
-    <rect class="wiring-diode" x="116" y="1465" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="127" y="1465" width="4" height="14"/>
-    <line class="component-row-wire" x1="132" y1="1472" x2="136" y2="1472"/>
-    <circle class="col-junction" cx="77" cy="1472" r="4"/>
-    <circle class="row-junction" cx="136" cy="1472" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="173" y1="1472" x2="186" y2="1472"/>
-    <rect class="wiring-switch" x="186" y="1463" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="208" y1="1472" x2="212" y2="1472"/>
-    <rect class="wiring-diode" x="212" y="1465" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="223" y="1465" width="4" height="14"/>
-    <line class="component-row-wire" x1="228" y1="1472" x2="232" y2="1472"/>
-    <circle class="col-junction" cx="173" cy="1472" r="4"/>
-    <circle class="row-junction" cx="232" cy="1472" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="269" y1="1472" x2="282" y2="1472"/>
-    <rect class="wiring-switch" x="282" y="1463" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="304" y1="1472" x2="308" y2="1472"/>
-    <rect class="wiring-diode" x="308" y="1465" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="319" y="1465" width="4" height="14"/>
-    <line class="component-row-wire" x1="324" y1="1472" x2="328" y2="1472"/>
-    <circle class="col-junction" cx="269" cy="1472" r="4"/>
-    <circle class="row-junction" cx="328" cy="1472" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="365" y1="1472" x2="378" y2="1472"/>
-    <rect class="wiring-switch" x="378" y="1463" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="400" y1="1472" x2="404" y2="1472"/>
-    <rect class="wiring-diode" x="404" y="1465" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="415" y="1465" width="4" height="14"/>
-    <line class="component-row-wire" x1="420" y1="1472" x2="424" y2="1472"/>
-    <circle class="col-junction" cx="365" cy="1472" r="4"/>
-    <circle class="row-junction" cx="424" cy="1472" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="461" y1="1472" x2="474" y2="1472"/>
-    <rect class="wiring-switch" x="474" y="1463" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="496" y1="1472" x2="500" y2="1472"/>
-    <rect class="wiring-diode" x="500" y="1465" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="511" y="1465" width="4" height="14"/>
-    <line class="component-row-wire" x1="516" y1="1472" x2="520" y2="1472"/>
-    <circle class="col-junction" cx="461" cy="1472" r="4"/>
-    <circle class="row-junction" cx="520" cy="1472" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="557" y1="1472" x2="570" y2="1472"/>
-    <rect class="wiring-switch" x="570" y="1463" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="592" y1="1472" x2="596" y2="1472"/>
-    <rect class="wiring-diode" x="596" y="1465" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="607" y="1465" width="4" height="14"/>
-    <line class="component-row-wire" x1="612" y1="1472" x2="616" y2="1472"/>
-    <circle class="col-junction" cx="557" cy="1472" r="4"/>
-    <circle class="row-junction" cx="616" cy="1472" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="77" y1="1562" x2="90" y2="1562"/>
-    <rect class="wiring-switch" x="90" y="1553" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="112" y1="1562" x2="116" y2="1562"/>
-    <rect class="wiring-diode" x="116" y="1555" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="127" y="1555" width="4" height="14"/>
-    <line class="component-row-wire" x1="132" y1="1562" x2="136" y2="1562"/>
-    <circle class="col-junction" cx="77" cy="1562" r="4"/>
-    <circle class="row-junction" cx="136" cy="1562" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="173" y1="1562" x2="186" y2="1562"/>
-    <rect class="wiring-switch" x="186" y="1553" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="208" y1="1562" x2="212" y2="1562"/>
-    <rect class="wiring-diode" x="212" y="1555" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="223" y="1555" width="4" height="14"/>
-    <line class="component-row-wire" x1="228" y1="1562" x2="232" y2="1562"/>
-    <circle class="col-junction" cx="173" cy="1562" r="4"/>
-    <circle class="row-junction" cx="232" cy="1562" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="269" y1="1562" x2="282" y2="1562"/>
-    <rect class="wiring-switch" x="282" y="1553" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="304" y1="1562" x2="308" y2="1562"/>
-    <rect class="wiring-diode" x="308" y="1555" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="319" y="1555" width="4" height="14"/>
-    <line class="component-row-wire" x1="324" y1="1562" x2="328" y2="1562"/>
-    <circle class="col-junction" cx="269" cy="1562" r="4"/>
-    <circle class="row-junction" cx="328" cy="1562" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="365" y1="1562" x2="378" y2="1562"/>
-    <rect class="wiring-switch" x="378" y="1553" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="400" y1="1562" x2="404" y2="1562"/>
-    <rect class="wiring-diode" x="404" y="1555" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="415" y="1555" width="4" height="14"/>
-    <line class="component-row-wire" x1="420" y1="1562" x2="424" y2="1562"/>
-    <circle class="col-junction" cx="365" cy="1562" r="4"/>
-    <circle class="row-junction" cx="424" cy="1562" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="461" y1="1562" x2="474" y2="1562"/>
-    <rect class="wiring-switch" x="474" y="1553" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="496" y1="1562" x2="500" y2="1562"/>
-    <rect class="wiring-diode" x="500" y="1555" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="511" y="1555" width="4" height="14"/>
-    <line class="component-row-wire" x1="516" y1="1562" x2="520" y2="1562"/>
-    <circle class="col-junction" cx="461" cy="1562" r="4"/>
-    <circle class="row-junction" cx="520" cy="1562" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="557" y1="1562" x2="570" y2="1562"/>
-    <rect class="wiring-switch" x="570" y="1553" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="592" y1="1562" x2="596" y2="1562"/>
-    <rect class="wiring-diode" x="596" y="1555" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="607" y="1555" width="4" height="14"/>
-    <line class="component-row-wire" x1="612" y1="1562" x2="616" y2="1562"/>
-    <circle class="col-junction" cx="557" cy="1562" r="4"/>
-    <circle class="row-junction" cx="616" cy="1562" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="77" y1="1652" x2="90" y2="1652"/>
-    <rect class="wiring-switch" x="90" y="1643" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="112" y1="1652" x2="116" y2="1652"/>
-    <rect class="wiring-diode" x="116" y="1645" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="127" y="1645" width="4" height="14"/>
-    <line class="component-row-wire" x1="132" y1="1652" x2="136" y2="1652"/>
-    <circle class="col-junction" cx="77" cy="1652" r="4"/>
-    <circle class="row-junction" cx="136" cy="1652" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="173" y1="1652" x2="186" y2="1652"/>
-    <rect class="wiring-switch" x="186" y="1643" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="208" y1="1652" x2="212" y2="1652"/>
-    <rect class="wiring-diode" x="212" y="1645" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="223" y="1645" width="4" height="14"/>
-    <line class="component-row-wire" x1="228" y1="1652" x2="232" y2="1652"/>
-    <circle class="col-junction" cx="173" cy="1652" r="4"/>
-    <circle class="row-junction" cx="232" cy="1652" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="269" y1="1652" x2="282" y2="1652"/>
-    <rect class="wiring-switch" x="282" y="1643" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="304" y1="1652" x2="308" y2="1652"/>
-    <rect class="wiring-diode" x="308" y="1645" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="319" y="1645" width="4" height="14"/>
-    <line class="component-row-wire" x1="324" y1="1652" x2="328" y2="1652"/>
-    <circle class="col-junction" cx="269" cy="1652" r="4"/>
-    <circle class="row-junction" cx="328" cy="1652" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="365" y1="1652" x2="378" y2="1652"/>
-    <rect class="wiring-switch" x="378" y="1643" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="400" y1="1652" x2="404" y2="1652"/>
-    <rect class="wiring-diode" x="404" y="1645" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="415" y="1645" width="4" height="14"/>
-    <line class="component-row-wire" x1="420" y1="1652" x2="424" y2="1652"/>
-    <circle class="col-junction" cx="365" cy="1652" r="4"/>
-    <circle class="row-junction" cx="424" cy="1652" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="461" y1="1652" x2="474" y2="1652"/>
-    <rect class="wiring-switch" x="474" y="1643" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="496" y1="1652" x2="500" y2="1652"/>
-    <rect class="wiring-diode" x="500" y="1645" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="511" y="1645" width="4" height="14"/>
-    <line class="component-row-wire" x1="516" y1="1652" x2="520" y2="1652"/>
-    <circle class="col-junction" cx="461" cy="1652" r="4"/>
-    <circle class="row-junction" cx="520" cy="1652" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="653" y1="1292" x2="666" y2="1292"/>
-    <rect class="wiring-switch" x="666" y="1283" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="688" y1="1292" x2="692" y2="1292"/>
-    <rect class="wiring-diode" x="692" y="1285" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="703" y="1285" width="4" height="14"/>
-    <line class="component-row-wire" x1="708" y1="1292" x2="712" y2="1292"/>
-    <circle class="col-junction" cx="653" cy="1292" r="4"/>
-    <circle class="row-junction" cx="712" cy="1292" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="653" y1="1382" x2="666" y2="1382"/>
-    <rect class="wiring-switch" x="666" y="1373" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="688" y1="1382" x2="692" y2="1382"/>
-    <rect class="wiring-diode" x="692" y="1375" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="703" y="1375" width="4" height="14"/>
-    <line class="component-row-wire" x1="708" y1="1382" x2="712" y2="1382"/>
-    <circle class="col-junction" cx="653" cy="1382" r="4"/>
-    <circle class="row-junction" cx="712" cy="1382" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="653" y1="1472" x2="666" y2="1472"/>
-    <rect class="wiring-switch" x="666" y="1463" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="688" y1="1472" x2="692" y2="1472"/>
-    <rect class="wiring-diode" x="692" y="1465" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="703" y="1465" width="4" height="14"/>
-    <line class="component-row-wire" x1="708" y1="1472" x2="712" y2="1472"/>
-    <circle class="col-junction" cx="653" cy="1472" r="4"/>
-    <circle class="row-junction" cx="712" cy="1472" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="1163" y1="1292" x2="1176" y2="1292"/>
-    <rect class="wiring-switch" x="1176" y="1283" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="1198" y1="1292" x2="1202" y2="1292"/>
-    <rect class="wiring-diode" x="1202" y="1285" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="1213" y="1285" width="4" height="14"/>
-    <line class="component-row-wire" x1="1218" y1="1292" x2="1222" y2="1292"/>
-    <circle class="col-junction" cx="1163" cy="1292" r="4"/>
-    <circle class="row-junction" cx="1222" cy="1292" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="1259" y1="1292" x2="1272" y2="1292"/>
-    <rect class="wiring-switch" x="1272" y="1283" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="1294" y1="1292" x2="1298" y2="1292"/>
-    <rect class="wiring-diode" x="1298" y="1285" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="1309" y="1285" width="4" height="14"/>
-    <line class="component-row-wire" x1="1314" y1="1292" x2="1318" y2="1292"/>
-    <circle class="col-junction" cx="1259" cy="1292" r="4"/>
-    <circle class="row-junction" cx="1318" cy="1292" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="1355" y1="1292" x2="1368" y2="1292"/>
-    <rect class="wiring-switch" x="1368" y="1283" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="1390" y1="1292" x2="1394" y2="1292"/>
-    <rect class="wiring-diode" x="1394" y="1285" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="1405" y="1285" width="4" height="14"/>
-    <line class="component-row-wire" x1="1410" y1="1292" x2="1414" y2="1292"/>
-    <circle class="col-junction" cx="1355" cy="1292" r="4"/>
-    <circle class="row-junction" cx="1414" cy="1292" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="1451" y1="1292" x2="1464" y2="1292"/>
-    <rect class="wiring-switch" x="1464" y="1283" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="1486" y1="1292" x2="1490" y2="1292"/>
-    <rect class="wiring-diode" x="1490" y="1285" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="1501" y="1285" width="4" height="14"/>
-    <line class="component-row-wire" x1="1506" y1="1292" x2="1510" y2="1292"/>
-    <circle class="col-junction" cx="1451" cy="1292" r="4"/>
-    <circle class="row-junction" cx="1510" cy="1292" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="1547" y1="1292" x2="1560" y2="1292"/>
-    <rect class="wiring-switch" x="1560" y="1283" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="1582" y1="1292" x2="1586" y2="1292"/>
-    <rect class="wiring-diode" x="1586" y="1285" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="1597" y="1285" width="4" height="14"/>
-    <line class="component-row-wire" x1="1602" y1="1292" x2="1606" y2="1292"/>
-    <circle class="col-junction" cx="1547" cy="1292" r="4"/>
-    <circle class="row-junction" cx="1606" cy="1292" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="1643" y1="1292" x2="1656" y2="1292"/>
-    <rect class="wiring-switch" x="1656" y="1283" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="1678" y1="1292" x2="1682" y2="1292"/>
-    <rect class="wiring-diode" x="1682" y="1285" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="1693" y="1285" width="4" height="14"/>
-    <line class="component-row-wire" x1="1698" y1="1292" x2="1702" y2="1292"/>
-    <circle class="col-junction" cx="1643" cy="1292" r="4"/>
-    <circle class="row-junction" cx="1702" cy="1292" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="1163" y1="1382" x2="1176" y2="1382"/>
-    <rect class="wiring-switch" x="1176" y="1373" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="1198" y1="1382" x2="1202" y2="1382"/>
-    <rect class="wiring-diode" x="1202" y="1375" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="1213" y="1375" width="4" height="14"/>
-    <line class="component-row-wire" x1="1218" y1="1382" x2="1222" y2="1382"/>
-    <circle class="col-junction" cx="1163" cy="1382" r="4"/>
-    <circle class="row-junction" cx="1222" cy="1382" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="1259" y1="1382" x2="1272" y2="1382"/>
-    <rect class="wiring-switch" x="1272" y="1373" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="1294" y1="1382" x2="1298" y2="1382"/>
-    <rect class="wiring-diode" x="1298" y="1375" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="1309" y="1375" width="4" height="14"/>
-    <line class="component-row-wire" x1="1314" y1="1382" x2="1318" y2="1382"/>
-    <circle class="col-junction" cx="1259" cy="1382" r="4"/>
-    <circle class="row-junction" cx="1318" cy="1382" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="1355" y1="1382" x2="1368" y2="1382"/>
-    <rect class="wiring-switch" x="1368" y="1373" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="1390" y1="1382" x2="1394" y2="1382"/>
-    <rect class="wiring-diode" x="1394" y="1375" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="1405" y="1375" width="4" height="14"/>
-    <line class="component-row-wire" x1="1410" y1="1382" x2="1414" y2="1382"/>
-    <circle class="col-junction" cx="1355" cy="1382" r="4"/>
-    <circle class="row-junction" cx="1414" cy="1382" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="1451" y1="1382" x2="1464" y2="1382"/>
-    <rect class="wiring-switch" x="1464" y="1373" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="1486" y1="1382" x2="1490" y2="1382"/>
-    <rect class="wiring-diode" x="1490" y="1375" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="1501" y="1375" width="4" height="14"/>
-    <line class="component-row-wire" x1="1506" y1="1382" x2="1510" y2="1382"/>
-    <circle class="col-junction" cx="1451" cy="1382" r="4"/>
-    <circle class="row-junction" cx="1510" cy="1382" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="1547" y1="1382" x2="1560" y2="1382"/>
-    <rect class="wiring-switch" x="1560" y="1373" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="1582" y1="1382" x2="1586" y2="1382"/>
-    <rect class="wiring-diode" x="1586" y="1375" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="1597" y="1375" width="4" height="14"/>
-    <line class="component-row-wire" x1="1602" y1="1382" x2="1606" y2="1382"/>
-    <circle class="col-junction" cx="1547" cy="1382" r="4"/>
-    <circle class="row-junction" cx="1606" cy="1382" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="1643" y1="1382" x2="1656" y2="1382"/>
-    <rect class="wiring-switch" x="1656" y="1373" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="1678" y1="1382" x2="1682" y2="1382"/>
-    <rect class="wiring-diode" x="1682" y="1375" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="1693" y="1375" width="4" height="14"/>
-    <line class="component-row-wire" x1="1698" y1="1382" x2="1702" y2="1382"/>
-    <circle class="col-junction" cx="1643" cy="1382" r="4"/>
-    <circle class="row-junction" cx="1702" cy="1382" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="1163" y1="1472" x2="1176" y2="1472"/>
-    <rect class="wiring-switch" x="1176" y="1463" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="1198" y1="1472" x2="1202" y2="1472"/>
-    <rect class="wiring-diode" x="1202" y="1465" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="1213" y="1465" width="4" height="14"/>
-    <line class="component-row-wire" x1="1218" y1="1472" x2="1222" y2="1472"/>
-    <circle class="col-junction" cx="1163" cy="1472" r="4"/>
-    <circle class="row-junction" cx="1222" cy="1472" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="1259" y1="1472" x2="1272" y2="1472"/>
-    <rect class="wiring-switch" x="1272" y="1463" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="1294" y1="1472" x2="1298" y2="1472"/>
-    <rect class="wiring-diode" x="1298" y="1465" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="1309" y="1465" width="4" height="14"/>
-    <line class="component-row-wire" x1="1314" y1="1472" x2="1318" y2="1472"/>
-    <circle class="col-junction" cx="1259" cy="1472" r="4"/>
-    <circle class="row-junction" cx="1318" cy="1472" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="1355" y1="1472" x2="1368" y2="1472"/>
-    <rect class="wiring-switch" x="1368" y="1463" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="1390" y1="1472" x2="1394" y2="1472"/>
-    <rect class="wiring-diode" x="1394" y="1465" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="1405" y="1465" width="4" height="14"/>
-    <line class="component-row-wire" x1="1410" y1="1472" x2="1414" y2="1472"/>
-    <circle class="col-junction" cx="1355" cy="1472" r="4"/>
-    <circle class="row-junction" cx="1414" cy="1472" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="1451" y1="1472" x2="1464" y2="1472"/>
-    <rect class="wiring-switch" x="1464" y="1463" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="1486" y1="1472" x2="1490" y2="1472"/>
-    <rect class="wiring-diode" x="1490" y="1465" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="1501" y="1465" width="4" height="14"/>
-    <line class="component-row-wire" x1="1506" y1="1472" x2="1510" y2="1472"/>
-    <circle class="col-junction" cx="1451" cy="1472" r="4"/>
-    <circle class="row-junction" cx="1510" cy="1472" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="1547" y1="1472" x2="1560" y2="1472"/>
-    <rect class="wiring-switch" x="1560" y="1463" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="1582" y1="1472" x2="1586" y2="1472"/>
-    <rect class="wiring-diode" x="1586" y="1465" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="1597" y="1465" width="4" height="14"/>
-    <line class="component-row-wire" x1="1602" y1="1472" x2="1606" y2="1472"/>
-    <circle class="col-junction" cx="1547" cy="1472" r="4"/>
-    <circle class="row-junction" cx="1606" cy="1472" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="1643" y1="1472" x2="1656" y2="1472"/>
-    <rect class="wiring-switch" x="1656" y="1463" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="1678" y1="1472" x2="1682" y2="1472"/>
-    <rect class="wiring-diode" x="1682" y="1465" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="1693" y="1465" width="4" height="14"/>
-    <line class="component-row-wire" x1="1698" y1="1472" x2="1702" y2="1472"/>
-    <circle class="col-junction" cx="1643" cy="1472" r="4"/>
-    <circle class="row-junction" cx="1702" cy="1472" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="1163" y1="1562" x2="1176" y2="1562"/>
-    <rect class="wiring-switch" x="1176" y="1553" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="1198" y1="1562" x2="1202" y2="1562"/>
-    <rect class="wiring-diode" x="1202" y="1555" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="1213" y="1555" width="4" height="14"/>
-    <line class="component-row-wire" x1="1218" y1="1562" x2="1222" y2="1562"/>
-    <circle class="col-junction" cx="1163" cy="1562" r="4"/>
-    <circle class="row-junction" cx="1222" cy="1562" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="1259" y1="1562" x2="1272" y2="1562"/>
-    <rect class="wiring-switch" x="1272" y="1553" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="1294" y1="1562" x2="1298" y2="1562"/>
-    <rect class="wiring-diode" x="1298" y="1555" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="1309" y="1555" width="4" height="14"/>
-    <line class="component-row-wire" x1="1314" y1="1562" x2="1318" y2="1562"/>
-    <circle class="col-junction" cx="1259" cy="1562" r="4"/>
-    <circle class="row-junction" cx="1318" cy="1562" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="1355" y1="1562" x2="1368" y2="1562"/>
-    <rect class="wiring-switch" x="1368" y="1553" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="1390" y1="1562" x2="1394" y2="1562"/>
-    <rect class="wiring-diode" x="1394" y="1555" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="1405" y="1555" width="4" height="14"/>
-    <line class="component-row-wire" x1="1410" y1="1562" x2="1414" y2="1562"/>
-    <circle class="col-junction" cx="1355" cy="1562" r="4"/>
-    <circle class="row-junction" cx="1414" cy="1562" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="1451" y1="1562" x2="1464" y2="1562"/>
-    <rect class="wiring-switch" x="1464" y="1553" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="1486" y1="1562" x2="1490" y2="1562"/>
-    <rect class="wiring-diode" x="1490" y="1555" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="1501" y="1555" width="4" height="14"/>
-    <line class="component-row-wire" x1="1506" y1="1562" x2="1510" y2="1562"/>
-    <circle class="col-junction" cx="1451" cy="1562" r="4"/>
-    <circle class="row-junction" cx="1510" cy="1562" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="1547" y1="1562" x2="1560" y2="1562"/>
-    <rect class="wiring-switch" x="1560" y="1553" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="1582" y1="1562" x2="1586" y2="1562"/>
-    <rect class="wiring-diode" x="1586" y="1555" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="1597" y="1555" width="4" height="14"/>
-    <line class="component-row-wire" x1="1602" y1="1562" x2="1606" y2="1562"/>
-    <circle class="col-junction" cx="1547" cy="1562" r="4"/>
-    <circle class="row-junction" cx="1606" cy="1562" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="1643" y1="1562" x2="1656" y2="1562"/>
-    <rect class="wiring-switch" x="1656" y="1553" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="1678" y1="1562" x2="1682" y2="1562"/>
-    <rect class="wiring-diode" x="1682" y="1555" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="1693" y="1555" width="4" height="14"/>
-    <line class="component-row-wire" x1="1698" y1="1562" x2="1702" y2="1562"/>
-    <circle class="col-junction" cx="1643" cy="1562" r="4"/>
-    <circle class="row-junction" cx="1702" cy="1562" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="1259" y1="1652" x2="1272" y2="1652"/>
-    <rect class="wiring-switch" x="1272" y="1643" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="1294" y1="1652" x2="1298" y2="1652"/>
-    <rect class="wiring-diode" x="1298" y="1645" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="1309" y="1645" width="4" height="14"/>
-    <line class="component-row-wire" x1="1314" y1="1652" x2="1318" y2="1652"/>
-    <circle class="col-junction" cx="1259" cy="1652" r="4"/>
-    <circle class="row-junction" cx="1318" cy="1652" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="1355" y1="1652" x2="1368" y2="1652"/>
-    <rect class="wiring-switch" x="1368" y="1643" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="1390" y1="1652" x2="1394" y2="1652"/>
-    <rect class="wiring-diode" x="1394" y="1645" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="1405" y="1645" width="4" height="14"/>
-    <line class="component-row-wire" x1="1410" y1="1652" x2="1414" y2="1652"/>
-    <circle class="col-junction" cx="1355" cy="1652" r="4"/>
-    <circle class="row-junction" cx="1414" cy="1652" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="1451" y1="1652" x2="1464" y2="1652"/>
-    <rect class="wiring-switch" x="1464" y="1643" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="1486" y1="1652" x2="1490" y2="1652"/>
-    <rect class="wiring-diode" x="1490" y="1645" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="1501" y="1645" width="4" height="14"/>
-    <line class="component-row-wire" x1="1506" y1="1652" x2="1510" y2="1652"/>
-    <circle class="col-junction" cx="1451" cy="1652" r="4"/>
-    <circle class="row-junction" cx="1510" cy="1652" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="1547" y1="1652" x2="1560" y2="1652"/>
-    <rect class="wiring-switch" x="1560" y="1643" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="1582" y1="1652" x2="1586" y2="1652"/>
-    <rect class="wiring-diode" x="1586" y="1645" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="1597" y="1645" width="4" height="14"/>
-    <line class="component-row-wire" x1="1602" y1="1652" x2="1606" y2="1652"/>
-    <circle class="col-junction" cx="1547" cy="1652" r="4"/>
-    <circle class="row-junction" cx="1606" cy="1652" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="1643" y1="1652" x2="1656" y2="1652"/>
-    <rect class="wiring-switch" x="1656" y="1643" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="1678" y1="1652" x2="1682" y2="1652"/>
-    <rect class="wiring-diode" x="1682" y="1645" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="1693" y="1645" width="4" height="14"/>
-    <line class="component-row-wire" x1="1698" y1="1652" x2="1702" y2="1652"/>
-    <circle class="col-junction" cx="1643" cy="1652" r="4"/>
-    <circle class="row-junction" cx="1702" cy="1652" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="1067" y1="1292" x2="1080" y2="1292"/>
-    <rect class="wiring-switch" x="1080" y="1283" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="1102" y1="1292" x2="1106" y2="1292"/>
-    <rect class="wiring-diode" x="1106" y="1285" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="1117" y="1285" width="4" height="14"/>
-    <line class="component-row-wire" x1="1122" y1="1292" x2="1126" y2="1292"/>
-    <circle class="col-junction" cx="1067" cy="1292" r="4"/>
-    <circle class="row-junction" cx="1126" cy="1292" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="1067" y1="1382" x2="1080" y2="1382"/>
-    <rect class="wiring-switch" x="1080" y="1373" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="1102" y1="1382" x2="1106" y2="1382"/>
-    <rect class="wiring-diode" x="1106" y="1375" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="1117" y="1375" width="4" height="14"/>
-    <line class="component-row-wire" x1="1122" y1="1382" x2="1126" y2="1382"/>
-    <circle class="col-junction" cx="1067" cy="1382" r="4"/>
-    <circle class="row-junction" cx="1126" cy="1382" r="4"/>
-  </g>
-  <g class="wiring-component">
-    <line class="component-col-wire" x1="1067" y1="1472" x2="1080" y2="1472"/>
-    <rect class="wiring-switch" x="1080" y="1463" width="22" height="18" rx="3"/>
-    <line class="component-wire" x1="1102" y1="1472" x2="1106" y2="1472"/>
-    <rect class="wiring-diode" x="1106" y="1465" width="16" height="14" rx="7"/>
-    <rect class="wiring-diode-band" x="1117" y="1465" width="4" height="14"/>
-    <line class="component-row-wire" x1="1122" y1="1472" x2="1126" y2="1472"/>
-    <circle class="col-junction" cx="1067" cy="1472" r="4"/>
-    <circle class="row-junction" cx="1126" cy="1472" r="4"/>
-  </g>
-  <g class="joycon-wiring" transform="translate(60 1660)">
-    <text class="hardware-title" x="0" y="0">左侧 Joy-Con 接线</text>
-    <text class="subtitle" x="0" y="26">Joy-Con 只接左侧主控；拇指区矩阵 R5 不接线。SW/BTN 暂不接。</text>
-
-    <rect class="controller-body" x="0" y="62" width="360" height="250" rx="18"/>
-    <text class="controller-title" x="180" y="94">左 RP2040-Zero</text>
-    <text class="controller-note" x="180" y="118">只使用 3.3V 模拟输入，不能把 Joy-Con 接 5V</text>
-
-    <g class="pin-list" transform="translate(42 146)">
-      <circle class="pin-vcc" cx="0" cy="0" r="7"/><text class="pin-label" x="18" y="5">3V3</text>
-      <circle class="pin-gnd" cx="0" cy="42" r="7"/><text class="pin-label" x="18" y="47">GND</text>
-      <circle class="pin-x" cx="0" cy="84" r="7"/><text class="pin-label" x="18" y="89">GP28 / ADC2 / X</text>
-      <circle class="pin-y" cx="0" cy="126" r="7"/><text class="pin-label" x="18" y="131">GP29 / ADC3 / Y</text>
-    </g>
-
-    <rect class="breakout-body" x="690" y="62" width="330" height="250" rx="18"/>
-    <text class="controller-title" x="855" y="94">Joy-Con 5P FPC 转接板</text>
-    <text class="controller-note" x="855" y="118">按你转接板丝印为准：VCC/GND/X/Y/SW</text>
-
-    <g class="pin-list" transform="translate(740 146)">
-      <circle class="pin-vcc" cx="0" cy="0" r="7"/><text class="pin-label" x="18" y="5">VCC</text>
-      <circle class="pin-gnd" cx="0" cy="42" r="7"/><text class="pin-label" x="18" y="47">GND</text>
-      <circle class="pin-x" cx="0" cy="84" r="7"/><text class="pin-label" x="18" y="89">X / VRX</text>
-      <circle class="pin-y" cx="0" cy="126" r="7"/><text class="pin-label" x="18" y="131">Y / VRY</text>
-      <circle class="pin-unused" cx="0" cy="168" r="7"/><text class="pin-label muted" x="18" y="173">SW / BTN 不接</text>
-    </g>
-
-    <path class="wire-vcc" d="M42 146 C260 120, 520 120, 740 146"/>
-    <path class="wire-gnd" d="M42 188 C260 176, 520 176, 740 188"/>
-    <path class="wire-x" d="M42 230 C260 232, 520 232, 740 230"/>
-    <path class="wire-y" d="M42 272 C260 288, 520 288, 740 272"/>
-
-    <rect class="wasd-box" x="1110" y="62" width="520" height="250" rx="18"/>
-    <text class="controller-title" x="1370" y="94">固件映射</text>
-    <text class="controller-note" x="1370" y="122">X 轴：左=A，右=D；Y 轴：上=W，下=S</text>
-    <text class="controller-note" x="1370" y="150">支持斜向：左上=A+W，右下=D+S</text>
-    <text class="controller-note" x="1370" y="178">上电静置约 1 秒：32 个稳定样本自动校准中心</text>
-    <text class="controller-note" x="1370" y="204">按下阈值 ±110，释放阈值 ±70，带低通滤波和滞回</text>
-    <text class="controller-warning" x="1370" y="238">如果方向相反，先改 keymap.c 的轴方向逻辑，不要改到 5V。</text>
+  <line x1="58" y1="650" x2="1382" y2="650" stroke="#536075" stroke-width="2"/>
+  <text class="section" x="58" y="690">29 块 PCB 的行列总线</text>
+  <text class="subtitle" x="58" y="716">蓝色连接所有 R 焊盘；黄色连接所有 C 焊盘。交叉处不焊接，必须绝缘。</text>
+<path class="row-wire" d="M89 821 H864"/>
+<text class="row-label" x="79" y="826">R0 · GP14</text>
+<path class="row-wire" d="M89 933 H864"/>
+<text class="row-label" x="79" y="938">R1 · GP15</text>
+<path class="row-wire" d="M89 1045 H864"/>
+<text class="row-label" x="79" y="1050">R2 · GP26</text>
+<path class="row-wire" d="M89 1157 H864"/>
+<text class="row-label" x="79" y="1162">R3 · GP27</text>
+<path class="row-wire" d="M89 1269 H718"/>
+<text class="row-label" x="79" y="1274">R4 · GP9</text>
+<path class="col-wire" d="M200 779 V1269"/>
+<text class="col-label" x="200" y="768">C0</text>
+<text class="col-pin-label" x="200" y="787">GP2</text>
+<path class="col-wire" d="M346 779 V1269"/>
+<text class="col-label" x="346" y="768">C1</text>
+<text class="col-pin-label" x="346" y="787">GP3</text>
+<path class="col-wire" d="M492 779 V1269"/>
+<text class="col-label" x="492" y="768">C2</text>
+<text class="col-pin-label" x="492" y="787">GP4</text>
+<path class="col-wire" d="M638 779 V1269"/>
+<text class="col-label" x="638" y="768">C3</text>
+<text class="col-pin-label" x="638" y="787">GP5</text>
+<path class="col-wire" d="M784 779 V1269"/>
+<text class="col-label" x="784" y="768">C4</text>
+<text class="col-pin-label" x="784" y="787">GP6</text>
+<path class="col-wire" d="M930 779 V1157"/>
+<text class="col-label" x="930" y="768">C5</text>
+<text class="col-pin-label" x="930" y="787">GP7</text>
+  <g class="pcb">
+    <rect x="115" y="785" width="104" height="72" rx="18"/>
+    <circle class="row-pad" cx="134" cy="821" r="8"/>
+    <circle class="col-pad" cx="200" cy="821" r="8"/>
+    <text class="pad-letter" x="134" y="825">R</text>
+    <text class="pad-letter" x="200" y="825">C</text>
+    <rect class="switch" x="154" y="807" width="26" height="28" rx="5"/>
+    <path class="internal" d="M142 821 H154 M180 821 H192"/>
+    <rect class="band" x="187" y="812" width="5" height="18"/>
+    <text class="pcb-index" x="167" y="851">R0C0</text>
+  </g>
+  <g class="pcb">
+    <rect x="261" y="785" width="104" height="72" rx="18"/>
+    <circle class="row-pad" cx="280" cy="821" r="8"/>
+    <circle class="col-pad" cx="346" cy="821" r="8"/>
+    <text class="pad-letter" x="280" y="825">R</text>
+    <text class="pad-letter" x="346" y="825">C</text>
+    <rect class="switch" x="300" y="807" width="26" height="28" rx="5"/>
+    <path class="internal" d="M288 821 H300 M326 821 H338"/>
+    <rect class="band" x="333" y="812" width="5" height="18"/>
+    <text class="pcb-index" x="313" y="851">R0C1</text>
+  </g>
+  <g class="pcb">
+    <rect x="407" y="785" width="104" height="72" rx="18"/>
+    <circle class="row-pad" cx="426" cy="821" r="8"/>
+    <circle class="col-pad" cx="492" cy="821" r="8"/>
+    <text class="pad-letter" x="426" y="825">R</text>
+    <text class="pad-letter" x="492" y="825">C</text>
+    <rect class="switch" x="446" y="807" width="26" height="28" rx="5"/>
+    <path class="internal" d="M434 821 H446 M472 821 H484"/>
+    <rect class="band" x="479" y="812" width="5" height="18"/>
+    <text class="pcb-index" x="459" y="851">R0C2</text>
+  </g>
+  <g class="pcb">
+    <rect x="553" y="785" width="104" height="72" rx="18"/>
+    <circle class="row-pad" cx="572" cy="821" r="8"/>
+    <circle class="col-pad" cx="638" cy="821" r="8"/>
+    <text class="pad-letter" x="572" y="825">R</text>
+    <text class="pad-letter" x="638" y="825">C</text>
+    <rect class="switch" x="592" y="807" width="26" height="28" rx="5"/>
+    <path class="internal" d="M580 821 H592 M618 821 H630"/>
+    <rect class="band" x="625" y="812" width="5" height="18"/>
+    <text class="pcb-index" x="605" y="851">R0C3</text>
+  </g>
+  <g class="pcb">
+    <rect x="699" y="785" width="104" height="72" rx="18"/>
+    <circle class="row-pad" cx="718" cy="821" r="8"/>
+    <circle class="col-pad" cx="784" cy="821" r="8"/>
+    <text class="pad-letter" x="718" y="825">R</text>
+    <text class="pad-letter" x="784" y="825">C</text>
+    <rect class="switch" x="738" y="807" width="26" height="28" rx="5"/>
+    <path class="internal" d="M726 821 H738 M764 821 H776"/>
+    <rect class="band" x="771" y="812" width="5" height="18"/>
+    <text class="pcb-index" x="751" y="851">R0C4</text>
+  </g>
+  <g class="pcb">
+    <rect x="845" y="785" width="104" height="72" rx="18"/>
+    <circle class="row-pad" cx="864" cy="821" r="8"/>
+    <circle class="col-pad" cx="930" cy="821" r="8"/>
+    <text class="pad-letter" x="864" y="825">R</text>
+    <text class="pad-letter" x="930" y="825">C</text>
+    <rect class="switch" x="884" y="807" width="26" height="28" rx="5"/>
+    <path class="internal" d="M872 821 H884 M910 821 H922"/>
+    <rect class="band" x="917" y="812" width="5" height="18"/>
+    <text class="pcb-index" x="897" y="851">R0C5</text>
+  </g>
+  <g class="pcb">
+    <rect x="115" y="897" width="104" height="72" rx="18"/>
+    <circle class="row-pad" cx="134" cy="933" r="8"/>
+    <circle class="col-pad" cx="200" cy="933" r="8"/>
+    <text class="pad-letter" x="134" y="937">R</text>
+    <text class="pad-letter" x="200" y="937">C</text>
+    <rect class="switch" x="154" y="919" width="26" height="28" rx="5"/>
+    <path class="internal" d="M142 933 H154 M180 933 H192"/>
+    <rect class="band" x="187" y="924" width="5" height="18"/>
+    <text class="pcb-index" x="167" y="963">R1C0</text>
+  </g>
+  <g class="pcb">
+    <rect x="261" y="897" width="104" height="72" rx="18"/>
+    <circle class="row-pad" cx="280" cy="933" r="8"/>
+    <circle class="col-pad" cx="346" cy="933" r="8"/>
+    <text class="pad-letter" x="280" y="937">R</text>
+    <text class="pad-letter" x="346" y="937">C</text>
+    <rect class="switch" x="300" y="919" width="26" height="28" rx="5"/>
+    <path class="internal" d="M288 933 H300 M326 933 H338"/>
+    <rect class="band" x="333" y="924" width="5" height="18"/>
+    <text class="pcb-index" x="313" y="963">R1C1</text>
+  </g>
+  <g class="pcb">
+    <rect x="407" y="897" width="104" height="72" rx="18"/>
+    <circle class="row-pad" cx="426" cy="933" r="8"/>
+    <circle class="col-pad" cx="492" cy="933" r="8"/>
+    <text class="pad-letter" x="426" y="937">R</text>
+    <text class="pad-letter" x="492" y="937">C</text>
+    <rect class="switch" x="446" y="919" width="26" height="28" rx="5"/>
+    <path class="internal" d="M434 933 H446 M472 933 H484"/>
+    <rect class="band" x="479" y="924" width="5" height="18"/>
+    <text class="pcb-index" x="459" y="963">R1C2</text>
+  </g>
+  <g class="pcb">
+    <rect x="553" y="897" width="104" height="72" rx="18"/>
+    <circle class="row-pad" cx="572" cy="933" r="8"/>
+    <circle class="col-pad" cx="638" cy="933" r="8"/>
+    <text class="pad-letter" x="572" y="937">R</text>
+    <text class="pad-letter" x="638" y="937">C</text>
+    <rect class="switch" x="592" y="919" width="26" height="28" rx="5"/>
+    <path class="internal" d="M580 933 H592 M618 933 H630"/>
+    <rect class="band" x="625" y="924" width="5" height="18"/>
+    <text class="pcb-index" x="605" y="963">R1C3</text>
+  </g>
+  <g class="pcb">
+    <rect x="699" y="897" width="104" height="72" rx="18"/>
+    <circle class="row-pad" cx="718" cy="933" r="8"/>
+    <circle class="col-pad" cx="784" cy="933" r="8"/>
+    <text class="pad-letter" x="718" y="937">R</text>
+    <text class="pad-letter" x="784" y="937">C</text>
+    <rect class="switch" x="738" y="919" width="26" height="28" rx="5"/>
+    <path class="internal" d="M726 933 H738 M764 933 H776"/>
+    <rect class="band" x="771" y="924" width="5" height="18"/>
+    <text class="pcb-index" x="751" y="963">R1C4</text>
+  </g>
+  <g class="pcb">
+    <rect x="845" y="897" width="104" height="72" rx="18"/>
+    <circle class="row-pad" cx="864" cy="933" r="8"/>
+    <circle class="col-pad" cx="930" cy="933" r="8"/>
+    <text class="pad-letter" x="864" y="937">R</text>
+    <text class="pad-letter" x="930" y="937">C</text>
+    <rect class="switch" x="884" y="919" width="26" height="28" rx="5"/>
+    <path class="internal" d="M872 933 H884 M910 933 H922"/>
+    <rect class="band" x="917" y="924" width="5" height="18"/>
+    <text class="pcb-index" x="897" y="963">R1C5</text>
+  </g>
+  <g class="pcb">
+    <rect x="115" y="1009" width="104" height="72" rx="18"/>
+    <circle class="row-pad" cx="134" cy="1045" r="8"/>
+    <circle class="col-pad" cx="200" cy="1045" r="8"/>
+    <text class="pad-letter" x="134" y="1049">R</text>
+    <text class="pad-letter" x="200" y="1049">C</text>
+    <rect class="switch" x="154" y="1031" width="26" height="28" rx="5"/>
+    <path class="internal" d="M142 1045 H154 M180 1045 H192"/>
+    <rect class="band" x="187" y="1036" width="5" height="18"/>
+    <text class="pcb-index" x="167" y="1075">R2C0</text>
+  </g>
+  <g class="pcb">
+    <rect x="261" y="1009" width="104" height="72" rx="18"/>
+    <circle class="row-pad" cx="280" cy="1045" r="8"/>
+    <circle class="col-pad" cx="346" cy="1045" r="8"/>
+    <text class="pad-letter" x="280" y="1049">R</text>
+    <text class="pad-letter" x="346" y="1049">C</text>
+    <rect class="switch" x="300" y="1031" width="26" height="28" rx="5"/>
+    <path class="internal" d="M288 1045 H300 M326 1045 H338"/>
+    <rect class="band" x="333" y="1036" width="5" height="18"/>
+    <text class="pcb-index" x="313" y="1075">R2C1</text>
+  </g>
+  <g class="pcb">
+    <rect x="407" y="1009" width="104" height="72" rx="18"/>
+    <circle class="row-pad" cx="426" cy="1045" r="8"/>
+    <circle class="col-pad" cx="492" cy="1045" r="8"/>
+    <text class="pad-letter" x="426" y="1049">R</text>
+    <text class="pad-letter" x="492" y="1049">C</text>
+    <rect class="switch" x="446" y="1031" width="26" height="28" rx="5"/>
+    <path class="internal" d="M434 1045 H446 M472 1045 H484"/>
+    <rect class="band" x="479" y="1036" width="5" height="18"/>
+    <text class="pcb-index" x="459" y="1075">R2C2</text>
+  </g>
+  <g class="pcb">
+    <rect x="553" y="1009" width="104" height="72" rx="18"/>
+    <circle class="row-pad" cx="572" cy="1045" r="8"/>
+    <circle class="col-pad" cx="638" cy="1045" r="8"/>
+    <text class="pad-letter" x="572" y="1049">R</text>
+    <text class="pad-letter" x="638" y="1049">C</text>
+    <rect class="switch" x="592" y="1031" width="26" height="28" rx="5"/>
+    <path class="internal" d="M580 1045 H592 M618 1045 H630"/>
+    <rect class="band" x="625" y="1036" width="5" height="18"/>
+    <text class="pcb-index" x="605" y="1075">R2C3</text>
+  </g>
+  <g class="pcb">
+    <rect x="699" y="1009" width="104" height="72" rx="18"/>
+    <circle class="row-pad" cx="718" cy="1045" r="8"/>
+    <circle class="col-pad" cx="784" cy="1045" r="8"/>
+    <text class="pad-letter" x="718" y="1049">R</text>
+    <text class="pad-letter" x="784" y="1049">C</text>
+    <rect class="switch" x="738" y="1031" width="26" height="28" rx="5"/>
+    <path class="internal" d="M726 1045 H738 M764 1045 H776"/>
+    <rect class="band" x="771" y="1036" width="5" height="18"/>
+    <text class="pcb-index" x="751" y="1075">R2C4</text>
+  </g>
+  <g class="pcb">
+    <rect x="845" y="1009" width="104" height="72" rx="18"/>
+    <circle class="row-pad" cx="864" cy="1045" r="8"/>
+    <circle class="col-pad" cx="930" cy="1045" r="8"/>
+    <text class="pad-letter" x="864" y="1049">R</text>
+    <text class="pad-letter" x="930" y="1049">C</text>
+    <rect class="switch" x="884" y="1031" width="26" height="28" rx="5"/>
+    <path class="internal" d="M872 1045 H884 M910 1045 H922"/>
+    <rect class="band" x="917" y="1036" width="5" height="18"/>
+    <text class="pcb-index" x="897" y="1075">R2C5</text>
+  </g>
+  <g class="pcb">
+    <rect x="115" y="1121" width="104" height="72" rx="18"/>
+    <circle class="row-pad" cx="134" cy="1157" r="8"/>
+    <circle class="col-pad" cx="200" cy="1157" r="8"/>
+    <text class="pad-letter" x="134" y="1161">R</text>
+    <text class="pad-letter" x="200" y="1161">C</text>
+    <rect class="switch" x="154" y="1143" width="26" height="28" rx="5"/>
+    <path class="internal" d="M142 1157 H154 M180 1157 H192"/>
+    <rect class="band" x="187" y="1148" width="5" height="18"/>
+    <text class="pcb-index" x="167" y="1187">R3C0</text>
+  </g>
+  <g class="pcb">
+    <rect x="261" y="1121" width="104" height="72" rx="18"/>
+    <circle class="row-pad" cx="280" cy="1157" r="8"/>
+    <circle class="col-pad" cx="346" cy="1157" r="8"/>
+    <text class="pad-letter" x="280" y="1161">R</text>
+    <text class="pad-letter" x="346" y="1161">C</text>
+    <rect class="switch" x="300" y="1143" width="26" height="28" rx="5"/>
+    <path class="internal" d="M288 1157 H300 M326 1157 H338"/>
+    <rect class="band" x="333" y="1148" width="5" height="18"/>
+    <text class="pcb-index" x="313" y="1187">R3C1</text>
+  </g>
+  <g class="pcb">
+    <rect x="407" y="1121" width="104" height="72" rx="18"/>
+    <circle class="row-pad" cx="426" cy="1157" r="8"/>
+    <circle class="col-pad" cx="492" cy="1157" r="8"/>
+    <text class="pad-letter" x="426" y="1161">R</text>
+    <text class="pad-letter" x="492" y="1161">C</text>
+    <rect class="switch" x="446" y="1143" width="26" height="28" rx="5"/>
+    <path class="internal" d="M434 1157 H446 M472 1157 H484"/>
+    <rect class="band" x="479" y="1148" width="5" height="18"/>
+    <text class="pcb-index" x="459" y="1187">R3C2</text>
+  </g>
+  <g class="pcb">
+    <rect x="553" y="1121" width="104" height="72" rx="18"/>
+    <circle class="row-pad" cx="572" cy="1157" r="8"/>
+    <circle class="col-pad" cx="638" cy="1157" r="8"/>
+    <text class="pad-letter" x="572" y="1161">R</text>
+    <text class="pad-letter" x="638" y="1161">C</text>
+    <rect class="switch" x="592" y="1143" width="26" height="28" rx="5"/>
+    <path class="internal" d="M580 1157 H592 M618 1157 H630"/>
+    <rect class="band" x="625" y="1148" width="5" height="18"/>
+    <text class="pcb-index" x="605" y="1187">R3C3</text>
+  </g>
+  <g class="pcb">
+    <rect x="699" y="1121" width="104" height="72" rx="18"/>
+    <circle class="row-pad" cx="718" cy="1157" r="8"/>
+    <circle class="col-pad" cx="784" cy="1157" r="8"/>
+    <text class="pad-letter" x="718" y="1161">R</text>
+    <text class="pad-letter" x="784" y="1161">C</text>
+    <rect class="switch" x="738" y="1143" width="26" height="28" rx="5"/>
+    <path class="internal" d="M726 1157 H738 M764 1157 H776"/>
+    <rect class="band" x="771" y="1148" width="5" height="18"/>
+    <text class="pcb-index" x="751" y="1187">R3C4</text>
+  </g>
+  <g class="pcb">
+    <rect x="845" y="1121" width="104" height="72" rx="18"/>
+    <circle class="row-pad" cx="864" cy="1157" r="8"/>
+    <circle class="col-pad" cx="930" cy="1157" r="8"/>
+    <text class="pad-letter" x="864" y="1161">R</text>
+    <text class="pad-letter" x="930" y="1161">C</text>
+    <rect class="switch" x="884" y="1143" width="26" height="28" rx="5"/>
+    <path class="internal" d="M872 1157 H884 M910 1157 H922"/>
+    <rect class="band" x="917" y="1148" width="5" height="18"/>
+    <text class="pcb-index" x="897" y="1187">R3C5</text>
+  </g>
+  <g class="pcb">
+    <rect x="115" y="1233" width="104" height="72" rx="18"/>
+    <circle class="row-pad" cx="134" cy="1269" r="8"/>
+    <circle class="col-pad" cx="200" cy="1269" r="8"/>
+    <text class="pad-letter" x="134" y="1273">R</text>
+    <text class="pad-letter" x="200" y="1273">C</text>
+    <rect class="switch" x="154" y="1255" width="26" height="28" rx="5"/>
+    <path class="internal" d="M142 1269 H154 M180 1269 H192"/>
+    <rect class="band" x="187" y="1260" width="5" height="18"/>
+    <text class="pcb-index" x="167" y="1299">R4C0</text>
+  </g>
+  <g class="pcb">
+    <rect x="261" y="1233" width="104" height="72" rx="18"/>
+    <circle class="row-pad" cx="280" cy="1269" r="8"/>
+    <circle class="col-pad" cx="346" cy="1269" r="8"/>
+    <text class="pad-letter" x="280" y="1273">R</text>
+    <text class="pad-letter" x="346" y="1273">C</text>
+    <rect class="switch" x="300" y="1255" width="26" height="28" rx="5"/>
+    <path class="internal" d="M288 1269 H300 M326 1269 H338"/>
+    <rect class="band" x="333" y="1260" width="5" height="18"/>
+    <text class="pcb-index" x="313" y="1299">R4C1</text>
+  </g>
+  <g class="pcb">
+    <rect x="407" y="1233" width="104" height="72" rx="18"/>
+    <circle class="row-pad" cx="426" cy="1269" r="8"/>
+    <circle class="col-pad" cx="492" cy="1269" r="8"/>
+    <text class="pad-letter" x="426" y="1273">R</text>
+    <text class="pad-letter" x="492" y="1273">C</text>
+    <rect class="switch" x="446" y="1255" width="26" height="28" rx="5"/>
+    <path class="internal" d="M434 1269 H446 M472 1269 H484"/>
+    <rect class="band" x="479" y="1260" width="5" height="18"/>
+    <text class="pcb-index" x="459" y="1299">R4C2</text>
+  </g>
+  <g class="pcb">
+    <rect x="553" y="1233" width="104" height="72" rx="18"/>
+    <circle class="row-pad" cx="572" cy="1269" r="8"/>
+    <circle class="col-pad" cx="638" cy="1269" r="8"/>
+    <text class="pad-letter" x="572" y="1273">R</text>
+    <text class="pad-letter" x="638" y="1273">C</text>
+    <rect class="switch" x="592" y="1255" width="26" height="28" rx="5"/>
+    <path class="internal" d="M580 1269 H592 M618 1269 H630"/>
+    <rect class="band" x="625" y="1260" width="5" height="18"/>
+    <text class="pcb-index" x="605" y="1299">R4C3</text>
+  </g>
+  <g class="pcb">
+    <rect x="699" y="1233" width="104" height="72" rx="18"/>
+    <circle class="row-pad" cx="718" cy="1269" r="8"/>
+    <circle class="col-pad" cx="784" cy="1269" r="8"/>
+    <text class="pad-letter" x="718" y="1273">R</text>
+    <text class="pad-letter" x="784" y="1273">C</text>
+    <rect class="switch" x="738" y="1255" width="26" height="28" rx="5"/>
+    <path class="internal" d="M726 1269 H738 M764 1269 H776"/>
+    <rect class="band" x="771" y="1260" width="5" height="18"/>
+    <text class="pcb-index" x="751" y="1299">R4C4</text>
   </g>
 
-  <rect class="wiring-legend-box" x="60" y="2090" width="1630" height="82" rx="14"/>
-  <line class="legend-col-line" x1="90" y1="2121" x2="145" y2="2121"/>
-  <text class="wiring-note" x="158" y="2126">黄色：同一列 C0–C6 相连</text>
-  <line class="legend-row-line" x1="400" y1="2121" x2="455" y2="2121"/>
-  <text class="wiring-note" x="468" y="2126">蓝色：同一行 R0–R4 相连</text>
-  <rect class="legend-diode" x="740" y="2108" width="46" height="24" rx="12"/>
-  <rect class="legend-diode-band" x="776" y="2108" width="7" height="24"/>
-  <text class="wiring-note" x="798" y="2126">黑色带环端接蓝色行线</text>
-  <text class="wiring-emphasis" x="90" y="2158">R4 改接 GP9；左侧 Joy-Con：VCC→3V3，GND→GND，X→GP28，Y→GP29，SW/BTN 不接。</text>
-  <text class="wiring-note" x="1210" y="2158">行列线交叉处绝缘，不直接相连。</text>
+  <rect class="controller" x="1010" y="750" width="355" height="540" rx="18"/>
+  <text class="controller-title" x="1188" y="788">RP2040-Zero 引脚总表</text>
+  <text class="pin" x="1042" y="830">R0 → GP14</text>
+  <text class="pin" x="1042" y="858">R1 → GP15</text>
+  <text class="pin" x="1042" y="886">R2 → GP26</text>
+  <text class="pin" x="1042" y="914">R3 → GP27</text>
+  <text class="pin" x="1042" y="942">R4 → GP9</text>
+  <text class="pin" x="1190" y="830">C0 → GP2</text>
+  <text class="pin" x="1190" y="858">C1 → GP3</text>
+  <text class="pin" x="1190" y="886">C2 → GP4</text>
+  <text class="pin" x="1190" y="914">C3 → GP5</text>
+  <text class="pin" x="1190" y="942">C4 → GP6</text>
+  <text class="pin" x="1190" y="970">C5 → GP7</text>
+  <line x1="1038" y1="992" x2="1338" y2="992" stroke="#536075" stroke-width="2"/>
+  <text class="pin" x="1042" y="1028">Joy X → GP28 / ADC2</text>
+  <text class="pin" x="1042" y="1056">Joy Y → GP29 / ADC3</text>
+  <text class="pin" x="1042" y="1084">Joy SW → GP8（内部上拉）</text>
+  <text class="pin" x="1042" y="1112">Joy VCC → 3V3</text>
+  <text class="pin" x="1042" y="1140">Joy GND → GND</text>
+  <text class="warning" x="1042" y="1182">Joy-Con 绝对不要接 5V</text>
+  <text class="note" x="1042" y="1214">无右手、无 TRS、无分体数据线。</text>
+  <text class="note" x="1042" y="1240">GP0/GP1 保留；GP8 只给摇杆按压。</text>
+
+  <line x1="58" y1="1332" x2="1382" y2="1332" stroke="#536075" stroke-width="2"/>
+  <text class="section" x="58" y="1372">Joy-Con 5 针转接板</text>
+  <rect class="joy" x="70" y="1410" width="260" height="185" rx="28"/>
+  <circle class="joy-stick" cx="200" cy="1483" r="48"/>
+  <text class="controller-title" x="200" y="1570">Joy-Con 摇杆</text>
+  <text class="note" x="200" y="1590" text-anchor="middle">5P FPC 转接板</text>
+  <rect class="controller" x="1040" y="1395" width="320" height="215" rx="18"/>
+  <text class="controller-title" x="1200" y="1430">RP2040-Zero</text>
+  <text class="pin" x="1080" y="1470">3V3</text>
+  <text class="pin" x="1080" y="1500">GND</text>
+  <text class="pin" x="1080" y="1530">GP28</text>
+  <text class="pin" x="1080" y="1560">GP29</text>
+  <text class="pin" x="1080" y="1590">GP8</text>
+  <path class="joy-wire wire-vcc" d="M330 1440 C600 1390 820 1390 1040 1470"/>
+  <path class="joy-wire wire-gnd" d="M330 1470 C600 1450 820 1450 1040 1500"/>
+  <path class="joy-wire wire-x" d="M330 1500 C600 1500 820 1500 1040 1530"/>
+  <path class="joy-wire wire-y" d="M330 1530 C600 1550 820 1550 1040 1560"/>
+  <path class="joy-wire wire-sw" d="M330 1560 C600 1610 820 1610 1040 1590"/>
+  <text class="pin" x="355" y="1422">VCC → 3V3</text>
+  <text class="pin" x="505" y="1472">GND → GND</text>
+  <text class="pin" x="640" y="1508">X → GP28</text>
+  <text class="pin" x="775" y="1552">Y → GP29</text>
+  <text class="pin" x="885" y="1600">SW → GP8</text>
+  <text class="warning" x="390" y="1640">固件：X/Y → WASD；SW 按下（接地）→ Space。上电时松开摇杆并静置约 1 秒。</text>
 </svg>

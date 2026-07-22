@@ -4,4 +4,4 @@ dist/
 *.bin
 *.hex
 *.uf2
-
+.codegraph/

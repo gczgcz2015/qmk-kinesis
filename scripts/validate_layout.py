@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the QMK, VIA, and Vial matrix definitions without dependencies."""
+"""Validate the standalone 29-key QMK, VIA, and Vial definitions."""
 
 from __future__ import annotations
 
@@ -22,37 +22,13 @@ KEYMAPS = {
     "Vial": VIAL_DIR / "keymap.c",
 }
 MATRIX_COORDINATE = re.compile(r"^(\d+),(\d+)$")
-EXPECTED_HIDDEN = {
-    (3, 6),
-    (4, 5),
-    (4, 6),
-    (5, 0),
-    (5, 1),
-    (5, 2),
-    (5, 3),
-    (5, 4),
-    (5, 5),
-    (5, 6),
-    (9, 6),
-    (10, 5),
-    (10, 6),
-    (11, 0),
-    (11, 1),
-    (11, 2),
-    (11, 3),
-    (11, 4),
-    (11, 5),
-    (11, 6),
+EXPECTED_COORDINATES = {
+    (row, col)
+    for row in range(5)
+    for col in range(6)
+    if (row, col) != (4, 5)
 }
-EXPECTED_INNER_COLUMNS = {
-    (0, 6),
-    (1, 6),
-    (2, 6),
-    (6, 6),
-    (7, 6),
-    (8, 6),
-}
-EXPECTED_UNLOCK_COORDINATES = {(2, 0), (9, 0)}
+EXPECTED_UNLOCK_COORDINATES = {(2, 0), (4, 4)}
 
 
 def load_json(path: Path) -> dict:
@@ -76,13 +52,12 @@ def visible_coordinates(name: str, value: object) -> set[tuple[int, int]]:
     unique_coordinates = set(coordinates)
     if len(unique_coordinates) != len(coordinates):
         raise ValueError(f"{name} layout contains a duplicate matrix coordinate")
-
     return unique_coordinates
 
 
 def layout_arguments(source: str) -> list[list[str]]:
     source = re.sub(r"//.*", "", source)
-    marker = "LAYOUT_5x7("
+    marker = "LAYOUT_5x6("
     layouts: list[list[str]] = []
     search_from = 0
 
@@ -124,47 +99,36 @@ def main() -> None:
     via = load_json(VIA_JSON)
     vial = load_json(VIAL_JSON)
 
-    layout = keyboard["layouts"]["LAYOUT_5x7"]["layout"]
+    layout = keyboard["layouts"]["LAYOUT_5x6"]["layout"]
     qmk_coordinates = {tuple(key["matrix"]) for key in layout}
     via_coordinates = visible_coordinates("VIA", via["layouts"]["keymap"])
     vial_coordinates = visible_coordinates("Vial", vial["layouts"]["keymap"])
 
-    assert len(layout) == 84, f"QMK layout must contain 84 keys, got {len(layout)}"
-    assert len(qmk_coordinates) == 84, "QMK layout contains duplicate matrix coordinates"
-    assert len(via_coordinates) == 64, (
-        f"VIA must display 64 keys, got {len(via_coordinates)}"
-    )
-    assert via_coordinates <= qmk_coordinates, "VIA references an unknown matrix coordinate"
-    assert qmk_coordinates - via_coordinates == EXPECTED_HIDDEN, (
-        "VIA hidden-key set does not match the intended eight keys"
-    )
-    assert vial_coordinates == via_coordinates, "Vial and VIA layouts must display the same keys"
+    assert len(layout) == 29, f"QMK layout must contain 29 keys, got {len(layout)}"
+    assert qmk_coordinates == EXPECTED_COORDINATES
+    assert via_coordinates == EXPECTED_COORDINATES
+    assert vial_coordinates == EXPECTED_COORDINATES
     assert vial["layouts"]["keymap"] == via["layouts"]["keymap"], (
         "Vial and VIA visual geometry must stay in sync"
     )
-    svg_keys = main_keys()
-    svg_coordinates = {(key.qmk_row, key.col) for key in svg_keys}
-    assert svg_coordinates == vial_coordinates, (
-        "SVG and Vial/VIA must display the same matrix coordinates"
+
+    svg_coordinates = {(key.qmk_row, key.col) for key in main_keys()}
+    assert svg_coordinates == EXPECTED_COORDINATES, (
+        "SVG must contain the same 29 physical matrix positions"
     )
-    inner_column_coordinates = {
-        (key.qmk_row, key.col) for key in svg_keys if key.col == 6 and key.local_row < 5
-    }
-    assert inner_column_coordinates == EXPECTED_INNER_COLUMNS, (
-        "the visible three-key inner columns must use local rows R0/R1/R2"
-    )
-    row_y = {key.local_row: key.y for key in main_keys() if key.col == 0}
-    assert all(
-        key.y == row_y[key.local_row]
-        for key in main_keys()
-        if key.col == 6
-    ), "every inner-column key must align with its electrical matrix row"
-    assert via["matrix"] == {"rows": 12, "cols": 7}
-    assert vial["matrix"] == {"rows": 12, "cols": 7}
+
+    expected_matrix = {"rows": 5, "cols": 6}
+    assert via["matrix"] == expected_matrix
+    assert vial["matrix"] == expected_matrix
     assert vial["lighting"] == "none"
     assert via["vendorId"] == keyboard["usb"]["vid"]
     assert via["productId"] == keyboard["usb"]["pid"]
-    matrix_order = [tuple(key["matrix"]) for key in layout]
+    assert keyboard["diode_direction"] == "ROW2COL"
+    assert "split" not in keyboard
+    assert keyboard["matrix_pins"] == {
+        "rows": ["GP14", "GP15", "GP26", "GP27", "GP9"],
+        "cols": ["GP2", "GP3", "GP4", "GP5", "GP6", "GP7"],
+    }
 
     parsed_keymaps: dict[str, list[list[str]]] = {}
     for name, path in KEYMAPS.items():
@@ -172,19 +136,9 @@ def main() -> None:
         assert len(keymap_layers) == 4, (
             f"{name}: expected 4 keymap layers, got {len(keymap_layers)}"
         )
-        assert all(len(layer) == 84 for layer in keymap_layers), (
-            f"{name}: every LAYOUT_5x7 keymap layer must contain 84 keycodes"
+        assert all(len(layer) == 29 for layer in keymap_layers), (
+            f"{name}: every LAYOUT_5x6 layer must contain 29 keycodes"
         )
-
-        for layer_index, layer in enumerate(keymap_layers):
-            hidden_keycodes = {
-                coordinate: layer[index]
-                for index, coordinate in enumerate(matrix_order)
-                if coordinate in EXPECTED_HIDDEN
-            }
-            assert set(hidden_keycodes.values()) == {"XXXXXXX"}, (
-                f"{name}: all eight hidden keys must be KC_NO on layer {layer_index}"
-            )
         parsed_keymaps[name] = keymap_layers
 
     assert parsed_keymaps["Vial"] == parsed_keymaps["VIA"], (
@@ -195,27 +149,26 @@ def main() -> None:
     uid = macro_values(vial_config, "VIAL_KEYBOARD_UID")
     unlock_rows = macro_values(vial_config, "VIAL_UNLOCK_COMBO_ROWS")
     unlock_cols = macro_values(vial_config, "VIAL_UNLOCK_COMBO_COLS")
-    unlock_coordinates = set(zip(unlock_rows, unlock_cols, strict=True))
-    assert len(uid) == 8 and all(0 <= value <= 0xFF for value in uid), (
-        "VIAL_KEYBOARD_UID must contain eight bytes"
-    )
-    assert len(unlock_coordinates) >= 2, "Vial unlock combo must use at least two keys"
-    assert unlock_coordinates <= vial_coordinates, (
-        "Vial unlock combo must reference visible physical keys"
-    )
-    assert unlock_coordinates == EXPECTED_UNLOCK_COORDINATES, (
-        "Vial unlock combo must stay on the physical Escape and Right Shift keys"
-    )
+    assert len(unlock_rows) == len(unlock_cols)
+    unlock_coordinates = set(zip(unlock_rows, unlock_cols))
+    assert len(uid) == 8 and all(0 <= value <= 0xFF for value in uid)
+    assert unlock_coordinates == EXPECTED_UNLOCK_COORDINATES
 
     vial_rules = VIAL_RULES.read_text(encoding="utf-8")
     assert re.search(r"^VIA_ENABLE\s*=\s*yes$", vial_rules, re.MULTILINE)
     assert re.search(r"^VIAL_ENABLE\s*=\s*yes$", vial_rules, re.MULTILINE)
     assert re.search(r"^ANALOG_DRIVER_REQUIRED\s*=\s*yes$", vial_rules, re.MULTILINE)
 
+    vial_keymap = KEYMAPS["Vial"].read_text(encoding="utf-8")
+    assert re.search(r"^#define\s+JOYCON_X_PIN\s+GP28$", vial_keymap, re.MULTILINE)
+    assert re.search(r"^#define\s+JOYCON_Y_PIN\s+GP29$", vial_keymap, re.MULTILINE)
+    assert re.search(r"^#define\s+JOYCON_SW_PIN\s+GP8$", vial_keymap, re.MULTILINE)
+    assert "gpio_set_pin_input_high(JOYCON_SW_PIN)" in vial_keymap
+    assert "joycon_set_key(JOYCON_PRESS, KC_SPC, pressed)" in vial_keymap
+
     print(
-        "layout validation passed: 84 QMK matrix positions, "
-        "64 wired/VIA/Vial-visible keys, 20 unused and hidden, "
-        "4 synchronized layers"
+        "layout validation passed: standalone 5x6 ROW2COL matrix, "
+        "29 physical/VIA/Vial keys, 4 synchronized layers, Joy-Con X/Y/SW"
     )
 
 
