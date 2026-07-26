@@ -17,7 +17,7 @@ KEYBOARD_JSON = KEYBOARD_DIR / "keyboard.json"
 KEYMAP_C = KEYBOARD_DIR / "keymaps/vial/keymap.c"
 OUTPUT = ROOT / "docs/wiring-layout.svg"
 
-ROW_PINS = ("GP14", "GP15", "GP26", "GP27", "GP9")
+ROW_PINS = ("GP14", "GP15", "GP26", "GP27", "GP0")
 COL_PINS = ("GP2", "GP3", "GP4", "GP5", "GP6", "GP7")
 
 KEY_W = 132
@@ -271,7 +271,7 @@ def generate_svg(keys: list[Key], keycodes: dict[tuple[int, int], str]) -> str:
   <text class="pin" x="1042" y="858">R1 → GP15</text>
   <text class="pin" x="1042" y="886">R2 → GP26</text>
   <text class="pin" x="1042" y="914">R3 → GP27</text>
-  <text class="pin" x="1042" y="942">R4 → GP9</text>
+  <text class="pin" x="1042" y="942">R4 → GP0</text>
   <text class="pin" x="1190" y="830">C0 → GP2</text>
   <text class="pin" x="1190" y="858">C1 → GP3</text>
   <text class="pin" x="1190" y="886">C2 → GP4</text>

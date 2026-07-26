@@ -126,7 +126,7 @@ def main() -> None:
     assert keyboard["diode_direction"] == "ROW2COL"
     assert "split" not in keyboard
     assert keyboard["matrix_pins"] == {
-        "rows": ["GP14", "GP15", "GP26", "GP27", "GP9"],
+        "rows": ["GP14", "GP15", "GP26", "GP27", "GP0"],
         "cols": ["GP2", "GP3", "GP4", "GP5", "GP6", "GP7"],
     }
 

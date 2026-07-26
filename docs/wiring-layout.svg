@@ -206,31 +206,31 @@
     <rect x="70" y="540" width="132" height="84" rx="12"/>
     <text class="key-label" x="136" y="568">Nav/Media</text>
     <text class="key-meta" x="136" y="591">R4C0</text>
-    <text class="key-pin" x="136" y="610">GP9 / GP2</text>
+    <text class="key-pin" x="136" y="610">GP0 / GP2</text>
   </g>
   <g class="key">
     <rect x="216" y="540" width="132" height="84" rx="12"/>
     <text class="key-label" x="282" y="568">`</text>
     <text class="key-meta" x="282" y="591">R4C1</text>
-    <text class="key-pin" x="282" y="610">GP9 / GP3</text>
+    <text class="key-pin" x="282" y="610">GP0 / GP3</text>
   </g>
   <g class="key">
     <rect x="362" y="540" width="132" height="84" rx="12"/>
     <text class="key-label" x="428" y="568">Caps</text>
     <text class="key-meta" x="428" y="591">R4C2</text>
-    <text class="key-pin" x="428" y="610">GP9 / GP4</text>
+    <text class="key-pin" x="428" y="610">GP0 / GP4</text>
   </g>
   <g class="key">
     <rect x="508" y="540" width="132" height="84" rx="12"/>
     <text class="key-label" x="574" y="568">←</text>
     <text class="key-meta" x="574" y="591">R4C3</text>
-    <text class="key-pin" x="574" y="610">GP9 / GP5</text>
+    <text class="key-pin" x="574" y="610">GP0 / GP5</text>
   </g>
   <g class="key">
     <rect x="654" y="540" width="132" height="84" rx="12"/>
     <text class="key-label" x="720" y="568">→</text>
     <text class="key-meta" x="720" y="591">R4C4</text>
-    <text class="key-pin" x="720" y="610">GP9 / GP6</text>
+    <text class="key-pin" x="720" y="610">GP0 / GP6</text>
   </g>
   <rect class="warning-box" x="978" y="142" width="390" height="475" rx="18"/>
   <text class="section" x="1008" y="180">Plum Twist D1 二极管</text>
@@ -264,7 +264,7 @@
 <path class="row-wire" d="M89 1157 H864"/>
 <text class="row-label" x="79" y="1162">R3 · GP27</text>
 <path class="row-wire" d="M89 1269 H718"/>
-<text class="row-label" x="79" y="1274">R4 · GP9</text>
+<text class="row-label" x="79" y="1274">R4 · GP0</text>
 <path class="col-wire" d="M200 779 V1269"/>
 <text class="col-label" x="200" y="768">C0</text>
 <text class="col-pin-label" x="200" y="787">GP2</text>
@@ -609,7 +609,7 @@
   <text class="pin" x="1042" y="858">R1 → GP15</text>
   <text class="pin" x="1042" y="886">R2 → GP26</text>
   <text class="pin" x="1042" y="914">R3 → GP27</text>
-  <text class="pin" x="1042" y="942">R4 → GP9</text>
+  <text class="pin" x="1042" y="942">R4 → GP0</text>
   <text class="pin" x="1190" y="830">C0 → GP2</text>
   <text class="pin" x="1190" y="858">C1 → GP3</text>
   <text class="pin" x="1190" y="886">C2 → GP4</text>
