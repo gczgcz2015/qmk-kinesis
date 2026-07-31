@@ -3,8 +3,8 @@
 
 #pragma once
 
-// Four VIA/Vial-editable layers.
-#define DYNAMIC_KEYMAP_LAYER_COUNT 4
+// Four physical-key layers plus one Vial-editable Joy-Con mapping layer.
+#define DYNAMIC_KEYMAP_LAYER_COUNT 5
 
 // Enter the UF2 bootloader by pressing RESET twice quickly.
 #define RP2040_BOOTLOADER_DOUBLE_TAP_RESET

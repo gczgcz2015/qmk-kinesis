@@ -12,6 +12,7 @@ from generate_wiring_svg import main_keys
 
 ROOT = Path(__file__).resolve().parents[1]
 KEYBOARD_JSON = ROOT / "keyboards/handwired/dactyl_manuform/5x7/keyboard.json"
+KEYBOARD_CONFIG = ROOT / "keyboards/handwired/dactyl_manuform/5x7/config.h"
 VIA_JSON = ROOT / "via/kinesis-dactyl-5x7.json"
 VIAL_DIR = ROOT / "keyboards/handwired/dactyl_manuform/5x7/keymaps/vial"
 VIAL_JSON = VIAL_DIR / "vial.json"
@@ -29,6 +30,13 @@ EXPECTED_COORDINATES = {
     if (row, col) != (4, 5)
 }
 EXPECTED_UNLOCK_COORDINATES = {(2, 0), (4, 4)}
+JOYCON_DEFAULT_MAPPINGS = {
+    (1, 2): "KC_W",
+    (2, 1): "KC_A",
+    (2, 2): "KC_S",
+    (2, 3): "KC_D",
+    (4, 0): "KC_SPC",
+}
 
 
 def load_json(path: Path) -> dict:
@@ -133,8 +141,8 @@ def main() -> None:
     parsed_keymaps: dict[str, list[list[str]]] = {}
     for name, path in KEYMAPS.items():
         keymap_layers = layout_arguments(path.read_text(encoding="utf-8"))
-        assert len(keymap_layers) == 4, (
-            f"{name}: expected 4 keymap layers, got {len(keymap_layers)}"
+        assert len(keymap_layers) == 5, (
+            f"{name}: expected 5 keymap layers, got {len(keymap_layers)}"
         )
         assert all(len(layer) == 29 for layer in keymap_layers), (
             f"{name}: every LAYOUT_5x6 layer must contain 29 keycodes"
@@ -143,6 +151,24 @@ def main() -> None:
 
     assert parsed_keymaps["Vial"] == parsed_keymaps["VIA"], (
         "Vial and VIA default keymaps must stay in sync"
+    )
+    joycon_layer = parsed_keymaps["Vial"][4]
+    for row in range(5):
+        for col in range(6):
+            if (row, col) == (4, 5):
+                continue
+            expected = JOYCON_DEFAULT_MAPPINGS.get((row, col), "_______")
+            layout_index = row * 6 + col
+            assert joycon_layer[layout_index] == expected, (
+                f"Joy-Con mapping layer R{row}C{col}: expected {expected}, "
+                f"got {joycon_layer[layout_index]}"
+            )
+
+    keyboard_config = KEYBOARD_CONFIG.read_text(encoding="utf-8")
+    assert re.search(
+        r"^#define\s+DYNAMIC_KEYMAP_LAYER_COUNT\s+5$",
+        keyboard_config,
+        re.MULTILINE,
     )
 
     vial_config = VIAL_CONFIG.read_text(encoding="utf-8")
@@ -164,11 +190,14 @@ def main() -> None:
     assert re.search(r"^#define\s+JOYCON_Y_PIN\s+GP29$", vial_keymap, re.MULTILINE)
     assert re.search(r"^#define\s+JOYCON_SW_PIN\s+GP8$", vial_keymap, re.MULTILINE)
     assert "gpio_set_pin_input_high(JOYCON_SW_PIN)" in vial_keymap
-    assert "joycon_set_key(JOYCON_PRESS, KC_SPC, pressed)" in vial_keymap
+    assert "dynamic_keymap_get_keycode(_JOY_MAP" in vial_keymap
+    assert "joycon_set_key(JOYCON_PRESS, pressed)" in vial_keymap
+    assert "joycon_active_keycodes[JOYCON_INPUT_COUNT]" in vial_keymap
 
     print(
         "layout validation passed: standalone 5x6 ROW2COL matrix, "
-        "29 physical/VIA/Vial keys, 4 synchronized layers, Joy-Con X/Y/SW"
+        "29 physical/VIA/Vial keys, 5 synchronized layers, "
+        "Vial-editable Joy-Con X/Y/SW mappings"
     )
 
 

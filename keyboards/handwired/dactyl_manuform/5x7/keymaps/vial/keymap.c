@@ -3,12 +3,14 @@
 
 #include QMK_KEYBOARD_H
 #include "analog.h"
+#include "dynamic_keymap.h"
 
 enum layer_names {
     _BASE,
     _KEYPAD,
     _FN,
     _NAV_MEDIA,
+    _JOY_MAP,
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -42,6 +44,17 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         _______, _______, KC_LEFT, KC_DOWN, KC_RGHT, KC_PGDN,
         _______, _______, _______, _______, _______, _______,
         _______, _______, _______, _______, _______
+    ),
+
+    // Vial layer 4 stores the Joy-Con mappings. Only the five marked
+    // positions are read by the joystick code; the layer is not activated
+    // for normal typing.
+    [_JOY_MAP] = LAYOUT_5x6(
+        _______, _______, _______, _______, _______, _______,
+        _______, _______, KC_W,    _______, _______, _______,
+        _______, KC_A,    KC_S,    KC_D,    _______, _______,
+        _______, _______, _______, _______, _______, _______,
+        KC_SPC,  _______, _______, _______, _______
     )
 };
 
@@ -51,7 +64,13 @@ enum joycon_input_index {
     JOYCON_UP,
     JOYCON_DOWN,
     JOYCON_PRESS,
+    JOYCON_INPUT_COUNT,
 };
+
+typedef struct {
+    uint8_t row;
+    uint8_t col;
+} joycon_mapping_position_t;
 
 #define JOYCON_X_PIN GP28
 #define JOYCON_Y_PIN GP29
@@ -67,8 +86,26 @@ enum joycon_input_index {
 #define JOYCON_CALIBRATION_CENTER_MIN 256
 #define JOYCON_CALIBRATION_CENTER_MAX 768
 #define JOYCON_FILTER_DIVISOR 2
+#define JOYCON_MAPPING_EEPROM_MAGIC 0x4A4F5931UL
 
-static bool     joycon_pressed[5];
+static const joycon_mapping_position_t joycon_mapping_positions[JOYCON_INPUT_COUNT] = {
+    [JOYCON_LEFT]  = {.row = 2, .col = 1}, // Visual A position
+    [JOYCON_RIGHT] = {.row = 2, .col = 3}, // Visual D position
+    [JOYCON_UP]    = {.row = 1, .col = 2}, // Visual W position
+    [JOYCON_DOWN]  = {.row = 2, .col = 2}, // Visual S position
+    [JOYCON_PRESS] = {.row = 4, .col = 0}, // Lower-left thumb position
+};
+
+static const uint16_t joycon_default_keycodes[JOYCON_INPUT_COUNT] = {
+    [JOYCON_LEFT]  = KC_A,
+    [JOYCON_RIGHT] = KC_D,
+    [JOYCON_UP]    = KC_W,
+    [JOYCON_DOWN]  = KC_S,
+    [JOYCON_PRESS] = KC_SPC,
+};
+
+static bool     joycon_pressed[JOYCON_INPUT_COUNT];
+static uint16_t joycon_active_keycodes[JOYCON_INPUT_COUNT];
 static uint16_t joycon_last_poll;
 static bool     joycon_sw_raw_pressed;
 static bool     joycon_sw_debounced_pressed;
@@ -88,17 +125,73 @@ static int16_t  joycon_y_center = JOYCON_ADC_DEFAULT_CENTER;
 static int16_t  joycon_x_filtered = JOYCON_ADC_DEFAULT_CENTER;
 static int16_t  joycon_y_filtered = JOYCON_ADC_DEFAULT_CENTER;
 
-static void joycon_set_key(uint8_t index, uint16_t keycode, bool pressed) {
+static uint16_t joycon_mapping_keycode(uint8_t index) {
+    const joycon_mapping_position_t position = joycon_mapping_positions[index];
+    return dynamic_keymap_get_keycode(_JOY_MAP, position.row, position.col);
+}
+
+static bool joycon_keycode_is_usable(uint16_t keycode) {
+    return keycode != KC_NO && keycode != KC_TRNS;
+}
+
+static bool joycon_keycode_in_use(uint8_t excluded_index, uint16_t keycode) {
+    for (uint8_t index = 0; index < JOYCON_INPUT_COUNT; index++) {
+        if (index != excluded_index && joycon_pressed[index] &&
+            joycon_active_keycodes[index] == keycode) {
+            return true;
+        }
+    }
+    return false;
+}
+
+static void joycon_set_key(uint8_t index, bool pressed) {
     if (pressed == joycon_pressed[index]) {
         return;
     }
 
-    joycon_pressed[index] = pressed;
     if (pressed) {
-        register_code16(keycode);
+        const uint16_t keycode = joycon_mapping_keycode(index);
+        joycon_pressed[index]         = true;
+        joycon_active_keycodes[index] = keycode;
+        if (joycon_keycode_is_usable(keycode) &&
+            !joycon_keycode_in_use(index, keycode)) {
+            register_code16(keycode);
+        }
     } else {
-        unregister_code16(keycode);
+        const uint16_t keycode = joycon_active_keycodes[index];
+        joycon_pressed[index]         = false;
+        joycon_active_keycodes[index] = KC_NO;
+        if (joycon_keycode_is_usable(keycode) &&
+            !joycon_keycode_in_use(index, keycode)) {
+            unregister_code16(keycode);
+        }
     }
+}
+
+static void joycon_initialize_mapping_layer(void) {
+    if (eeconfig_read_user() == JOYCON_MAPPING_EEPROM_MAGIC) {
+        return;
+    }
+
+    // This firmware adds a fifth dynamic layer to installations that may
+    // already have four layers in EEPROM. Initialize every slot so Vial does
+    // not display stale EEPROM bytes in the unused positions.
+    for (uint8_t row = 0; row < MATRIX_ROWS; row++) {
+        for (uint8_t col = 0; col < MATRIX_COLS; col++) {
+            dynamic_keymap_set_keycode(_JOY_MAP, row, col, KC_TRNS);
+        }
+    }
+
+    for (uint8_t index = 0; index < JOYCON_INPUT_COUNT; index++) {
+        const joycon_mapping_position_t position = joycon_mapping_positions[index];
+        dynamic_keymap_set_keycode(
+            _JOY_MAP,
+            position.row,
+            position.col,
+            joycon_default_keycodes[index]
+        );
+    }
+    eeconfig_update_user(JOYCON_MAPPING_EEPROM_MAGIC);
 }
 
 static bool joycon_axis_negative(int16_t delta, bool currently_pressed) {
@@ -112,10 +205,10 @@ static bool joycon_axis_positive(int16_t delta, bool currently_pressed) {
 }
 
 static void joycon_release_directions(void) {
-    joycon_set_key(JOYCON_LEFT, KC_A, false);
-    joycon_set_key(JOYCON_RIGHT, KC_D, false);
-    joycon_set_key(JOYCON_UP, KC_W, false);
-    joycon_set_key(JOYCON_DOWN, KC_S, false);
+    joycon_set_key(JOYCON_LEFT, false);
+    joycon_set_key(JOYCON_RIGHT, false);
+    joycon_set_key(JOYCON_UP, false);
+    joycon_set_key(JOYCON_DOWN, false);
 }
 
 static void joycon_update_button(void) {
@@ -129,7 +222,7 @@ static void joycon_update_button(void) {
     if (pressed != joycon_sw_debounced_pressed &&
         timer_elapsed(joycon_sw_timer) >= JOYCON_SW_DEBOUNCE_MS) {
         joycon_sw_debounced_pressed = pressed;
-        joycon_set_key(JOYCON_PRESS, KC_SPC, pressed);
+        joycon_set_key(JOYCON_PRESS, pressed);
     }
 }
 
@@ -192,6 +285,7 @@ static int16_t joycon_filter_sample(int16_t filtered, int16_t raw) {
 
 void keyboard_post_init_user(void) {
     gpio_set_pin_input_high(JOYCON_SW_PIN);
+    joycon_initialize_mapping_layer();
 }
 
 void matrix_scan_user(void) {
@@ -229,22 +323,18 @@ void matrix_scan_user(void) {
 
     joycon_set_key(
         JOYCON_LEFT,
-        KC_A,
         joycon_axis_negative(x_delta, joycon_pressed[JOYCON_LEFT])
     );
     joycon_set_key(
         JOYCON_RIGHT,
-        KC_D,
         joycon_axis_positive(x_delta, joycon_pressed[JOYCON_RIGHT])
     );
     joycon_set_key(
         JOYCON_UP,
-        KC_W,
         joycon_axis_negative(y_delta, joycon_pressed[JOYCON_UP])
     );
     joycon_set_key(
         JOYCON_DOWN,
-        KC_S,
         joycon_axis_positive(y_delta, joycon_pressed[JOYCON_DOWN])
     );
 }

@@ -8,6 +8,7 @@ enum layer_names {
     _KEYPAD,
     _FN,
     _NAV_MEDIA,
+    _JOY_MAP,
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -41,5 +42,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         _______, _______, KC_LEFT, KC_DOWN, KC_RGHT, KC_PGDN,
         _______, _______, _______, _______, _______, _______,
         _______, _______, _______, _______, _______
+    ),
+
+    // Storage layer for the Vial-editable Joy-Con mappings. The firmware
+    // reads Up/Left/Down/Right from their visual WASD positions and Press
+    // from the lower-left thumb position.
+    [_JOY_MAP] = LAYOUT_5x6(
+        _______, _______, _______, _______, _______, _______,
+        _______, _______, KC_W,    _______, _______, _______,
+        _______, KC_A,    KC_S,    KC_D,    _______, _______,
+        _______, _______, _______, _______, _______, _______,
+        KC_SPC,  _______, _______, _______, _______
     )
 };

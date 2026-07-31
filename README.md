@@ -10,7 +10,7 @@
 - 三芯 TRS 连接左右半边：数据、5V、GND
 - 左侧拇指区改为 1 个 Joy-Con 摇杆，映射为 `W/A/S/D`
 - QMK PIO `vendor` 半双工分体通信
-- Vial 四层动态键位，支持 Vial Web 自动识别
+- Vial 五层动态键位：前四层为键盘，第五层配置 Joy-Con
 - Vial 显示 64 个主键，隐藏 20 个未接矩阵位置
 - 无外接 RGB、OLED 或旋钮
 
@@ -71,9 +71,11 @@ VIAL_HOME=/path/to/vial-qmk make build
 2. 使用最新版 Chrome、Edge 或 Chromium 打开
    [Vial Web](https://vial.rocks/app/)。
 3. 选择 `Kinesis Dactyl 5x7`，固件内嵌的布局会自动加载。
-4. 在 Keymap 中编辑 Base、Keypad、Fn、Navigation/Media 四层。
-5. 需要解锁安全功能时，在 Vial 中发起 Unlock，然后按住实体
-   `Escape + Right Shift`，直到进度完成。
+4. 在 Keymap 中编辑 Base、Keypad、Fn、Navigation/Media 四个键盘层。
+5. 第五层（`Layer 4`）仅配置 Joy-Con：修改 W/A/S/D 的实体位置可分别改变
+   上/左/下/右，修改最左下拇指键位置可改变摇杆按压。
+6. 需要解锁安全功能时，在 Vial 中发起 Unlock，然后按住实体
+   `Escape + Right Arrow`，直到进度完成。
 
 QMK 的完整 6×7×2 矩阵定义保留 84 个坐标；当前实体键盘和 Vial/VIA 布局使用
 其中 64 个主键。以下 20 个位置无需安装开关或接线，并在 Vial/VIA 中隐藏：
@@ -86,7 +88,8 @@ QMK 的完整 6×7×2 矩阵定义保留 84 个坐标；当前实体键盘和 Vi
 `GP0`，释放 `GP28/GP29` 给左侧 Joy-Con 的 X/Y 模拟输入，同时保留
 `GP1` 给后续 SK6812 数据线使用。
 
-Joy-Con 在默认固件中硬编码为 `W/A/S/D`，支持斜向组合；暂不接 `SW/BTN`。
+Joy-Con 默认映射为 `W/A/S/D`，按压为 `Space`，支持斜向组合；五个映射都可在
+Vial 的 `Layer 4` 中修改，具体位置见 [docs/WIRING.md](docs/WIRING.md)。
 
 ## 安全要求
 
