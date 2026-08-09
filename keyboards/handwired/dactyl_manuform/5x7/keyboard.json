@@ -16,7 +16,8 @@
         "bootmagic": true,
         "extrakey": true,
         "mousekey": true,
-        "nkro": true
+        "nkro": true,
+        "rgb_matrix": true
     },
     "bootmagic": {
         "enabled": true,
@@ -25,6 +26,17 @@
     "matrix_pins": {
         "rows": ["GP14", "GP15", "GP26", "GP27", "GP0"],
         "cols": ["GP2", "GP3", "GP4", "GP5", "GP6", "GP7"]
+    },
+    "rgb_matrix": {
+        "driver": "ws2812",
+        "default": {
+            "val": 16
+        },
+        "max_brightness": 32
+    },
+    "ws2812": {
+        "pin": "GP1",
+        "driver": "vendor"
     },
     "layouts": {
         "LAYOUT_5x6": {

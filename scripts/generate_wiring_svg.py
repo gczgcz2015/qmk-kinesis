@@ -44,6 +44,20 @@ def main_keys() -> list[Key]:
     ]
 
 
+def rgb_chain(keys: list[Key]) -> list[Key]:
+    """Return the GP1 SK6812 chain in row-by-row serpentine order."""
+    by_coordinate = {(key.qmk_row, key.col): key for key in keys}
+    chain: list[Key] = []
+    for row in range(5):
+        columns = range(6) if row % 2 == 0 else range(5, -1, -1)
+        chain.extend(
+            by_coordinate[(row, col)]
+            for col in columns
+            if (row, col) in by_coordinate
+        )
+    return chain
+
+
 def vial_visible_coordinates() -> set[tuple[int, int]]:
     data = json.loads(VIAL_JSON.read_text(encoding="utf-8"))
     coordinates: set[tuple[int, int]] = set()
@@ -131,20 +145,28 @@ def key_svg(key: Key, keycode: str) -> str:
   </g>"""
 
 
-def wiring_board_svg(key: Key) -> str:
+def wiring_board_svg(key: Key, led_index: int) -> str:
     x = 115 + key.col * 146
     y = 785 + key.qmk_row * 112
     return f"""\
   <g class="pcb">
     <rect x="{x}" y="{y}" width="104" height="72" rx="18"/>
-    <circle class="row-pad" cx="{x + 19}" cy="{y + 36}" r="8"/>
-    <circle class="col-pad" cx="{x + 85}" cy="{y + 36}" r="8"/>
-    <text class="pad-letter" x="{x + 19}" y="{y + 40}">R</text>
-    <text class="pad-letter" x="{x + 85}" y="{y + 40}">C</text>
-    <rect class="switch" x="{x + 39}" y="{y + 22}" width="26" height="28" rx="5"/>
-    <path class="internal" d="M{x + 27} {y + 36} H{x + 39} M{x + 65} {y + 36} H{x + 77}"/>
-    <rect class="band" x="{x + 40}" y="{y + 27}" width="5" height="18"/>
-    <text class="pcb-index" x="{x + 52}" y="{y + 66}">R{key.qmk_row}C{key.col}</text>
+    <circle class="rgb-data-pad" cx="{x + 12}" cy="{y + 12}" r="6"/>
+    <circle class="rgb-vcc-pad" cx="{x + 38}" cy="{y + 12}" r="6"/>
+    <circle class="rgb-gnd-pad" cx="{x + 66}" cy="{y + 12}" r="6"/>
+    <circle class="rgb-data-pad" cx="{x + 92}" cy="{y + 12}" r="6"/>
+    <text class="rgb-pad-letter" x="{x + 12}" y="{y + 15}">I</text>
+    <text class="rgb-pad-letter" x="{x + 38}" y="{y + 15}">+</text>
+    <text class="rgb-pad-letter" x="{x + 66}" y="{y + 15}">−</text>
+    <text class="rgb-pad-letter" x="{x + 92}" y="{y + 15}">O</text>
+    <circle class="row-pad" cx="{x + 19}" cy="{y + 40}" r="8"/>
+    <circle class="col-pad" cx="{x + 85}" cy="{y + 40}" r="8"/>
+    <text class="pad-letter" x="{x + 19}" y="{y + 44}">R</text>
+    <text class="pad-letter" x="{x + 85}" y="{y + 44}">C</text>
+    <rect class="switch" x="{x + 39}" y="{y + 27}" width="26" height="28" rx="5"/>
+    <path class="internal" d="M{x + 27} {y + 40} H{x + 39} M{x + 65} {y + 40} H{x + 77}"/>
+    <rect class="band" x="{x + 40}" y="{y + 32}" width="5" height="18"/>
+    <text class="pcb-index" x="{x + 52}" y="{y + 67}">R{key.qmk_row}C{key.col} · LED{led_index}</text>
   </g>"""
 
 
@@ -170,19 +192,66 @@ def wiring_bus_svg(keys: list[Key]) -> str:
     return "\n".join(parts)
 
 
+def rgb_wiring_svg(keys: list[Key]) -> str:
+    chain = rgb_chain(keys)
+    parts: list[str] = []
+
+    # Parallel 3.3 V and GND branches, grouped by physical column.
+    for col in range(6):
+        col_keys = [key for key in keys if key.col == col]
+        top = 785 + col_keys[0].qmk_row * 112 + 12
+        bottom = 785 + col_keys[-1].qmk_row * 112 + 12
+        board_x = 115 + col * 146
+        parts.append(
+            f'<path class="rgb-power-wire" d="M{board_x + 38} {top} V{bottom}"/>'
+        )
+        parts.append(
+            f'<path class="rgb-ground-wire" d="M{board_x + 66} {top} V{bottom}"/>'
+        )
+
+    # GP1 enters LED0.I; every subsequent segment is previous O to next I.
+    first = chain[0]
+    first_x = 115 + first.col * 146 + 12
+    first_y = 785 + first.qmk_row * 112 + 12
+    parts.append(
+        f'<path class="rgb-data-wire" d="M{first_x - 44} {first_y} H{first_x}"/>'
+    )
+    parts.append(
+        f'<text class="rgb-data-label" x="{first_x - 48}" y="{first_y + 5}">GP1</text>'
+    )
+
+    for current, following in zip(chain, chain[1:]):
+        x1 = 115 + current.col * 146 + 92
+        y1 = 785 + current.qmk_row * 112 + 12
+        x2 = 115 + following.col * 146 + 12
+        y2 = 785 + following.qmk_row * 112 + 12
+        bend_y = min(y1, y2) + 42 if y1 != y2 else y1 - 18
+        parts.append(
+            f'<path class="rgb-data-wire" d="M{x1} {y1} C{x1} {bend_y}, {x2} {bend_y}, {x2} {y2}"/>'
+        )
+
+    return "\n".join(parts)
+
+
 def generate_svg(keys: list[Key], keycodes: dict[tuple[int, int], str]) -> str:
     key_markup = "\n".join(
         key_svg(key, keycodes[(key.qmk_row, key.col)]) for key in keys
     )
     bus_markup = wiring_bus_svg(keys)
-    board_markup = "\n".join(wiring_board_svg(key) for key in keys)
+    rgb_markup = rgb_wiring_svg(keys)
+    led_indices = {
+        (key.qmk_row, key.col): index for index, key in enumerate(rgb_chain(keys))
+    }
+    board_markup = "\n".join(
+        wiring_board_svg(key, led_indices[(key.qmk_row, key.col)]) for key in keys
+    )
 
     return f"""\
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1680" viewBox="0 0 1440 1680"
      role="img" aria-labelledby="title description">
   <title id="title">左手 29 键 Plum Twist 与 Joy-Con 焊接接线图</title>
-  <desc id="description">RP2040-Zero 单手 5 行 6 列 ROW2COL 矩阵，最后一行缺最右键；Plum Twist 贴片二极管需要焊接，焊接面条纹端朝左和中央开关孔；Joy-Con X、Y 与按压接线。</desc>
+  <desc id="description">RP2040-Zero 单手 5 行 6 列 ROW2COL 矩阵，最后一行缺最右键；29 颗 Plum Twist SK6812 从 GP1 开始蛇形串联，3.3 V 与地并联；Joy-Con X、Y 与按压接线。</desc>
   <style>
     text {{ font-family: Inter, "SF Pro Text", "PingFang SC", "Microsoft YaHei", sans-serif; fill: #e9eef7; }}
     .bg {{ fill: #151922; }}
@@ -205,6 +274,14 @@ def generate_svg(keys: list[Key], keycodes: dict[tuple[int, int], str]) -> str:
     .internal {{ stroke: #dfe7ef; stroke-width: 3; }}
     .band {{ fill: #11151b; }}
     .pcb-index {{ fill: #b7c1cf; font-size: 9px; text-anchor: middle; }}
+    .rgb-data-pad {{ fill: #c185d8; stroke: #f2d9ff; stroke-width: 1; }}
+    .rgb-vcc-pad {{ fill: #ef5350; stroke: #ffd5d4; stroke-width: 1; }}
+    .rgb-gnd-pad {{ fill: #aeb6c2; stroke: #f1f4f7; stroke-width: 1; }}
+    .rgb-pad-letter {{ fill: #151922; font-size: 8px; font-weight: 900; text-anchor: middle; }}
+    .rgb-data-wire {{ fill: none; stroke: #c185d8; stroke-width: 4; stroke-linecap: round; }}
+    .rgb-power-wire {{ fill: none; stroke: #ef5350; stroke-width: 4; stroke-linecap: round; opacity: .82; }}
+    .rgb-ground-wire {{ fill: none; stroke: #aeb6c2; stroke-width: 4; stroke-linecap: round; opacity: .82; }}
+    .rgb-data-label {{ fill: #e6b5f5; font-size: 11px; font-weight: 800; text-anchor: end; }}
     .row-wire {{ fill: none; stroke: #69bde8; stroke-width: 7; stroke-linecap: round; }}
     .col-wire {{ fill: none; stroke: #e7b555; stroke-width: 6; stroke-linecap: round; }}
     .row-label {{ fill: #9bdcff; font-size: 13px; font-weight: 800; text-anchor: end; }}
@@ -235,7 +312,7 @@ def generate_svg(keys: list[Key], keycodes: dict[tuple[int, int], str]) -> str:
   <rect class="bg" width="1440" height="1680"/>
   <rect class="panel" x="24" y="20" width="1392" height="1640" rx="24"/>
   <text class="title" x="58" y="62">左手 29 键 + Joy-Con · Plum Twist 焊接接线图</text>
-  <text class="subtitle" x="58" y="88">单手 RP2040-Zero · 5×6 矩阵（R4C5 不安装）· 从热插拔座/焊盘侧观察 · RGB 焊盘留空</text>
+  <text class="subtitle" x="58" y="88">单手 RP2040-Zero · 5×6 矩阵（R4C5 不安装）· 29 颗 SK6812：GP1 蛇形数据链，3V3/GND 并联</text>
 
   <text class="section" x="58" y="128">第一层键位与 GPIO</text>
 {key_markup}
@@ -257,12 +334,13 @@ def generate_svg(keys: list[Key], keycodes: dict[tuple[int, int], str]) -> str:
   <text class="note" x="1008" y="498">每块 PCB 都需要焊 1 颗贴片二极管。</text>
   <text class="note" x="1008" y="524">R 焊盘接同行蓝线；C 焊盘接同列黄线。</text>
   <text class="note" x="1008" y="547">官方 v0.2：SOD-323 / 1N4148W。</text>
-  <text class="note" x="1008" y="576">+ / − / I / O（RGB）全部留空。</text>
+  <text class="note" x="1008" y="576">RGB：+ / − 并联；前一颗 O 接下一颗 I。</text>
 
   <line x1="58" y1="650" x2="1382" y2="650" stroke="#536075" stroke-width="2"/>
   <text class="section" x="58" y="690">29 块 PCB 的行列总线</text>
   <text class="subtitle" x="58" y="716">蓝色连接所有 R 焊盘；黄色连接所有 C 焊盘。交叉处不焊接，必须绝缘。</text>
 {bus_markup}
+{rgb_markup}
 {board_markup}
 
   <rect class="controller" x="1010" y="750" width="355" height="540" rx="18"/>
@@ -284,9 +362,11 @@ def generate_svg(keys: list[Key], keycodes: dict[tuple[int, int], str]) -> str:
   <text class="pin" x="1042" y="1084">Joy SW → GP8（内部上拉）</text>
   <text class="pin" x="1042" y="1112">Joy VCC → 3V3</text>
   <text class="pin" x="1042" y="1140">Joy GND → GND</text>
-  <text class="warning" x="1042" y="1182">Joy-Con 绝对不要接 5V</text>
-  <text class="note" x="1042" y="1214">无右手、无 TRS、无分体数据线。</text>
-  <text class="note" x="1042" y="1240">GP0/GP1 保留；GP8 只给摇杆按压。</text>
+  <line x1="1038" y1="1162" x2="1338" y2="1162" stroke="#536075" stroke-width="2"/>
+  <text class="pin" x="1042" y="1194">RGB DATA → GP1 → 220–470 Ω → LED0.I</text>
+  <text class="pin" x="1042" y="1222">RGB + → 3V3（29 颗并联）</text>
+  <text class="pin" x="1042" y="1250">RGB − → GND（与主控共地）</text>
+  <text class="warning" x="1042" y="1278">RGB/Joy VCC 都接 3V3；绝对不要误接 5V</text>
 
   <line x1="58" y1="1332" x2="1382" y2="1332" stroke="#536075" stroke-width="2"/>
   <text class="section" x="58" y="1372">Joy-Con 5 针转接板</text>

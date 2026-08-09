@@ -2,7 +2,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1680" viewBox="0 0 1440 1680"
      role="img" aria-labelledby="title description">
   <title id="title">左手 29 键 Plum Twist 与 Joy-Con 焊接接线图</title>
-  <desc id="description">RP2040-Zero 单手 5 行 6 列 ROW2COL 矩阵，最后一行缺最右键；Plum Twist 贴片二极管需要焊接，焊接面条纹端朝左和中央开关孔；Joy-Con X、Y 与按压接线。</desc>
+  <desc id="description">RP2040-Zero 单手 5 行 6 列 ROW2COL 矩阵，最后一行缺最右键；29 颗 Plum Twist SK6812 从 GP1 开始蛇形串联，3.3 V 与地并联；Joy-Con X、Y 与按压接线。</desc>
   <style>
     text { font-family: Inter, "SF Pro Text", "PingFang SC", "Microsoft YaHei", sans-serif; fill: #e9eef7; }
     .bg { fill: #151922; }
@@ -25,6 +25,14 @@
     .internal { stroke: #dfe7ef; stroke-width: 3; }
     .band { fill: #11151b; }
     .pcb-index { fill: #b7c1cf; font-size: 9px; text-anchor: middle; }
+    .rgb-data-pad { fill: #c185d8; stroke: #f2d9ff; stroke-width: 1; }
+    .rgb-vcc-pad { fill: #ef5350; stroke: #ffd5d4; stroke-width: 1; }
+    .rgb-gnd-pad { fill: #aeb6c2; stroke: #f1f4f7; stroke-width: 1; }
+    .rgb-pad-letter { fill: #151922; font-size: 8px; font-weight: 900; text-anchor: middle; }
+    .rgb-data-wire { fill: none; stroke: #c185d8; stroke-width: 4; stroke-linecap: round; }
+    .rgb-power-wire { fill: none; stroke: #ef5350; stroke-width: 4; stroke-linecap: round; opacity: .82; }
+    .rgb-ground-wire { fill: none; stroke: #aeb6c2; stroke-width: 4; stroke-linecap: round; opacity: .82; }
+    .rgb-data-label { fill: #e6b5f5; font-size: 11px; font-weight: 800; text-anchor: end; }
     .row-wire { fill: none; stroke: #69bde8; stroke-width: 7; stroke-linecap: round; }
     .col-wire { fill: none; stroke: #e7b555; stroke-width: 6; stroke-linecap: round; }
     .row-label { fill: #9bdcff; font-size: 13px; font-weight: 800; text-anchor: end; }
@@ -55,7 +63,7 @@
   <rect class="bg" width="1440" height="1680"/>
   <rect class="panel" x="24" y="20" width="1392" height="1640" rx="24"/>
   <text class="title" x="58" y="62">左手 29 键 + Joy-Con · Plum Twist 焊接接线图</text>
-  <text class="subtitle" x="58" y="88">单手 RP2040-Zero · 5×6 矩阵（R4C5 不安装）· 从热插拔座/焊盘侧观察 · RGB 焊盘留空</text>
+  <text class="subtitle" x="58" y="88">单手 RP2040-Zero · 5×6 矩阵（R4C5 不安装）· 29 颗 SK6812：GP1 蛇形数据链，3V3/GND 并联</text>
 
   <text class="section" x="58" y="128">第一层键位与 GPIO</text>
   <g class="key">
@@ -250,7 +258,7 @@
   <text class="note" x="1008" y="498">每块 PCB 都需要焊 1 颗贴片二极管。</text>
   <text class="note" x="1008" y="524">R 焊盘接同行蓝线；C 焊盘接同列黄线。</text>
   <text class="note" x="1008" y="547">官方 v0.2：SOD-323 / 1N4148W。</text>
-  <text class="note" x="1008" y="576">+ / − / I / O（RGB）全部留空。</text>
+  <text class="note" x="1008" y="576">RGB：+ / − 并联；前一颗 O 接下一颗 I。</text>
 
   <line x1="58" y1="650" x2="1382" y2="650" stroke="#536075" stroke-width="2"/>
   <text class="section" x="58" y="690">29 块 PCB 的行列总线</text>
@@ -283,324 +291,598 @@
 <path class="col-wire" d="M930 779 V1157"/>
 <text class="col-label" x="930" y="768">C5</text>
 <text class="col-pin-label" x="930" y="787">GP7</text>
+<path class="rgb-power-wire" d="M153 797 V1245"/>
+<path class="rgb-ground-wire" d="M181 797 V1245"/>
+<path class="rgb-power-wire" d="M299 797 V1245"/>
+<path class="rgb-ground-wire" d="M327 797 V1245"/>
+<path class="rgb-power-wire" d="M445 797 V1245"/>
+<path class="rgb-ground-wire" d="M473 797 V1245"/>
+<path class="rgb-power-wire" d="M591 797 V1245"/>
+<path class="rgb-ground-wire" d="M619 797 V1245"/>
+<path class="rgb-power-wire" d="M737 797 V1245"/>
+<path class="rgb-ground-wire" d="M765 797 V1245"/>
+<path class="rgb-power-wire" d="M883 797 V1133"/>
+<path class="rgb-ground-wire" d="M911 797 V1133"/>
+<path class="rgb-data-wire" d="M83 797 H127"/>
+<text class="rgb-data-label" x="79" y="802">GP1</text>
+<path class="rgb-data-wire" d="M207 797 C207 779, 273 779, 273 797"/>
+<path class="rgb-data-wire" d="M353 797 C353 779, 419 779, 419 797"/>
+<path class="rgb-data-wire" d="M499 797 C499 779, 565 779, 565 797"/>
+<path class="rgb-data-wire" d="M645 797 C645 779, 711 779, 711 797"/>
+<path class="rgb-data-wire" d="M791 797 C791 779, 857 779, 857 797"/>
+<path class="rgb-data-wire" d="M937 797 C937 839, 857 839, 857 909"/>
+<path class="rgb-data-wire" d="M937 909 C937 891, 711 891, 711 909"/>
+<path class="rgb-data-wire" d="M791 909 C791 891, 565 891, 565 909"/>
+<path class="rgb-data-wire" d="M645 909 C645 891, 419 891, 419 909"/>
+<path class="rgb-data-wire" d="M499 909 C499 891, 273 891, 273 909"/>
+<path class="rgb-data-wire" d="M353 909 C353 891, 127 891, 127 909"/>
+<path class="rgb-data-wire" d="M207 909 C207 951, 127 951, 127 1021"/>
+<path class="rgb-data-wire" d="M207 1021 C207 1003, 273 1003, 273 1021"/>
+<path class="rgb-data-wire" d="M353 1021 C353 1003, 419 1003, 419 1021"/>
+<path class="rgb-data-wire" d="M499 1021 C499 1003, 565 1003, 565 1021"/>
+<path class="rgb-data-wire" d="M645 1021 C645 1003, 711 1003, 711 1021"/>
+<path class="rgb-data-wire" d="M791 1021 C791 1003, 857 1003, 857 1021"/>
+<path class="rgb-data-wire" d="M937 1021 C937 1063, 857 1063, 857 1133"/>
+<path class="rgb-data-wire" d="M937 1133 C937 1115, 711 1115, 711 1133"/>
+<path class="rgb-data-wire" d="M791 1133 C791 1115, 565 1115, 565 1133"/>
+<path class="rgb-data-wire" d="M645 1133 C645 1115, 419 1115, 419 1133"/>
+<path class="rgb-data-wire" d="M499 1133 C499 1115, 273 1115, 273 1133"/>
+<path class="rgb-data-wire" d="M353 1133 C353 1115, 127 1115, 127 1133"/>
+<path class="rgb-data-wire" d="M207 1133 C207 1175, 127 1175, 127 1245"/>
+<path class="rgb-data-wire" d="M207 1245 C207 1227, 273 1227, 273 1245"/>
+<path class="rgb-data-wire" d="M353 1245 C353 1227, 419 1227, 419 1245"/>
+<path class="rgb-data-wire" d="M499 1245 C499 1227, 565 1227, 565 1245"/>
+<path class="rgb-data-wire" d="M645 1245 C645 1227, 711 1227, 711 1245"/>
   <g class="pcb">
     <rect x="115" y="785" width="104" height="72" rx="18"/>
-    <circle class="row-pad" cx="134" cy="821" r="8"/>
-    <circle class="col-pad" cx="200" cy="821" r="8"/>
-    <text class="pad-letter" x="134" y="825">R</text>
-    <text class="pad-letter" x="200" y="825">C</text>
-    <rect class="switch" x="154" y="807" width="26" height="28" rx="5"/>
-    <path class="internal" d="M142 821 H154 M180 821 H192"/>
-    <rect class="band" x="155" y="812" width="5" height="18"/>
-    <text class="pcb-index" x="167" y="851">R0C0</text>
+    <circle class="rgb-data-pad" cx="127" cy="797" r="6"/>
+    <circle class="rgb-vcc-pad" cx="153" cy="797" r="6"/>
+    <circle class="rgb-gnd-pad" cx="181" cy="797" r="6"/>
+    <circle class="rgb-data-pad" cx="207" cy="797" r="6"/>
+    <text class="rgb-pad-letter" x="127" y="800">I</text>
+    <text class="rgb-pad-letter" x="153" y="800">+</text>
+    <text class="rgb-pad-letter" x="181" y="800">−</text>
+    <text class="rgb-pad-letter" x="207" y="800">O</text>
+    <circle class="row-pad" cx="134" cy="825" r="8"/>
+    <circle class="col-pad" cx="200" cy="825" r="8"/>
+    <text class="pad-letter" x="134" y="829">R</text>
+    <text class="pad-letter" x="200" y="829">C</text>
+    <rect class="switch" x="154" y="812" width="26" height="28" rx="5"/>
+    <path class="internal" d="M142 825 H154 M180 825 H192"/>
+    <rect class="band" x="155" y="817" width="5" height="18"/>
+    <text class="pcb-index" x="167" y="852">R0C0 · LED0</text>
   </g>
   <g class="pcb">
     <rect x="261" y="785" width="104" height="72" rx="18"/>
-    <circle class="row-pad" cx="280" cy="821" r="8"/>
-    <circle class="col-pad" cx="346" cy="821" r="8"/>
-    <text class="pad-letter" x="280" y="825">R</text>
-    <text class="pad-letter" x="346" y="825">C</text>
-    <rect class="switch" x="300" y="807" width="26" height="28" rx="5"/>
-    <path class="internal" d="M288 821 H300 M326 821 H338"/>
-    <rect class="band" x="301" y="812" width="5" height="18"/>
-    <text class="pcb-index" x="313" y="851">R0C1</text>
+    <circle class="rgb-data-pad" cx="273" cy="797" r="6"/>
+    <circle class="rgb-vcc-pad" cx="299" cy="797" r="6"/>
+    <circle class="rgb-gnd-pad" cx="327" cy="797" r="6"/>
+    <circle class="rgb-data-pad" cx="353" cy="797" r="6"/>
+    <text class="rgb-pad-letter" x="273" y="800">I</text>
+    <text class="rgb-pad-letter" x="299" y="800">+</text>
+    <text class="rgb-pad-letter" x="327" y="800">−</text>
+    <text class="rgb-pad-letter" x="353" y="800">O</text>
+    <circle class="row-pad" cx="280" cy="825" r="8"/>
+    <circle class="col-pad" cx="346" cy="825" r="8"/>
+    <text class="pad-letter" x="280" y="829">R</text>
+    <text class="pad-letter" x="346" y="829">C</text>
+    <rect class="switch" x="300" y="812" width="26" height="28" rx="5"/>
+    <path class="internal" d="M288 825 H300 M326 825 H338"/>
+    <rect class="band" x="301" y="817" width="5" height="18"/>
+    <text class="pcb-index" x="313" y="852">R0C1 · LED1</text>
   </g>
   <g class="pcb">
     <rect x="407" y="785" width="104" height="72" rx="18"/>
-    <circle class="row-pad" cx="426" cy="821" r="8"/>
-    <circle class="col-pad" cx="492" cy="821" r="8"/>
-    <text class="pad-letter" x="426" y="825">R</text>
-    <text class="pad-letter" x="492" y="825">C</text>
-    <rect class="switch" x="446" y="807" width="26" height="28" rx="5"/>
-    <path class="internal" d="M434 821 H446 M472 821 H484"/>
-    <rect class="band" x="447" y="812" width="5" height="18"/>
-    <text class="pcb-index" x="459" y="851">R0C2</text>
+    <circle class="rgb-data-pad" cx="419" cy="797" r="6"/>
+    <circle class="rgb-vcc-pad" cx="445" cy="797" r="6"/>
+    <circle class="rgb-gnd-pad" cx="473" cy="797" r="6"/>
+    <circle class="rgb-data-pad" cx="499" cy="797" r="6"/>
+    <text class="rgb-pad-letter" x="419" y="800">I</text>
+    <text class="rgb-pad-letter" x="445" y="800">+</text>
+    <text class="rgb-pad-letter" x="473" y="800">−</text>
+    <text class="rgb-pad-letter" x="499" y="800">O</text>
+    <circle class="row-pad" cx="426" cy="825" r="8"/>
+    <circle class="col-pad" cx="492" cy="825" r="8"/>
+    <text class="pad-letter" x="426" y="829">R</text>
+    <text class="pad-letter" x="492" y="829">C</text>
+    <rect class="switch" x="446" y="812" width="26" height="28" rx="5"/>
+    <path class="internal" d="M434 825 H446 M472 825 H484"/>
+    <rect class="band" x="447" y="817" width="5" height="18"/>
+    <text class="pcb-index" x="459" y="852">R0C2 · LED2</text>
   </g>
   <g class="pcb">
     <rect x="553" y="785" width="104" height="72" rx="18"/>
-    <circle class="row-pad" cx="572" cy="821" r="8"/>
-    <circle class="col-pad" cx="638" cy="821" r="8"/>
-    <text class="pad-letter" x="572" y="825">R</text>
-    <text class="pad-letter" x="638" y="825">C</text>
-    <rect class="switch" x="592" y="807" width="26" height="28" rx="5"/>
-    <path class="internal" d="M580 821 H592 M618 821 H630"/>
-    <rect class="band" x="593" y="812" width="5" height="18"/>
-    <text class="pcb-index" x="605" y="851">R0C3</text>
+    <circle class="rgb-data-pad" cx="565" cy="797" r="6"/>
+    <circle class="rgb-vcc-pad" cx="591" cy="797" r="6"/>
+    <circle class="rgb-gnd-pad" cx="619" cy="797" r="6"/>
+    <circle class="rgb-data-pad" cx="645" cy="797" r="6"/>
+    <text class="rgb-pad-letter" x="565" y="800">I</text>
+    <text class="rgb-pad-letter" x="591" y="800">+</text>
+    <text class="rgb-pad-letter" x="619" y="800">−</text>
+    <text class="rgb-pad-letter" x="645" y="800">O</text>
+    <circle class="row-pad" cx="572" cy="825" r="8"/>
+    <circle class="col-pad" cx="638" cy="825" r="8"/>
+    <text class="pad-letter" x="572" y="829">R</text>
+    <text class="pad-letter" x="638" y="829">C</text>
+    <rect class="switch" x="592" y="812" width="26" height="28" rx="5"/>
+    <path class="internal" d="M580 825 H592 M618 825 H630"/>
+    <rect class="band" x="593" y="817" width="5" height="18"/>
+    <text class="pcb-index" x="605" y="852">R0C3 · LED3</text>
   </g>
   <g class="pcb">
     <rect x="699" y="785" width="104" height="72" rx="18"/>
-    <circle class="row-pad" cx="718" cy="821" r="8"/>
-    <circle class="col-pad" cx="784" cy="821" r="8"/>
-    <text class="pad-letter" x="718" y="825">R</text>
-    <text class="pad-letter" x="784" y="825">C</text>
-    <rect class="switch" x="738" y="807" width="26" height="28" rx="5"/>
-    <path class="internal" d="M726 821 H738 M764 821 H776"/>
-    <rect class="band" x="739" y="812" width="5" height="18"/>
-    <text class="pcb-index" x="751" y="851">R0C4</text>
+    <circle class="rgb-data-pad" cx="711" cy="797" r="6"/>
+    <circle class="rgb-vcc-pad" cx="737" cy="797" r="6"/>
+    <circle class="rgb-gnd-pad" cx="765" cy="797" r="6"/>
+    <circle class="rgb-data-pad" cx="791" cy="797" r="6"/>
+    <text class="rgb-pad-letter" x="711" y="800">I</text>
+    <text class="rgb-pad-letter" x="737" y="800">+</text>
+    <text class="rgb-pad-letter" x="765" y="800">−</text>
+    <text class="rgb-pad-letter" x="791" y="800">O</text>
+    <circle class="row-pad" cx="718" cy="825" r="8"/>
+    <circle class="col-pad" cx="784" cy="825" r="8"/>
+    <text class="pad-letter" x="718" y="829">R</text>
+    <text class="pad-letter" x="784" y="829">C</text>
+    <rect class="switch" x="738" y="812" width="26" height="28" rx="5"/>
+    <path class="internal" d="M726 825 H738 M764 825 H776"/>
+    <rect class="band" x="739" y="817" width="5" height="18"/>
+    <text class="pcb-index" x="751" y="852">R0C4 · LED4</text>
   </g>
   <g class="pcb">
     <rect x="845" y="785" width="104" height="72" rx="18"/>
-    <circle class="row-pad" cx="864" cy="821" r="8"/>
-    <circle class="col-pad" cx="930" cy="821" r="8"/>
-    <text class="pad-letter" x="864" y="825">R</text>
-    <text class="pad-letter" x="930" y="825">C</text>
-    <rect class="switch" x="884" y="807" width="26" height="28" rx="5"/>
-    <path class="internal" d="M872 821 H884 M910 821 H922"/>
-    <rect class="band" x="885" y="812" width="5" height="18"/>
-    <text class="pcb-index" x="897" y="851">R0C5</text>
+    <circle class="rgb-data-pad" cx="857" cy="797" r="6"/>
+    <circle class="rgb-vcc-pad" cx="883" cy="797" r="6"/>
+    <circle class="rgb-gnd-pad" cx="911" cy="797" r="6"/>
+    <circle class="rgb-data-pad" cx="937" cy="797" r="6"/>
+    <text class="rgb-pad-letter" x="857" y="800">I</text>
+    <text class="rgb-pad-letter" x="883" y="800">+</text>
+    <text class="rgb-pad-letter" x="911" y="800">−</text>
+    <text class="rgb-pad-letter" x="937" y="800">O</text>
+    <circle class="row-pad" cx="864" cy="825" r="8"/>
+    <circle class="col-pad" cx="930" cy="825" r="8"/>
+    <text class="pad-letter" x="864" y="829">R</text>
+    <text class="pad-letter" x="930" y="829">C</text>
+    <rect class="switch" x="884" y="812" width="26" height="28" rx="5"/>
+    <path class="internal" d="M872 825 H884 M910 825 H922"/>
+    <rect class="band" x="885" y="817" width="5" height="18"/>
+    <text class="pcb-index" x="897" y="852">R0C5 · LED5</text>
   </g>
   <g class="pcb">
     <rect x="115" y="897" width="104" height="72" rx="18"/>
-    <circle class="row-pad" cx="134" cy="933" r="8"/>
-    <circle class="col-pad" cx="200" cy="933" r="8"/>
-    <text class="pad-letter" x="134" y="937">R</text>
-    <text class="pad-letter" x="200" y="937">C</text>
-    <rect class="switch" x="154" y="919" width="26" height="28" rx="5"/>
-    <path class="internal" d="M142 933 H154 M180 933 H192"/>
-    <rect class="band" x="155" y="924" width="5" height="18"/>
-    <text class="pcb-index" x="167" y="963">R1C0</text>
+    <circle class="rgb-data-pad" cx="127" cy="909" r="6"/>
+    <circle class="rgb-vcc-pad" cx="153" cy="909" r="6"/>
+    <circle class="rgb-gnd-pad" cx="181" cy="909" r="6"/>
+    <circle class="rgb-data-pad" cx="207" cy="909" r="6"/>
+    <text class="rgb-pad-letter" x="127" y="912">I</text>
+    <text class="rgb-pad-letter" x="153" y="912">+</text>
+    <text class="rgb-pad-letter" x="181" y="912">−</text>
+    <text class="rgb-pad-letter" x="207" y="912">O</text>
+    <circle class="row-pad" cx="134" cy="937" r="8"/>
+    <circle class="col-pad" cx="200" cy="937" r="8"/>
+    <text class="pad-letter" x="134" y="941">R</text>
+    <text class="pad-letter" x="200" y="941">C</text>
+    <rect class="switch" x="154" y="924" width="26" height="28" rx="5"/>
+    <path class="internal" d="M142 937 H154 M180 937 H192"/>
+    <rect class="band" x="155" y="929" width="5" height="18"/>
+    <text class="pcb-index" x="167" y="964">R1C0 · LED11</text>
   </g>
   <g class="pcb">
     <rect x="261" y="897" width="104" height="72" rx="18"/>
-    <circle class="row-pad" cx="280" cy="933" r="8"/>
-    <circle class="col-pad" cx="346" cy="933" r="8"/>
-    <text class="pad-letter" x="280" y="937">R</text>
-    <text class="pad-letter" x="346" y="937">C</text>
-    <rect class="switch" x="300" y="919" width="26" height="28" rx="5"/>
-    <path class="internal" d="M288 933 H300 M326 933 H338"/>
-    <rect class="band" x="301" y="924" width="5" height="18"/>
-    <text class="pcb-index" x="313" y="963">R1C1</text>
+    <circle class="rgb-data-pad" cx="273" cy="909" r="6"/>
+    <circle class="rgb-vcc-pad" cx="299" cy="909" r="6"/>
+    <circle class="rgb-gnd-pad" cx="327" cy="909" r="6"/>
+    <circle class="rgb-data-pad" cx="353" cy="909" r="6"/>
+    <text class="rgb-pad-letter" x="273" y="912">I</text>
+    <text class="rgb-pad-letter" x="299" y="912">+</text>
+    <text class="rgb-pad-letter" x="327" y="912">−</text>
+    <text class="rgb-pad-letter" x="353" y="912">O</text>
+    <circle class="row-pad" cx="280" cy="937" r="8"/>
+    <circle class="col-pad" cx="346" cy="937" r="8"/>
+    <text class="pad-letter" x="280" y="941">R</text>
+    <text class="pad-letter" x="346" y="941">C</text>
+    <rect class="switch" x="300" y="924" width="26" height="28" rx="5"/>
+    <path class="internal" d="M288 937 H300 M326 937 H338"/>
+    <rect class="band" x="301" y="929" width="5" height="18"/>
+    <text class="pcb-index" x="313" y="964">R1C1 · LED10</text>
   </g>
   <g class="pcb">
     <rect x="407" y="897" width="104" height="72" rx="18"/>
-    <circle class="row-pad" cx="426" cy="933" r="8"/>
-    <circle class="col-pad" cx="492" cy="933" r="8"/>
-    <text class="pad-letter" x="426" y="937">R</text>
-    <text class="pad-letter" x="492" y="937">C</text>
-    <rect class="switch" x="446" y="919" width="26" height="28" rx="5"/>
-    <path class="internal" d="M434 933 H446 M472 933 H484"/>
-    <rect class="band" x="447" y="924" width="5" height="18"/>
-    <text class="pcb-index" x="459" y="963">R1C2</text>
+    <circle class="rgb-data-pad" cx="419" cy="909" r="6"/>
+    <circle class="rgb-vcc-pad" cx="445" cy="909" r="6"/>
+    <circle class="rgb-gnd-pad" cx="473" cy="909" r="6"/>
+    <circle class="rgb-data-pad" cx="499" cy="909" r="6"/>
+    <text class="rgb-pad-letter" x="419" y="912">I</text>
+    <text class="rgb-pad-letter" x="445" y="912">+</text>
+    <text class="rgb-pad-letter" x="473" y="912">−</text>
+    <text class="rgb-pad-letter" x="499" y="912">O</text>
+    <circle class="row-pad" cx="426" cy="937" r="8"/>
+    <circle class="col-pad" cx="492" cy="937" r="8"/>
+    <text class="pad-letter" x="426" y="941">R</text>
+    <text class="pad-letter" x="492" y="941">C</text>
+    <rect class="switch" x="446" y="924" width="26" height="28" rx="5"/>
+    <path class="internal" d="M434 937 H446 M472 937 H484"/>
+    <rect class="band" x="447" y="929" width="5" height="18"/>
+    <text class="pcb-index" x="459" y="964">R1C2 · LED9</text>
   </g>
   <g class="pcb">
     <rect x="553" y="897" width="104" height="72" rx="18"/>
-    <circle class="row-pad" cx="572" cy="933" r="8"/>
-    <circle class="col-pad" cx="638" cy="933" r="8"/>
-    <text class="pad-letter" x="572" y="937">R</text>
-    <text class="pad-letter" x="638" y="937">C</text>
-    <rect class="switch" x="592" y="919" width="26" height="28" rx="5"/>
-    <path class="internal" d="M580 933 H592 M618 933 H630"/>
-    <rect class="band" x="593" y="924" width="5" height="18"/>
-    <text class="pcb-index" x="605" y="963">R1C3</text>
+    <circle class="rgb-data-pad" cx="565" cy="909" r="6"/>
+    <circle class="rgb-vcc-pad" cx="591" cy="909" r="6"/>
+    <circle class="rgb-gnd-pad" cx="619" cy="909" r="6"/>
+    <circle class="rgb-data-pad" cx="645" cy="909" r="6"/>
+    <text class="rgb-pad-letter" x="565" y="912">I</text>
+    <text class="rgb-pad-letter" x="591" y="912">+</text>
+    <text class="rgb-pad-letter" x="619" y="912">−</text>
+    <text class="rgb-pad-letter" x="645" y="912">O</text>
+    <circle class="row-pad" cx="572" cy="937" r="8"/>
+    <circle class="col-pad" cx="638" cy="937" r="8"/>
+    <text class="pad-letter" x="572" y="941">R</text>
+    <text class="pad-letter" x="638" y="941">C</text>
+    <rect class="switch" x="592" y="924" width="26" height="28" rx="5"/>
+    <path class="internal" d="M580 937 H592 M618 937 H630"/>
+    <rect class="band" x="593" y="929" width="5" height="18"/>
+    <text class="pcb-index" x="605" y="964">R1C3 · LED8</text>
   </g>
   <g class="pcb">
     <rect x="699" y="897" width="104" height="72" rx="18"/>
-    <circle class="row-pad" cx="718" cy="933" r="8"/>
-    <circle class="col-pad" cx="784" cy="933" r="8"/>
-    <text class="pad-letter" x="718" y="937">R</text>
-    <text class="pad-letter" x="784" y="937">C</text>
-    <rect class="switch" x="738" y="919" width="26" height="28" rx="5"/>
-    <path class="internal" d="M726 933 H738 M764 933 H776"/>
-    <rect class="band" x="739" y="924" width="5" height="18"/>
-    <text class="pcb-index" x="751" y="963">R1C4</text>
+    <circle class="rgb-data-pad" cx="711" cy="909" r="6"/>
+    <circle class="rgb-vcc-pad" cx="737" cy="909" r="6"/>
+    <circle class="rgb-gnd-pad" cx="765" cy="909" r="6"/>
+    <circle class="rgb-data-pad" cx="791" cy="909" r="6"/>
+    <text class="rgb-pad-letter" x="711" y="912">I</text>
+    <text class="rgb-pad-letter" x="737" y="912">+</text>
+    <text class="rgb-pad-letter" x="765" y="912">−</text>
+    <text class="rgb-pad-letter" x="791" y="912">O</text>
+    <circle class="row-pad" cx="718" cy="937" r="8"/>
+    <circle class="col-pad" cx="784" cy="937" r="8"/>
+    <text class="pad-letter" x="718" y="941">R</text>
+    <text class="pad-letter" x="784" y="941">C</text>
+    <rect class="switch" x="738" y="924" width="26" height="28" rx="5"/>
+    <path class="internal" d="M726 937 H738 M764 937 H776"/>
+    <rect class="band" x="739" y="929" width="5" height="18"/>
+    <text class="pcb-index" x="751" y="964">R1C4 · LED7</text>
   </g>
   <g class="pcb">
     <rect x="845" y="897" width="104" height="72" rx="18"/>
-    <circle class="row-pad" cx="864" cy="933" r="8"/>
-    <circle class="col-pad" cx="930" cy="933" r="8"/>
-    <text class="pad-letter" x="864" y="937">R</text>
-    <text class="pad-letter" x="930" y="937">C</text>
-    <rect class="switch" x="884" y="919" width="26" height="28" rx="5"/>
-    <path class="internal" d="M872 933 H884 M910 933 H922"/>
-    <rect class="band" x="885" y="924" width="5" height="18"/>
-    <text class="pcb-index" x="897" y="963">R1C5</text>
+    <circle class="rgb-data-pad" cx="857" cy="909" r="6"/>
+    <circle class="rgb-vcc-pad" cx="883" cy="909" r="6"/>
+    <circle class="rgb-gnd-pad" cx="911" cy="909" r="6"/>
+    <circle class="rgb-data-pad" cx="937" cy="909" r="6"/>
+    <text class="rgb-pad-letter" x="857" y="912">I</text>
+    <text class="rgb-pad-letter" x="883" y="912">+</text>
+    <text class="rgb-pad-letter" x="911" y="912">−</text>
+    <text class="rgb-pad-letter" x="937" y="912">O</text>
+    <circle class="row-pad" cx="864" cy="937" r="8"/>
+    <circle class="col-pad" cx="930" cy="937" r="8"/>
+    <text class="pad-letter" x="864" y="941">R</text>
+    <text class="pad-letter" x="930" y="941">C</text>
+    <rect class="switch" x="884" y="924" width="26" height="28" rx="5"/>
+    <path class="internal" d="M872 937 H884 M910 937 H922"/>
+    <rect class="band" x="885" y="929" width="5" height="18"/>
+    <text class="pcb-index" x="897" y="964">R1C5 · LED6</text>
   </g>
   <g class="pcb">
     <rect x="115" y="1009" width="104" height="72" rx="18"/>
-    <circle class="row-pad" cx="134" cy="1045" r="8"/>
-    <circle class="col-pad" cx="200" cy="1045" r="8"/>
-    <text class="pad-letter" x="134" y="1049">R</text>
-    <text class="pad-letter" x="200" y="1049">C</text>
-    <rect class="switch" x="154" y="1031" width="26" height="28" rx="5"/>
-    <path class="internal" d="M142 1045 H154 M180 1045 H192"/>
-    <rect class="band" x="155" y="1036" width="5" height="18"/>
-    <text class="pcb-index" x="167" y="1075">R2C0</text>
+    <circle class="rgb-data-pad" cx="127" cy="1021" r="6"/>
+    <circle class="rgb-vcc-pad" cx="153" cy="1021" r="6"/>
+    <circle class="rgb-gnd-pad" cx="181" cy="1021" r="6"/>
+    <circle class="rgb-data-pad" cx="207" cy="1021" r="6"/>
+    <text class="rgb-pad-letter" x="127" y="1024">I</text>
+    <text class="rgb-pad-letter" x="153" y="1024">+</text>
+    <text class="rgb-pad-letter" x="181" y="1024">−</text>
+    <text class="rgb-pad-letter" x="207" y="1024">O</text>
+    <circle class="row-pad" cx="134" cy="1049" r="8"/>
+    <circle class="col-pad" cx="200" cy="1049" r="8"/>
+    <text class="pad-letter" x="134" y="1053">R</text>
+    <text class="pad-letter" x="200" y="1053">C</text>
+    <rect class="switch" x="154" y="1036" width="26" height="28" rx="5"/>
+    <path class="internal" d="M142 1049 H154 M180 1049 H192"/>
+    <rect class="band" x="155" y="1041" width="5" height="18"/>
+    <text class="pcb-index" x="167" y="1076">R2C0 · LED12</text>
   </g>
   <g class="pcb">
     <rect x="261" y="1009" width="104" height="72" rx="18"/>
-    <circle class="row-pad" cx="280" cy="1045" r="8"/>
-    <circle class="col-pad" cx="346" cy="1045" r="8"/>
-    <text class="pad-letter" x="280" y="1049">R</text>
-    <text class="pad-letter" x="346" y="1049">C</text>
-    <rect class="switch" x="300" y="1031" width="26" height="28" rx="5"/>
-    <path class="internal" d="M288 1045 H300 M326 1045 H338"/>
-    <rect class="band" x="301" y="1036" width="5" height="18"/>
-    <text class="pcb-index" x="313" y="1075">R2C1</text>
+    <circle class="rgb-data-pad" cx="273" cy="1021" r="6"/>
+    <circle class="rgb-vcc-pad" cx="299" cy="1021" r="6"/>
+    <circle class="rgb-gnd-pad" cx="327" cy="1021" r="6"/>
+    <circle class="rgb-data-pad" cx="353" cy="1021" r="6"/>
+    <text class="rgb-pad-letter" x="273" y="1024">I</text>
+    <text class="rgb-pad-letter" x="299" y="1024">+</text>
+    <text class="rgb-pad-letter" x="327" y="1024">−</text>
+    <text class="rgb-pad-letter" x="353" y="1024">O</text>
+    <circle class="row-pad" cx="280" cy="1049" r="8"/>
+    <circle class="col-pad" cx="346" cy="1049" r="8"/>
+    <text class="pad-letter" x="280" y="1053">R</text>
+    <text class="pad-letter" x="346" y="1053">C</text>
+    <rect class="switch" x="300" y="1036" width="26" height="28" rx="5"/>
+    <path class="internal" d="M288 1049 H300 M326 1049 H338"/>
+    <rect class="band" x="301" y="1041" width="5" height="18"/>
+    <text class="pcb-index" x="313" y="1076">R2C1 · LED13</text>
   </g>
   <g class="pcb">
     <rect x="407" y="1009" width="104" height="72" rx="18"/>
-    <circle class="row-pad" cx="426" cy="1045" r="8"/>
-    <circle class="col-pad" cx="492" cy="1045" r="8"/>
-    <text class="pad-letter" x="426" y="1049">R</text>
-    <text class="pad-letter" x="492" y="1049">C</text>
-    <rect class="switch" x="446" y="1031" width="26" height="28" rx="5"/>
-    <path class="internal" d="M434 1045 H446 M472 1045 H484"/>
-    <rect class="band" x="447" y="1036" width="5" height="18"/>
-    <text class="pcb-index" x="459" y="1075">R2C2</text>
+    <circle class="rgb-data-pad" cx="419" cy="1021" r="6"/>
+    <circle class="rgb-vcc-pad" cx="445" cy="1021" r="6"/>
+    <circle class="rgb-gnd-pad" cx="473" cy="1021" r="6"/>
+    <circle class="rgb-data-pad" cx="499" cy="1021" r="6"/>
+    <text class="rgb-pad-letter" x="419" y="1024">I</text>
+    <text class="rgb-pad-letter" x="445" y="1024">+</text>
+    <text class="rgb-pad-letter" x="473" y="1024">−</text>
+    <text class="rgb-pad-letter" x="499" y="1024">O</text>
+    <circle class="row-pad" cx="426" cy="1049" r="8"/>
+    <circle class="col-pad" cx="492" cy="1049" r="8"/>
+    <text class="pad-letter" x="426" y="1053">R</text>
+    <text class="pad-letter" x="492" y="1053">C</text>
+    <rect class="switch" x="446" y="1036" width="26" height="28" rx="5"/>
+    <path class="internal" d="M434 1049 H446 M472 1049 H484"/>
+    <rect class="band" x="447" y="1041" width="5" height="18"/>
+    <text class="pcb-index" x="459" y="1076">R2C2 · LED14</text>
   </g>
   <g class="pcb">
     <rect x="553" y="1009" width="104" height="72" rx="18"/>
-    <circle class="row-pad" cx="572" cy="1045" r="8"/>
-    <circle class="col-pad" cx="638" cy="1045" r="8"/>
-    <text class="pad-letter" x="572" y="1049">R</text>
-    <text class="pad-letter" x="638" y="1049">C</text>
-    <rect class="switch" x="592" y="1031" width="26" height="28" rx="5"/>
-    <path class="internal" d="M580 1045 H592 M618 1045 H630"/>
-    <rect class="band" x="593" y="1036" width="5" height="18"/>
-    <text class="pcb-index" x="605" y="1075">R2C3</text>
+    <circle class="rgb-data-pad" cx="565" cy="1021" r="6"/>
+    <circle class="rgb-vcc-pad" cx="591" cy="1021" r="6"/>
+    <circle class="rgb-gnd-pad" cx="619" cy="1021" r="6"/>
+    <circle class="rgb-data-pad" cx="645" cy="1021" r="6"/>
+    <text class="rgb-pad-letter" x="565" y="1024">I</text>
+    <text class="rgb-pad-letter" x="591" y="1024">+</text>
+    <text class="rgb-pad-letter" x="619" y="1024">−</text>
+    <text class="rgb-pad-letter" x="645" y="1024">O</text>
+    <circle class="row-pad" cx="572" cy="1049" r="8"/>
+    <circle class="col-pad" cx="638" cy="1049" r="8"/>
+    <text class="pad-letter" x="572" y="1053">R</text>
+    <text class="pad-letter" x="638" y="1053">C</text>
+    <rect class="switch" x="592" y="1036" width="26" height="28" rx="5"/>
+    <path class="internal" d="M580 1049 H592 M618 1049 H630"/>
+    <rect class="band" x="593" y="1041" width="5" height="18"/>
+    <text class="pcb-index" x="605" y="1076">R2C3 · LED15</text>
   </g>
   <g class="pcb">
     <rect x="699" y="1009" width="104" height="72" rx="18"/>
-    <circle class="row-pad" cx="718" cy="1045" r="8"/>
-    <circle class="col-pad" cx="784" cy="1045" r="8"/>
-    <text class="pad-letter" x="718" y="1049">R</text>
-    <text class="pad-letter" x="784" y="1049">C</text>
-    <rect class="switch" x="738" y="1031" width="26" height="28" rx="5"/>
-    <path class="internal" d="M726 1045 H738 M764 1045 H776"/>
-    <rect class="band" x="739" y="1036" width="5" height="18"/>
-    <text class="pcb-index" x="751" y="1075">R2C4</text>
+    <circle class="rgb-data-pad" cx="711" cy="1021" r="6"/>
+    <circle class="rgb-vcc-pad" cx="737" cy="1021" r="6"/>
+    <circle class="rgb-gnd-pad" cx="765" cy="1021" r="6"/>
+    <circle class="rgb-data-pad" cx="791" cy="1021" r="6"/>
+    <text class="rgb-pad-letter" x="711" y="1024">I</text>
+    <text class="rgb-pad-letter" x="737" y="1024">+</text>
+    <text class="rgb-pad-letter" x="765" y="1024">−</text>
+    <text class="rgb-pad-letter" x="791" y="1024">O</text>
+    <circle class="row-pad" cx="718" cy="1049" r="8"/>
+    <circle class="col-pad" cx="784" cy="1049" r="8"/>
+    <text class="pad-letter" x="718" y="1053">R</text>
+    <text class="pad-letter" x="784" y="1053">C</text>
+    <rect class="switch" x="738" y="1036" width="26" height="28" rx="5"/>
+    <path class="internal" d="M726 1049 H738 M764 1049 H776"/>
+    <rect class="band" x="739" y="1041" width="5" height="18"/>
+    <text class="pcb-index" x="751" y="1076">R2C4 · LED16</text>
   </g>
   <g class="pcb">
     <rect x="845" y="1009" width="104" height="72" rx="18"/>
-    <circle class="row-pad" cx="864" cy="1045" r="8"/>
-    <circle class="col-pad" cx="930" cy="1045" r="8"/>
-    <text class="pad-letter" x="864" y="1049">R</text>
-    <text class="pad-letter" x="930" y="1049">C</text>
-    <rect class="switch" x="884" y="1031" width="26" height="28" rx="5"/>
-    <path class="internal" d="M872 1045 H884 M910 1045 H922"/>
-    <rect class="band" x="885" y="1036" width="5" height="18"/>
-    <text class="pcb-index" x="897" y="1075">R2C5</text>
+    <circle class="rgb-data-pad" cx="857" cy="1021" r="6"/>
+    <circle class="rgb-vcc-pad" cx="883" cy="1021" r="6"/>
+    <circle class="rgb-gnd-pad" cx="911" cy="1021" r="6"/>
+    <circle class="rgb-data-pad" cx="937" cy="1021" r="6"/>
+    <text class="rgb-pad-letter" x="857" y="1024">I</text>
+    <text class="rgb-pad-letter" x="883" y="1024">+</text>
+    <text class="rgb-pad-letter" x="911" y="1024">−</text>
+    <text class="rgb-pad-letter" x="937" y="1024">O</text>
+    <circle class="row-pad" cx="864" cy="1049" r="8"/>
+    <circle class="col-pad" cx="930" cy="1049" r="8"/>
+    <text class="pad-letter" x="864" y="1053">R</text>
+    <text class="pad-letter" x="930" y="1053">C</text>
+    <rect class="switch" x="884" y="1036" width="26" height="28" rx="5"/>
+    <path class="internal" d="M872 1049 H884 M910 1049 H922"/>
+    <rect class="band" x="885" y="1041" width="5" height="18"/>
+    <text class="pcb-index" x="897" y="1076">R2C5 · LED17</text>
   </g>
   <g class="pcb">
     <rect x="115" y="1121" width="104" height="72" rx="18"/>
-    <circle class="row-pad" cx="134" cy="1157" r="8"/>
-    <circle class="col-pad" cx="200" cy="1157" r="8"/>
-    <text class="pad-letter" x="134" y="1161">R</text>
-    <text class="pad-letter" x="200" y="1161">C</text>
-    <rect class="switch" x="154" y="1143" width="26" height="28" rx="5"/>
-    <path class="internal" d="M142 1157 H154 M180 1157 H192"/>
-    <rect class="band" x="155" y="1148" width="5" height="18"/>
-    <text class="pcb-index" x="167" y="1187">R3C0</text>
+    <circle class="rgb-data-pad" cx="127" cy="1133" r="6"/>
+    <circle class="rgb-vcc-pad" cx="153" cy="1133" r="6"/>
+    <circle class="rgb-gnd-pad" cx="181" cy="1133" r="6"/>
+    <circle class="rgb-data-pad" cx="207" cy="1133" r="6"/>
+    <text class="rgb-pad-letter" x="127" y="1136">I</text>
+    <text class="rgb-pad-letter" x="153" y="1136">+</text>
+    <text class="rgb-pad-letter" x="181" y="1136">−</text>
+    <text class="rgb-pad-letter" x="207" y="1136">O</text>
+    <circle class="row-pad" cx="134" cy="1161" r="8"/>
+    <circle class="col-pad" cx="200" cy="1161" r="8"/>
+    <text class="pad-letter" x="134" y="1165">R</text>
+    <text class="pad-letter" x="200" y="1165">C</text>
+    <rect class="switch" x="154" y="1148" width="26" height="28" rx="5"/>
+    <path class="internal" d="M142 1161 H154 M180 1161 H192"/>
+    <rect class="band" x="155" y="1153" width="5" height="18"/>
+    <text class="pcb-index" x="167" y="1188">R3C0 · LED23</text>
   </g>
   <g class="pcb">
     <rect x="261" y="1121" width="104" height="72" rx="18"/>
-    <circle class="row-pad" cx="280" cy="1157" r="8"/>
-    <circle class="col-pad" cx="346" cy="1157" r="8"/>
-    <text class="pad-letter" x="280" y="1161">R</text>
-    <text class="pad-letter" x="346" y="1161">C</text>
-    <rect class="switch" x="300" y="1143" width="26" height="28" rx="5"/>
-    <path class="internal" d="M288 1157 H300 M326 1157 H338"/>
-    <rect class="band" x="301" y="1148" width="5" height="18"/>
-    <text class="pcb-index" x="313" y="1187">R3C1</text>
+    <circle class="rgb-data-pad" cx="273" cy="1133" r="6"/>
+    <circle class="rgb-vcc-pad" cx="299" cy="1133" r="6"/>
+    <circle class="rgb-gnd-pad" cx="327" cy="1133" r="6"/>
+    <circle class="rgb-data-pad" cx="353" cy="1133" r="6"/>
+    <text class="rgb-pad-letter" x="273" y="1136">I</text>
+    <text class="rgb-pad-letter" x="299" y="1136">+</text>
+    <text class="rgb-pad-letter" x="327" y="1136">−</text>
+    <text class="rgb-pad-letter" x="353" y="1136">O</text>
+    <circle class="row-pad" cx="280" cy="1161" r="8"/>
+    <circle class="col-pad" cx="346" cy="1161" r="8"/>
+    <text class="pad-letter" x="280" y="1165">R</text>
+    <text class="pad-letter" x="346" y="1165">C</text>
+    <rect class="switch" x="300" y="1148" width="26" height="28" rx="5"/>
+    <path class="internal" d="M288 1161 H300 M326 1161 H338"/>
+    <rect class="band" x="301" y="1153" width="5" height="18"/>
+    <text class="pcb-index" x="313" y="1188">R3C1 · LED22</text>
   </g>
   <g class="pcb">
     <rect x="407" y="1121" width="104" height="72" rx="18"/>
-    <circle class="row-pad" cx="426" cy="1157" r="8"/>
-    <circle class="col-pad" cx="492" cy="1157" r="8"/>
-    <text class="pad-letter" x="426" y="1161">R</text>
-    <text class="pad-letter" x="492" y="1161">C</text>
-    <rect class="switch" x="446" y="1143" width="26" height="28" rx="5"/>
-    <path class="internal" d="M434 1157 H446 M472 1157 H484"/>
-    <rect class="band" x="447" y="1148" width="5" height="18"/>
-    <text class="pcb-index" x="459" y="1187">R3C2</text>
+    <circle class="rgb-data-pad" cx="419" cy="1133" r="6"/>
+    <circle class="rgb-vcc-pad" cx="445" cy="1133" r="6"/>
+    <circle class="rgb-gnd-pad" cx="473" cy="1133" r="6"/>
+    <circle class="rgb-data-pad" cx="499" cy="1133" r="6"/>
+    <text class="rgb-pad-letter" x="419" y="1136">I</text>
+    <text class="rgb-pad-letter" x="445" y="1136">+</text>
+    <text class="rgb-pad-letter" x="473" y="1136">−</text>
+    <text class="rgb-pad-letter" x="499" y="1136">O</text>
+    <circle class="row-pad" cx="426" cy="1161" r="8"/>
+    <circle class="col-pad" cx="492" cy="1161" r="8"/>
+    <text class="pad-letter" x="426" y="1165">R</text>
+    <text class="pad-letter" x="492" y="1165">C</text>
+    <rect class="switch" x="446" y="1148" width="26" height="28" rx="5"/>
+    <path class="internal" d="M434 1161 H446 M472 1161 H484"/>
+    <rect class="band" x="447" y="1153" width="5" height="18"/>
+    <text class="pcb-index" x="459" y="1188">R3C2 · LED21</text>
   </g>
   <g class="pcb">
     <rect x="553" y="1121" width="104" height="72" rx="18"/>
-    <circle class="row-pad" cx="572" cy="1157" r="8"/>
-    <circle class="col-pad" cx="638" cy="1157" r="8"/>
-    <text class="pad-letter" x="572" y="1161">R</text>
-    <text class="pad-letter" x="638" y="1161">C</text>
-    <rect class="switch" x="592" y="1143" width="26" height="28" rx="5"/>
-    <path class="internal" d="M580 1157 H592 M618 1157 H630"/>
-    <rect class="band" x="593" y="1148" width="5" height="18"/>
-    <text class="pcb-index" x="605" y="1187">R3C3</text>
+    <circle class="rgb-data-pad" cx="565" cy="1133" r="6"/>
+    <circle class="rgb-vcc-pad" cx="591" cy="1133" r="6"/>
+    <circle class="rgb-gnd-pad" cx="619" cy="1133" r="6"/>
+    <circle class="rgb-data-pad" cx="645" cy="1133" r="6"/>
+    <text class="rgb-pad-letter" x="565" y="1136">I</text>
+    <text class="rgb-pad-letter" x="591" y="1136">+</text>
+    <text class="rgb-pad-letter" x="619" y="1136">−</text>
+    <text class="rgb-pad-letter" x="645" y="1136">O</text>
+    <circle class="row-pad" cx="572" cy="1161" r="8"/>
+    <circle class="col-pad" cx="638" cy="1161" r="8"/>
+    <text class="pad-letter" x="572" y="1165">R</text>
+    <text class="pad-letter" x="638" y="1165">C</text>
+    <rect class="switch" x="592" y="1148" width="26" height="28" rx="5"/>
+    <path class="internal" d="M580 1161 H592 M618 1161 H630"/>
+    <rect class="band" x="593" y="1153" width="5" height="18"/>
+    <text class="pcb-index" x="605" y="1188">R3C3 · LED20</text>
   </g>
   <g class="pcb">
     <rect x="699" y="1121" width="104" height="72" rx="18"/>
-    <circle class="row-pad" cx="718" cy="1157" r="8"/>
-    <circle class="col-pad" cx="784" cy="1157" r="8"/>
-    <text class="pad-letter" x="718" y="1161">R</text>
-    <text class="pad-letter" x="784" y="1161">C</text>
-    <rect class="switch" x="738" y="1143" width="26" height="28" rx="5"/>
-    <path class="internal" d="M726 1157 H738 M764 1157 H776"/>
-    <rect class="band" x="739" y="1148" width="5" height="18"/>
-    <text class="pcb-index" x="751" y="1187">R3C4</text>
+    <circle class="rgb-data-pad" cx="711" cy="1133" r="6"/>
+    <circle class="rgb-vcc-pad" cx="737" cy="1133" r="6"/>
+    <circle class="rgb-gnd-pad" cx="765" cy="1133" r="6"/>
+    <circle class="rgb-data-pad" cx="791" cy="1133" r="6"/>
+    <text class="rgb-pad-letter" x="711" y="1136">I</text>
+    <text class="rgb-pad-letter" x="737" y="1136">+</text>
+    <text class="rgb-pad-letter" x="765" y="1136">−</text>
+    <text class="rgb-pad-letter" x="791" y="1136">O</text>
+    <circle class="row-pad" cx="718" cy="1161" r="8"/>
+    <circle class="col-pad" cx="784" cy="1161" r="8"/>
+    <text class="pad-letter" x="718" y="1165">R</text>
+    <text class="pad-letter" x="784" y="1165">C</text>
+    <rect class="switch" x="738" y="1148" width="26" height="28" rx="5"/>
+    <path class="internal" d="M726 1161 H738 M764 1161 H776"/>
+    <rect class="band" x="739" y="1153" width="5" height="18"/>
+    <text class="pcb-index" x="751" y="1188">R3C4 · LED19</text>
   </g>
   <g class="pcb">
     <rect x="845" y="1121" width="104" height="72" rx="18"/>
-    <circle class="row-pad" cx="864" cy="1157" r="8"/>
-    <circle class="col-pad" cx="930" cy="1157" r="8"/>
-    <text class="pad-letter" x="864" y="1161">R</text>
-    <text class="pad-letter" x="930" y="1161">C</text>
-    <rect class="switch" x="884" y="1143" width="26" height="28" rx="5"/>
-    <path class="internal" d="M872 1157 H884 M910 1157 H922"/>
-    <rect class="band" x="885" y="1148" width="5" height="18"/>
-    <text class="pcb-index" x="897" y="1187">R3C5</text>
+    <circle class="rgb-data-pad" cx="857" cy="1133" r="6"/>
+    <circle class="rgb-vcc-pad" cx="883" cy="1133" r="6"/>
+    <circle class="rgb-gnd-pad" cx="911" cy="1133" r="6"/>
+    <circle class="rgb-data-pad" cx="937" cy="1133" r="6"/>
+    <text class="rgb-pad-letter" x="857" y="1136">I</text>
+    <text class="rgb-pad-letter" x="883" y="1136">+</text>
+    <text class="rgb-pad-letter" x="911" y="1136">−</text>
+    <text class="rgb-pad-letter" x="937" y="1136">O</text>
+    <circle class="row-pad" cx="864" cy="1161" r="8"/>
+    <circle class="col-pad" cx="930" cy="1161" r="8"/>
+    <text class="pad-letter" x="864" y="1165">R</text>
+    <text class="pad-letter" x="930" y="1165">C</text>
+    <rect class="switch" x="884" y="1148" width="26" height="28" rx="5"/>
+    <path class="internal" d="M872 1161 H884 M910 1161 H922"/>
+    <rect class="band" x="885" y="1153" width="5" height="18"/>
+    <text class="pcb-index" x="897" y="1188">R3C5 · LED18</text>
   </g>
   <g class="pcb">
     <rect x="115" y="1233" width="104" height="72" rx="18"/>
-    <circle class="row-pad" cx="134" cy="1269" r="8"/>
-    <circle class="col-pad" cx="200" cy="1269" r="8"/>
-    <text class="pad-letter" x="134" y="1273">R</text>
-    <text class="pad-letter" x="200" y="1273">C</text>
-    <rect class="switch" x="154" y="1255" width="26" height="28" rx="5"/>
-    <path class="internal" d="M142 1269 H154 M180 1269 H192"/>
-    <rect class="band" x="155" y="1260" width="5" height="18"/>
-    <text class="pcb-index" x="167" y="1299">R4C0</text>
+    <circle class="rgb-data-pad" cx="127" cy="1245" r="6"/>
+    <circle class="rgb-vcc-pad" cx="153" cy="1245" r="6"/>
+    <circle class="rgb-gnd-pad" cx="181" cy="1245" r="6"/>
+    <circle class="rgb-data-pad" cx="207" cy="1245" r="6"/>
+    <text class="rgb-pad-letter" x="127" y="1248">I</text>
+    <text class="rgb-pad-letter" x="153" y="1248">+</text>
+    <text class="rgb-pad-letter" x="181" y="1248">−</text>
+    <text class="rgb-pad-letter" x="207" y="1248">O</text>
+    <circle class="row-pad" cx="134" cy="1273" r="8"/>
+    <circle class="col-pad" cx="200" cy="1273" r="8"/>
+    <text class="pad-letter" x="134" y="1277">R</text>
+    <text class="pad-letter" x="200" y="1277">C</text>
+    <rect class="switch" x="154" y="1260" width="26" height="28" rx="5"/>
+    <path class="internal" d="M142 1273 H154 M180 1273 H192"/>
+    <rect class="band" x="155" y="1265" width="5" height="18"/>
+    <text class="pcb-index" x="167" y="1300">R4C0 · LED24</text>
   </g>
   <g class="pcb">
     <rect x="261" y="1233" width="104" height="72" rx="18"/>
-    <circle class="row-pad" cx="280" cy="1269" r="8"/>
-    <circle class="col-pad" cx="346" cy="1269" r="8"/>
-    <text class="pad-letter" x="280" y="1273">R</text>
-    <text class="pad-letter" x="346" y="1273">C</text>
-    <rect class="switch" x="300" y="1255" width="26" height="28" rx="5"/>
-    <path class="internal" d="M288 1269 H300 M326 1269 H338"/>
-    <rect class="band" x="301" y="1260" width="5" height="18"/>
-    <text class="pcb-index" x="313" y="1299">R4C1</text>
+    <circle class="rgb-data-pad" cx="273" cy="1245" r="6"/>
+    <circle class="rgb-vcc-pad" cx="299" cy="1245" r="6"/>
+    <circle class="rgb-gnd-pad" cx="327" cy="1245" r="6"/>
+    <circle class="rgb-data-pad" cx="353" cy="1245" r="6"/>
+    <text class="rgb-pad-letter" x="273" y="1248">I</text>
+    <text class="rgb-pad-letter" x="299" y="1248">+</text>
+    <text class="rgb-pad-letter" x="327" y="1248">−</text>
+    <text class="rgb-pad-letter" x="353" y="1248">O</text>
+    <circle class="row-pad" cx="280" cy="1273" r="8"/>
+    <circle class="col-pad" cx="346" cy="1273" r="8"/>
+    <text class="pad-letter" x="280" y="1277">R</text>
+    <text class="pad-letter" x="346" y="1277">C</text>
+    <rect class="switch" x="300" y="1260" width="26" height="28" rx="5"/>
+    <path class="internal" d="M288 1273 H300 M326 1273 H338"/>
+    <rect class="band" x="301" y="1265" width="5" height="18"/>
+    <text class="pcb-index" x="313" y="1300">R4C1 · LED25</text>
   </g>
   <g class="pcb">
     <rect x="407" y="1233" width="104" height="72" rx="18"/>
-    <circle class="row-pad" cx="426" cy="1269" r="8"/>
-    <circle class="col-pad" cx="492" cy="1269" r="8"/>
-    <text class="pad-letter" x="426" y="1273">R</text>
-    <text class="pad-letter" x="492" y="1273">C</text>
-    <rect class="switch" x="446" y="1255" width="26" height="28" rx="5"/>
-    <path class="internal" d="M434 1269 H446 M472 1269 H484"/>
-    <rect class="band" x="447" y="1260" width="5" height="18"/>
-    <text class="pcb-index" x="459" y="1299">R4C2</text>
+    <circle class="rgb-data-pad" cx="419" cy="1245" r="6"/>
+    <circle class="rgb-vcc-pad" cx="445" cy="1245" r="6"/>
+    <circle class="rgb-gnd-pad" cx="473" cy="1245" r="6"/>
+    <circle class="rgb-data-pad" cx="499" cy="1245" r="6"/>
+    <text class="rgb-pad-letter" x="419" y="1248">I</text>
+    <text class="rgb-pad-letter" x="445" y="1248">+</text>
+    <text class="rgb-pad-letter" x="473" y="1248">−</text>
+    <text class="rgb-pad-letter" x="499" y="1248">O</text>
+    <circle class="row-pad" cx="426" cy="1273" r="8"/>
+    <circle class="col-pad" cx="492" cy="1273" r="8"/>
+    <text class="pad-letter" x="426" y="1277">R</text>
+    <text class="pad-letter" x="492" y="1277">C</text>
+    <rect class="switch" x="446" y="1260" width="26" height="28" rx="5"/>
+    <path class="internal" d="M434 1273 H446 M472 1273 H484"/>
+    <rect class="band" x="447" y="1265" width="5" height="18"/>
+    <text class="pcb-index" x="459" y="1300">R4C2 · LED26</text>
   </g>
   <g class="pcb">
     <rect x="553" y="1233" width="104" height="72" rx="18"/>
-    <circle class="row-pad" cx="572" cy="1269" r="8"/>
-    <circle class="col-pad" cx="638" cy="1269" r="8"/>
-    <text class="pad-letter" x="572" y="1273">R</text>
-    <text class="pad-letter" x="638" y="1273">C</text>
-    <rect class="switch" x="592" y="1255" width="26" height="28" rx="5"/>
-    <path class="internal" d="M580 1269 H592 M618 1269 H630"/>
-    <rect class="band" x="593" y="1260" width="5" height="18"/>
-    <text class="pcb-index" x="605" y="1299">R4C3</text>
+    <circle class="rgb-data-pad" cx="565" cy="1245" r="6"/>
+    <circle class="rgb-vcc-pad" cx="591" cy="1245" r="6"/>
+    <circle class="rgb-gnd-pad" cx="619" cy="1245" r="6"/>
+    <circle class="rgb-data-pad" cx="645" cy="1245" r="6"/>
+    <text class="rgb-pad-letter" x="565" y="1248">I</text>
+    <text class="rgb-pad-letter" x="591" y="1248">+</text>
+    <text class="rgb-pad-letter" x="619" y="1248">−</text>
+    <text class="rgb-pad-letter" x="645" y="1248">O</text>
+    <circle class="row-pad" cx="572" cy="1273" r="8"/>
+    <circle class="col-pad" cx="638" cy="1273" r="8"/>
+    <text class="pad-letter" x="572" y="1277">R</text>
+    <text class="pad-letter" x="638" y="1277">C</text>
+    <rect class="switch" x="592" y="1260" width="26" height="28" rx="5"/>
+    <path class="internal" d="M580 1273 H592 M618 1273 H630"/>
+    <rect class="band" x="593" y="1265" width="5" height="18"/>
+    <text class="pcb-index" x="605" y="1300">R4C3 · LED27</text>
   </g>
   <g class="pcb">
     <rect x="699" y="1233" width="104" height="72" rx="18"/>
-    <circle class="row-pad" cx="718" cy="1269" r="8"/>
-    <circle class="col-pad" cx="784" cy="1269" r="8"/>
-    <text class="pad-letter" x="718" y="1273">R</text>
-    <text class="pad-letter" x="784" y="1273">C</text>
-    <rect class="switch" x="738" y="1255" width="26" height="28" rx="5"/>
-    <path class="internal" d="M726 1269 H738 M764 1269 H776"/>
-    <rect class="band" x="739" y="1260" width="5" height="18"/>
-    <text class="pcb-index" x="751" y="1299">R4C4</text>
+    <circle class="rgb-data-pad" cx="711" cy="1245" r="6"/>
+    <circle class="rgb-vcc-pad" cx="737" cy="1245" r="6"/>
+    <circle class="rgb-gnd-pad" cx="765" cy="1245" r="6"/>
+    <circle class="rgb-data-pad" cx="791" cy="1245" r="6"/>
+    <text class="rgb-pad-letter" x="711" y="1248">I</text>
+    <text class="rgb-pad-letter" x="737" y="1248">+</text>
+    <text class="rgb-pad-letter" x="765" y="1248">−</text>
+    <text class="rgb-pad-letter" x="791" y="1248">O</text>
+    <circle class="row-pad" cx="718" cy="1273" r="8"/>
+    <circle class="col-pad" cx="784" cy="1273" r="8"/>
+    <text class="pad-letter" x="718" y="1277">R</text>
+    <text class="pad-letter" x="784" y="1277">C</text>
+    <rect class="switch" x="738" y="1260" width="26" height="28" rx="5"/>
+    <path class="internal" d="M726 1273 H738 M764 1273 H776"/>
+    <rect class="band" x="739" y="1265" width="5" height="18"/>
+    <text class="pcb-index" x="751" y="1300">R4C4 · LED28</text>
   </g>
 
   <rect class="controller" x="1010" y="750" width="355" height="540" rx="18"/>
@@ -622,9 +904,11 @@
   <text class="pin" x="1042" y="1084">Joy SW → GP8（内部上拉）</text>
   <text class="pin" x="1042" y="1112">Joy VCC → 3V3</text>
   <text class="pin" x="1042" y="1140">Joy GND → GND</text>
-  <text class="warning" x="1042" y="1182">Joy-Con 绝对不要接 5V</text>
-  <text class="note" x="1042" y="1214">无右手、无 TRS、无分体数据线。</text>
-  <text class="note" x="1042" y="1240">GP0/GP1 保留；GP8 只给摇杆按压。</text>
+  <line x1="1038" y1="1162" x2="1338" y2="1162" stroke="#536075" stroke-width="2"/>
+  <text class="pin" x="1042" y="1194">RGB DATA → GP1 → 220–470 Ω → LED0.I</text>
+  <text class="pin" x="1042" y="1222">RGB + → 3V3（29 颗并联）</text>
+  <text class="pin" x="1042" y="1250">RGB − → GND（与主控共地）</text>
+  <text class="warning" x="1042" y="1278">RGB/Joy VCC 都接 3V3；绝对不要误接 5V</text>
 
   <line x1="58" y1="1332" x2="1382" y2="1332" stroke="#536075" stroke-width="2"/>
   <text class="section" x="58" y="1372">Joy-Con 5 针转接板</text>

@@ -13,6 +13,7 @@ from generate_wiring_svg import main_keys
 ROOT = Path(__file__).resolve().parents[1]
 KEYBOARD_JSON = ROOT / "keyboards/handwired/dactyl_manuform/5x7/keyboard.json"
 KEYBOARD_CONFIG = ROOT / "keyboards/handwired/dactyl_manuform/5x7/config.h"
+KEYBOARD_SOURCE = ROOT / "keyboards/handwired/dactyl_manuform/5x7/5x7.c"
 VIA_JSON = ROOT / "via/kinesis-dactyl-5x7.json"
 VIAL_DIR = ROOT / "keyboards/handwired/dactyl_manuform/5x7/keymaps/vial"
 VIAL_JSON = VIAL_DIR / "vial.json"
@@ -128,11 +129,18 @@ def main() -> None:
     expected_matrix = {"rows": 5, "cols": 6}
     assert via["matrix"] == expected_matrix
     assert vial["matrix"] == expected_matrix
-    assert vial["lighting"] == "none"
+    assert vial["lighting"] == "vialrgb"
     assert via["vendorId"] == keyboard["usb"]["vid"]
     assert via["productId"] == keyboard["usb"]["pid"]
     assert keyboard["diode_direction"] == "ROW2COL"
     assert "split" not in keyboard
+    assert keyboard["features"]["rgb_matrix"] is True
+    assert keyboard["rgb_matrix"] == {
+        "driver": "ws2812",
+        "default": {"val": 16},
+        "max_brightness": 32,
+    }
+    assert keyboard["ws2812"] == {"pin": "GP1", "driver": "vendor"}
     assert keyboard["matrix_pins"] == {
         "rows": ["GP14", "GP15", "GP26", "GP27", "GP0"],
         "cols": ["GP2", "GP3", "GP4", "GP5", "GP6", "GP7"],
@@ -183,7 +191,25 @@ def main() -> None:
     vial_rules = VIAL_RULES.read_text(encoding="utf-8")
     assert re.search(r"^VIA_ENABLE\s*=\s*yes$", vial_rules, re.MULTILINE)
     assert re.search(r"^VIAL_ENABLE\s*=\s*yes$", vial_rules, re.MULTILINE)
+    assert re.search(r"^VIALRGB_ENABLE\s*=\s*yes$", vial_rules, re.MULTILINE)
     assert re.search(r"^ANALOG_DRIVER_REQUIRED\s*=\s*yes$", vial_rules, re.MULTILINE)
+
+    led_config = KEYBOARD_SOURCE.read_text(encoding="utf-8")
+    compact_led_config = re.sub(r"\s+", "", led_config)
+    for row in (
+        "{0,1,2,3,4,5}",
+        "{11,10,9,8,7,6}",
+        "{12,13,14,15,16,17}",
+        "{23,22,21,20,19,18}",
+        "{24,25,26,27,28,NO_LED}",
+    ):
+        assert row in compact_led_config
+    assert led_config.count("LED_FLAG_KEYLIGHT") == 29
+
+    assert re.search(
+        r"^#define\s+RGB_MATRIX_LED_COUNT\s+29$", vial_config, re.MULTILINE
+    )
+    assert re.search(r"^#define\s+RGB_MATRIX_SLEEP$", vial_config, re.MULTILINE)
 
     vial_keymap = KEYMAPS["Vial"].read_text(encoding="utf-8")
     assert re.search(r"^#define\s+JOYCON_X_PIN\s+GP28$", vial_keymap, re.MULTILINE)
@@ -197,7 +223,7 @@ def main() -> None:
     print(
         "layout validation passed: standalone 5x6 ROW2COL matrix, "
         "29 physical/VIA/Vial keys, 5 synchronized layers, "
-        "Vial-editable Joy-Con X/Y/SW mappings"
+        "Vial-editable Joy-Con mappings, 29-key GP1 VialRGB matrix"
     )
 
 
