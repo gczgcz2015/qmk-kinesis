@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the QMK, VIA, and Vial matrix definitions without dependencies."""
+"""Validate the asymmetric QMK, VIA, Vial, CPI, and wiring definitions."""
 
 from __future__ import annotations
 
@@ -7,52 +7,36 @@ import json
 import re
 from pathlib import Path
 
-from generate_wiring_svg import main_keys
+from generate_wiring_svg import main_keys, thumb_keys
 
 
 ROOT = Path(__file__).resolve().parents[1]
-KEYBOARD_JSON = ROOT / "keyboards/handwired/dactyl_manuform/5x7/keyboard.json"
+KEYBOARD_DIR = ROOT / "keyboards/handwired/dactyl_manuform/5x7"
+KEYBOARD_JSON = KEYBOARD_DIR / "keyboard.json"
+KEYBOARD_CONFIG = KEYBOARD_DIR / "config.h"
 VIA_JSON = ROOT / "via/kinesis-dactyl-5x7.json"
-VIAL_DIR = ROOT / "keyboards/handwired/dactyl_manuform/5x7/keymaps/vial"
+VIAL_DIR = KEYBOARD_DIR / "keymaps/vial"
 VIAL_JSON = VIAL_DIR / "vial.json"
 VIAL_CONFIG = VIAL_DIR / "config.h"
-VIAL_RULES = VIAL_DIR / "rules.mk"
+LAYOUT_NAME = "LAYOUT_5x7_5x9"
 KEYMAPS = {
-    "VIA": ROOT / "keyboards/handwired/dactyl_manuform/5x7/keymaps/via/keymap.c",
+    "VIA": KEYBOARD_DIR / "keymaps/via/keymap.c",
     "Vial": VIAL_DIR / "keymap.c",
 }
+RULES = {
+    "VIA": KEYBOARD_DIR / "keymaps/via/rules.mk",
+    "Vial": VIAL_DIR / "rules.mk",
+}
 MATRIX_COORDINATE = re.compile(r"^(\d+),(\d+)$")
-EXPECTED_HIDDEN = {
-    (3, 6),
-    (4, 5),
-    (4, 6),
-    (5, 0),
-    (5, 1),
-    (5, 2),
-    (5, 3),
-    (5, 4),
-    (5, 5),
-    (5, 6),
-    (9, 6),
-    (10, 5),
-    (10, 6),
-    (11, 0),
-    (11, 1),
-    (11, 2),
-    (11, 3),
-    (11, 4),
-    (11, 5),
-    (11, 6),
+EXPECTED_UNLOCK_COORDINATES = {(2, 0), (11, 2)}
+EXPECTED_RIGHT_COLUMN_COUNTS = {0: 4, 1: 2, 2: 2, 3: 4, 4: 5, 5: 5, 6: 5, 7: 5, 8: 5}
+TRACKBALL_KEYS = {
+    (6, 1): "PMW_CPI_DN",
+    (6, 2): "PMW_CPI_UP",
+    (7, 1): "KC_BTN1",
+    (7, 2): "KC_BTN2",
+    (9, 0): "KC_BTN3",
 }
-EXPECTED_INNER_COLUMNS = {
-    (0, 6),
-    (1, 6),
-    (2, 6),
-    (6, 6),
-    (7, 6),
-    (8, 6),
-}
-EXPECTED_UNLOCK_COORDINATES = {(2, 0), (9, 0)}
 
 
 def load_json(path: Path) -> dict:
@@ -68,21 +52,19 @@ def visible_coordinates(name: str, value: object) -> set[tuple[int, int]]:
             for child in item:
                 collect(child)
         elif isinstance(item, str):
-            match = MATRIX_COORDINATE.fullmatch(item)
-            if match:
+            if match := MATRIX_COORDINATE.fullmatch(item):
                 coordinates.append((int(match.group(1)), int(match.group(2))))
 
     collect(value)
-    unique_coordinates = set(coordinates)
-    if len(unique_coordinates) != len(coordinates):
-        raise ValueError(f"{name} layout contains a duplicate matrix coordinate")
-
-    return unique_coordinates
+    unique = set(coordinates)
+    if len(unique) != len(coordinates):
+        raise ValueError(f"{name} layout contains duplicate matrix coordinates")
+    return unique
 
 
 def layout_arguments(source: str) -> list[list[str]]:
     source = re.sub(r"//.*", "", source)
-    marker = "LAYOUT_5x7("
+    marker = f"{LAYOUT_NAME}("
     layouts: list[list[str]] = []
     search_from = 0
 
@@ -112,11 +94,22 @@ def layout_arguments(source: str) -> list[list[str]]:
     return layouts
 
 
-def macro_values(source: str, name: str) -> list[int]:
+def macro_tokens(source: str, name: str) -> list[str]:
     match = re.search(rf"^#define\s+{name}\s+\{{([^}}]+)\}}", source, re.MULTILINE)
     if not match:
         raise ValueError(f"missing {name}")
-    return [int(value.strip(), 0) for value in match.group(1).split(",")]
+    return [value.strip() for value in match.group(1).split(",")]
+
+
+def macro_ints(source: str, name: str) -> list[int]:
+    return [int(value, 0) for value in macro_tokens(source, name)]
+
+
+def require_define(source: str, name: str, value: str | None = None) -> None:
+    suffix = "" if value is None else rf"\s+{re.escape(value)}"
+    assert re.search(rf"^#define\s+{name}{suffix}\s*$", source, re.MULTILINE), (
+        f"missing or incorrect #define {name}"
+    )
 
 
 def main() -> None:
@@ -124,115 +117,109 @@ def main() -> None:
     via = load_json(VIA_JSON)
     vial = load_json(VIAL_JSON)
 
-    layout = keyboard["layouts"]["LAYOUT_5x7"]["layout"]
-    qmk_coordinates = {tuple(key["matrix"]) for key in layout}
+    layout = keyboard["layouts"][LAYOUT_NAME]["layout"]
+    matrix_order = [tuple(key["matrix"]) for key in layout]
+    qmk_coordinates = set(matrix_order)
     via_coordinates = visible_coordinates("VIA", via["layouts"]["keymap"])
     vial_coordinates = visible_coordinates("Vial", vial["layouts"]["keymap"])
+    generated_keys = main_keys() + thumb_keys()
+    generated_coordinates = {(key.qmk_row, key.col) for key in generated_keys}
 
-    assert len(layout) == 84, f"QMK layout must contain 84 keys, got {len(layout)}"
-    assert len(qmk_coordinates) == 84, "QMK layout contains duplicate matrix coordinates"
-    assert len(via_coordinates) == 64, (
-        f"VIA must display 64 keys, got {len(via_coordinates)}"
-    )
-    assert via_coordinates <= qmk_coordinates, "VIA references an unknown matrix coordinate"
-    assert qmk_coordinates - via_coordinates == EXPECTED_HIDDEN, (
-        "VIA hidden-key set does not match the intended eight keys"
-    )
-    assert vial_coordinates == via_coordinates, "Vial and VIA layouts must display the same keys"
-    assert vial["layouts"]["keymap"] == via["layouts"]["keymap"], (
-        "Vial and VIA visual geometry must stay in sync"
-    )
-    svg_keys = main_keys()
-    svg_coordinates = {(key.qmk_row, key.col) for key in svg_keys}
-    assert svg_coordinates == vial_coordinates, (
-        "SVG and Vial/VIA must display the same matrix coordinates"
-    )
-    inner_column_coordinates = {
-        (key.qmk_row, key.col) for key in svg_keys if key.col == 6 and key.local_row < 5
-    }
-    assert inner_column_coordinates == EXPECTED_INNER_COLUMNS, (
-        "the visible three-key inner columns must use local rows R0/R1/R2"
-    )
-    row_y = {key.local_row: key.y for key in main_keys() if key.col == 0}
-    assert all(
-        key.y == row_y[key.local_row]
-        for key in main_keys()
-        if key.col == 6
-    ), "every inner-column key must align with its electrical matrix row"
-    assert via["matrix"] == {"rows": 12, "cols": 7}
-    assert vial["matrix"] == {"rows": 12, "cols": 7}
+    assert len(layout) == len(qmk_coordinates) == 81
+    assert qmk_coordinates == via_coordinates == vial_coordinates == generated_coordinates
+    assert vial["layouts"]["keymap"] == via["layouts"]["keymap"]
+    assert vial["matrix"] == via["matrix"] == {"rows": 12, "cols": 9}
     assert vial["lighting"] == "none"
-    assert via["vendorId"] == keyboard["usb"]["vid"]
-    assert via["productId"] == keyboard["usb"]["pid"]
+    assert [item["shortName"] for item in vial["customKeycodes"]] == ["CPI-", "CPI+"]
+    assert via["name"] == keyboard["keyboard_name"] == "Kinesis Dactyl 5x7+5x9"
+    assert via["vendorId"] == keyboard["usb"]["vid"] == "0x4743"
+    assert via["productId"] == keyboard["usb"]["pid"] == "0x0002"
+
+    left_keys = [key for key in generated_keys if key.side == "L"]
+    right_keys = [key for key in generated_keys if key.side == "R"]
+    assert len(left_keys) == 38 and len(right_keys) == 43
+    right_main = [key for key in right_keys if key.local_row < 5]
+    right_column_counts = {
+        col: sum(key.col == col for key in right_main) for col in range(9)
+    }
+    assert right_column_counts == EXPECTED_RIGHT_COLUMN_COUNTS
+    assert all(
+        key.local_row in (0, 1)
+        for key in right_main
+        if key.col in (1, 2)
+    ), "right C1/C2 must begin at R0 and occupy R0/R1"
+
     assert keyboard["matrix_pins"]["cols"] == [
-        "NO_PIN", "NO_PIN", "NO_PIN", "NO_PIN", "GP6", "GP7", "GP8"
-    ], "C0-C3 must be disabled while GP2-GP5 are assigned to the trackball"
-    matrix_order = [tuple(key["matrix"]) for key in layout]
+        "GP2", "GP3", "GP4", "GP5", "GP6", "GP7", "GP8", "NO_PIN", "NO_PIN"
+    ]
+    assert keyboard["matrix_pins"]["rows"] == [
+        "GP14", "GP15", "GP26", "GP27", "GP28", "GP29"
+    ]
+
+    config = KEYBOARD_CONFIG.read_text(encoding="utf-8")
+    require_define(config, "MASTER_RIGHT")
+    require_define(config, "SERIAL_USART_TX_PIN", "GP0")
+    assert macro_tokens(config, "MATRIX_COL_PINS_RIGHT") == [
+        "GP2", "GP3", "GP4", "GP5", "GP6", "GP7", "GP8", "GP9", "GP10"
+    ]
+    require_define(config, "SPLIT_POINTING_ENABLE")
+    require_define(config, "POINTING_DEVICE_RIGHT")
+    for macro, value in {
+        "SPI_DRIVER": "SPID0",
+        "SPI_SCK_PIN": "GP18",
+        "SPI_MOSI_PIN": "GP19",
+        "SPI_MISO_PIN": "GP20",
+        "PMW33XX_CS_PIN": "GP21",
+        "PMW33XX_CPI": "1600U",
+    }.items():
+        require_define(config, macro, value)
 
     parsed_keymaps: dict[str, list[list[str]]] = {}
     for name, path in KEYMAPS.items():
-        keymap_layers = layout_arguments(path.read_text(encoding="utf-8"))
-        assert len(keymap_layers) == 4, (
-            f"{name}: expected 4 keymap layers, got {len(keymap_layers)}"
+        source = path.read_text(encoding="utf-8")
+        layers = layout_arguments(source)
+        assert len(layers) == 4, f"{name}: expected four layers, got {len(layers)}"
+        assert all(len(layer) == 81 for layer in layers), (
+            f"{name}: every {LAYOUT_NAME} layer must contain 81 keycodes"
         )
-        assert all(len(layer) == 84 for layer in keymap_layers), (
-            f"{name}: every LAYOUT_5x7 keymap layer must contain 84 keycodes"
-        )
-
-        for layer_index, layer in enumerate(keymap_layers):
-            hidden_keycodes = {
-                coordinate: layer[index]
-                for index, coordinate in enumerate(matrix_order)
-                if coordinate in EXPECTED_HIDDEN
-            }
-            assert set(hidden_keycodes.values()) == {"XXXXXXX"}, (
-                f"{name}: all eight hidden keys must be KC_NO on layer {layer_index}"
+        base_by_coordinate = dict(zip(matrix_order, layers[0]))
+        for coordinate, keycode in TRACKBALL_KEYS.items():
+            assert base_by_coordinate[coordinate] == keycode, (
+                f"{name}: {coordinate} must default to {keycode}"
             )
-        parsed_keymaps[name] = keymap_layers
+        for layer in layers[1:]:
+            by_coordinate = dict(zip(matrix_order, layer))
+            assert all(by_coordinate[coordinate] == "_______" for coordinate in TRACKBALL_KEYS)
 
-    assert parsed_keymaps["Vial"] == parsed_keymaps["VIA"], (
-        "Vial and VIA default keymaps must stay in sync"
-    )
+        assert "{400, 800, 1200, 1600, 2400, 3200}" in source
+        assert "PMW_CPI_DN = QK_KB_0" in source
+        assert "eeconfig_read_user()" in source and "eeconfig_update_user(" in source
+        assert "pointing_device_set_cpi(" in source
+        parsed_keymaps[name] = layers
+
+    assert parsed_keymaps["Vial"] == parsed_keymaps["VIA"]
 
     vial_config = VIAL_CONFIG.read_text(encoding="utf-8")
-    uid = macro_values(vial_config, "VIAL_KEYBOARD_UID")
-    unlock_rows = macro_values(vial_config, "VIAL_UNLOCK_COMBO_ROWS")
-    unlock_cols = macro_values(vial_config, "VIAL_UNLOCK_COMBO_COLS")
-    unlock_coordinates = set(zip(unlock_rows, unlock_cols, strict=True))
-    assert len(uid) == 8 and all(0 <= value <= 0xFF for value in uid), (
-        "VIAL_KEYBOARD_UID must contain eight bytes"
-    )
-    assert len(unlock_coordinates) >= 2, "Vial unlock combo must use at least two keys"
-    assert unlock_coordinates <= vial_coordinates, (
-        "Vial unlock combo must reference visible physical keys"
-    )
-    assert unlock_coordinates == EXPECTED_UNLOCK_COORDINATES, (
-        "Vial unlock combo must stay on the physical Escape and Right Shift keys"
-    )
-    assert re.search(r"^#define\s+SPLIT_POINTING_ENABLE$", vial_config, re.MULTILINE), (
-        "split pointing must be enabled as a config.h preprocessor macro"
-    )
-    for macro, value in {
-        "SPI_DRIVER": "SPID0",
-        "SPI_SCK_PIN": "GP2",
-        "SPI_MOSI_PIN": "GP3",
-        "SPI_MISO_PIN": "GP4",
-        "PMW33XX_CS_PIN": "GP5",
-    }.items():
-        assert re.search(rf"^#define\s+{macro}\s+{value}$", vial_config, re.MULTILINE), (
-            f"{macro} must be {value} for the GP2-GP5 PMW3360 test wiring"
-        )
+    uid = macro_ints(vial_config, "VIAL_KEYBOARD_UID")
+    unlock_rows = macro_ints(vial_config, "VIAL_UNLOCK_COMBO_ROWS")
+    unlock_cols = macro_ints(vial_config, "VIAL_UNLOCK_COMBO_COLS")
+    unlock_coordinates = set(zip(unlock_rows, unlock_cols))
+    assert len(uid) == 8 and all(0 <= value <= 0xFF for value in uid)
+    assert unlock_coordinates == EXPECTED_UNLOCK_COORDINATES
+    assert unlock_coordinates <= vial_coordinates
 
-    vial_rules = VIAL_RULES.read_text(encoding="utf-8")
-    assert re.search(r"^VIA_ENABLE\s*=\s*yes$", vial_rules, re.MULTILINE)
-    assert re.search(r"^VIAL_ENABLE\s*=\s*yes$", vial_rules, re.MULTILINE)
-    assert re.search(r"^POINTING_DEVICE_ENABLE\s*=\s*yes$", vial_rules, re.MULTILINE)
-    assert re.search(r"^POINTING_DEVICE_DRIVER\s*=\s*pmw3360$", vial_rules, re.MULTILINE)
+    for name, path in RULES.items():
+        rules = path.read_text(encoding="utf-8")
+        assert re.search(r"^VIA_ENABLE\s*=\s*yes$", rules, re.MULTILINE)
+        assert re.search(r"^POINTING_DEVICE_ENABLE\s*=\s*yes$", rules, re.MULTILINE)
+        assert re.search(r"^POINTING_DEVICE_DRIVER\s*=\s*pmw3360$", rules, re.MULTILINE)
+        if name == "Vial":
+            assert re.search(r"^VIAL_ENABLE\s*=\s*yes$", rules, re.MULTILINE)
 
     print(
-        "layout validation passed: 84 QMK matrix positions, "
-        "64 VIA/Vial-visible keys, C0-C3 disabled for PMW3360 SPI0, "
-        "20 unused and hidden positions, 4 synchronized layers"
+        "layout validation passed: 12x9 split matrix, 81 visible keys "
+        "(38 left + 43 right), right-master PMW3360, synchronized VIA/Vial layers, "
+        "and persistent six-step CPI controls"
     )
 
 
