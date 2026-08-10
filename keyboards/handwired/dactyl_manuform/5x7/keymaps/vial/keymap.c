@@ -286,6 +286,14 @@ static int16_t joycon_filter_sample(int16_t filtered, int16_t raw) {
 void keyboard_post_init_user(void) {
     gpio_set_pin_input_high(JOYCON_SW_PIN);
     joycon_initialize_mapping_layer();
+
+#ifdef RGB_MATRIX_ENABLE
+    // Diagnostic build: ignore saved Vial lighting state and force the
+    // RP2040-Zero onboard WS2812 (GP16) to bright red at startup.
+    rgb_matrix_enable_noeeprom();
+    rgb_matrix_mode_noeeprom(RGB_MATRIX_SOLID_COLOR);
+    rgb_matrix_sethsv_noeeprom(0, 255, RGB_MATRIX_MAXIMUM_BRIGHTNESS);
+#endif
 }
 
 void matrix_scan_user(void) {

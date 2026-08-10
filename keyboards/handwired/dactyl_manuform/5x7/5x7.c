@@ -13,7 +13,7 @@
 //    R3 23  22  21  20  19  18  <-
 //    R4 24  25  26  27  28   -  ->
 //
-// GP1 feeds LED 0 (R0C0); each PCB O pad feeds the next PCB I pad.
+// Diagnostic build: RP2040-Zero GP16 feeds its onboard WS2812 as LED 0.
 led_config_t g_led_config = {
     {
         // Key matrix coordinate to LED index.

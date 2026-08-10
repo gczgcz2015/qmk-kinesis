@@ -35,7 +35,7 @@
         "max_brightness": 32
     },
     "ws2812": {
-        "pin": "GP1",
+        "pin": "GP16",
         "driver": "vendor"
     },
     "layouts": {

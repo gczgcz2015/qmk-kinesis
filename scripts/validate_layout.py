@@ -140,7 +140,7 @@ def main() -> None:
         "default": {"val": 16},
         "max_brightness": 32,
     }
-    assert keyboard["ws2812"] == {"pin": "GP1", "driver": "vendor"}
+    assert keyboard["ws2812"] == {"pin": "GP16", "driver": "vendor"}
     assert keyboard["matrix_pins"] == {
         "rows": ["GP14", "GP15", "GP26", "GP27", "GP0"],
         "cols": ["GP2", "GP3", "GP4", "GP5", "GP6", "GP7"],
@@ -216,6 +216,12 @@ def main() -> None:
     assert re.search(r"^#define\s+JOYCON_Y_PIN\s+GP29$", vial_keymap, re.MULTILINE)
     assert re.search(r"^#define\s+JOYCON_SW_PIN\s+GP8$", vial_keymap, re.MULTILINE)
     assert "gpio_set_pin_input_high(JOYCON_SW_PIN)" in vial_keymap
+    assert "rgb_matrix_enable_noeeprom()" in vial_keymap
+    assert "rgb_matrix_mode_noeeprom(RGB_MATRIX_SOLID_COLOR)" in vial_keymap
+    assert (
+        "rgb_matrix_sethsv_noeeprom(0, 255, RGB_MATRIX_MAXIMUM_BRIGHTNESS)"
+        in vial_keymap
+    )
     assert "dynamic_keymap_get_keycode(_JOY_MAP" in vial_keymap
     assert "joycon_set_key(JOYCON_PRESS, pressed)" in vial_keymap
     assert "joycon_active_keycodes[JOYCON_INPUT_COUNT]" in vial_keymap
@@ -223,7 +229,7 @@ def main() -> None:
     print(
         "layout validation passed: standalone 5x6 ROW2COL matrix, "
         "29 physical/VIA/Vial keys, 5 synchronized layers, "
-        "Vial-editable Joy-Con mappings, 29-key GP1 VialRGB matrix"
+        "Vial-editable Joy-Con mappings, 29-key GP16 diagnostic VialRGB matrix"
     )
 
 
