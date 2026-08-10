@@ -113,6 +113,8 @@ static uint16_t joycon_sw_timer;
 static bool     joycon_calibration_timer_started;
 static uint16_t joycon_calibration_timer;
 static bool     joycon_calibrated;
+static uint16_t gp1_diagnostic_timer;
+static bool     gp1_diagnostic_high;
 static uint8_t  joycon_calibration_count;
 static int32_t  joycon_x_sum;
 static int32_t  joycon_y_sum;
@@ -294,9 +296,20 @@ void keyboard_post_init_user(void) {
     rgb_matrix_mode_noeeprom(RGB_MATRIX_SOLID_COLOR);
     rgb_matrix_sethsv_noeeprom(0, 255, RGB_MATRIX_MAXIMUM_BRIGHTNESS);
 #endif
+
+    // Diagnostic build: make exposed GP1 measurable with a multimeter.
+    gpio_set_pin_output(GP1);
+    gpio_write_pin_low(GP1);
+    gp1_diagnostic_timer = timer_read();
 }
 
 void matrix_scan_user(void) {
+    if (timer_elapsed(gp1_diagnostic_timer) >= 2000) {
+        gp1_diagnostic_timer = timer_read();
+        gp1_diagnostic_high  = !gp1_diagnostic_high;
+        gpio_write_pin(GP1, gp1_diagnostic_high);
+    }
+
     if (!joycon_calibration_timer_started) {
         joycon_calibration_timer         = timer_read();
         joycon_calibration_timer_started = true;

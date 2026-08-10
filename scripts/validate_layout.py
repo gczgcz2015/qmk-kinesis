@@ -222,6 +222,10 @@ def main() -> None:
         "rgb_matrix_sethsv_noeeprom(0, 255, RGB_MATRIX_MAXIMUM_BRIGHTNESS)"
         in vial_keymap
     )
+    assert "gpio_set_pin_output(GP1)" in vial_keymap
+    assert "gpio_write_pin_low(GP1)" in vial_keymap
+    assert "gpio_write_pin(GP1, gp1_diagnostic_high)" in vial_keymap
+    assert "timer_elapsed(gp1_diagnostic_timer) >= 2000" in vial_keymap
     assert "dynamic_keymap_get_keycode(_JOY_MAP" in vial_keymap
     assert "joycon_set_key(JOYCON_PRESS, pressed)" in vial_keymap
     assert "joycon_active_keycodes[JOYCON_INPUT_COUNT]" in vial_keymap
