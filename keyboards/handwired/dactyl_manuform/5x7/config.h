@@ -22,6 +22,8 @@
 #define SPI_MISO_PIN GP20
 #define PMW33XX_CS_PIN GP21
 #define PMW33XX_CPI 1600U
+// The mounted sensor's +X axis points physically upward.
+#define POINTING_DEVICE_ROTATION_90
 
 // Four VIA/Vial-editable layers.
 #define DYNAMIC_KEYMAP_LAYER_COUNT 4

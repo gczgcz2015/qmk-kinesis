@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the asymmetric QMK, VIA, Vial, CPI, and wiring definitions."""
+"""Validate the asymmetric QMK, VIA, Vial, trackball, and wiring definitions."""
 
 from __future__ import annotations
 
@@ -164,6 +164,7 @@ def main() -> None:
     ]
     require_define(config, "SPLIT_POINTING_ENABLE")
     require_define(config, "POINTING_DEVICE_RIGHT")
+    require_define(config, "POINTING_DEVICE_ROTATION_90")
     for macro, value in {
         "SPI_DRIVER": "SPID0",
         "SPI_SCK_PIN": "GP18",
@@ -218,7 +219,7 @@ def main() -> None:
 
     print(
         "layout validation passed: 12x9 split matrix, 81 visible keys "
-        "(38 left + 43 right), right-master PMW3360, synchronized VIA/Vial layers, "
+        "(38 left + 43 right), rotated right-master PMW3360, synchronized VIA/Vial layers, "
         "and persistent six-step CPI controls"
     )
 
