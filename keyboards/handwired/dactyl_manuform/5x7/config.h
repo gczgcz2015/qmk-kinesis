@@ -24,6 +24,7 @@
 #define PMW33XX_CPI 1600U
 // The mounted sensor's +X axis points physically upward.
 #define POINTING_DEVICE_ROTATION_90
+#define POINTING_DEVICE_INVERT_Y
 
 // Four VIA/Vial-editable layers.
 #define DYNAMIC_KEYMAP_LAYER_COUNT 4

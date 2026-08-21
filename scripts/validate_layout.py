@@ -165,6 +165,7 @@ def main() -> None:
     require_define(config, "SPLIT_POINTING_ENABLE")
     require_define(config, "POINTING_DEVICE_RIGHT")
     require_define(config, "POINTING_DEVICE_ROTATION_90")
+    require_define(config, "POINTING_DEVICE_INVERT_Y")
     for macro, value in {
         "SPI_DRIVER": "SPID0",
         "SPI_SCK_PIN": "GP18",
