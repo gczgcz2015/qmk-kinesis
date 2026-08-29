@@ -14,7 +14,7 @@ enum custom_keycodes {
     PMW_CPI_UP,
 };
 
-#define CPI_CONFIG_MAGIC 0x43504901UL
+#define CPI_CONFIG_MAGIC 0x43504A00UL
 #define CPI_CONFIG_MASK  0xFFFFFF00UL
 #define CPI_DEFAULT_INDEX 7
 

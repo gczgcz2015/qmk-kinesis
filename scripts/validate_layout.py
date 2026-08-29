@@ -195,6 +195,7 @@ def main() -> None:
 
         assert "200,  400,  600,  800,  1000, 1200, 1400, 1600" in source
         assert "1800, 2000, 2200, 2400, 2600, 2800, 3000, 3200" in source
+        assert "#define CPI_CONFIG_MAGIC 0x43504A00UL" in source
         assert "PMW_CPI_DN = QK_KB_0" in source
         assert "eeconfig_read_user()" in source and "eeconfig_update_user(" in source
         assert "pointing_device_set_cpi(" in source
