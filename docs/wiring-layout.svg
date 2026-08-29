@@ -1362,7 +1362,7 @@
     <text class="hardware-text" x="1274" y="70">Tip：右 GP0 ↔ 左 GP0（PIO 半双工数据）</text>
     <text class="hardware-text" x="1274" y="96">Ring：右 Vout → 左 Vin（右侧供电）</text>
     <text class="hardware-text" x="1274" y="122">Sleeve：右 GND ↔ 左 GND</text>
-    <text class="hardware-text" x="1274" y="158">CPI 档位：400 / 800 / 1200 / 1600 / 2400 / 3200</text>
+    <text class="hardware-text" x="1274" y="158">CPI 档位：200 / 400 / 600 / … / 3200（每档 200）</text>
     <text class="hardware-text" x="1274" y="184">CPI− / CPI+ 可在 Vial User 页分配，档位断电保存。</text>
     <text class="hardware-text" x="1274" y="210">Ogen 丝印 UP 朝键盘顶部；只输出光标 X/Y。</text>
     <text class="warning" x="1274" y="270">只把右侧 USB-C 接到电脑；禁止双 USB 供电。</text>
