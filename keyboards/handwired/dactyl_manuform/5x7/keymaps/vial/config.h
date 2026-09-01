@@ -3,15 +3,15 @@
 
 #pragma once
 
-#define VIAL_KEYBOARD_UID {0xB8, 0x69, 0x89, 0xDC, 0x93, 0xBD, 0x1F, 0x64}
+#define VIAL_KEYBOARD_UID {0x52, 0x50, 0x5A, 0x34, 0x36, 0x54, 0x42, 0x33}
 
-// Physical Escape (R2/C0) + Right Arrow (R4/C4).
-#define VIAL_UNLOCK_COMBO_ROWS { 2, 4 }
-#define VIAL_UNLOCK_COMBO_COLS { 0, 4 }
+// Physical Escape (left R2/C0) + Enter (right R9/C0).
+#define VIAL_UNLOCK_COMBO_ROWS { 2, 9 }
+#define VIAL_UNLOCK_COMBO_COLS { 0, 0 }
 
-// 29 Plum Twist SK6812 LEDs powered directly from the RP2040-Zero 3V3 pin.
-// The low ceiling protects the board's 3.3 V regulator under solid white.
-#define RGB_MATRIX_LED_COUNT 29
+// Each RP2040-Zero powers one 27-key Plum Twist chain from 3V3.
+#define RGB_MATRIX_LED_COUNT 54
+#define RGB_MATRIX_SPLIT { 27, 27 }
 #define RGB_MATRIX_SLEEP
 
 #define ENABLE_RGB_MATRIX_BREATHING
