@@ -14,12 +14,15 @@ enum custom_keycodes {
     PMW_CPI_UP,
 };
 
-#define CPI_CONFIG_MAGIC 0x43504B00UL
+#define CPI_CONFIG_MAGIC 0x43504D00UL
 #define CPI_CONFIG_MASK  0xFFFFFF00UL
-#define CPI_DEFAULT_INDEX 5
+#define CPI_DEFAULT_INDEX 15
 
 static const uint16_t cpi_levels[] = {
-    100, 200, 400, 800, 1200, 1600, 2400, 3200,
+     100,  200,  300,  400,  500,  600,  700,  800,
+     900, 1000, 1100, 1200, 1300, 1400, 1500, 1600,
+    1700, 1800, 1900, 2000, 2100, 2200, 2300, 2400,
+    2500, 2600, 2700, 2800, 2900, 3000, 3100, 3200,
 };
 static uint8_t cpi_index = CPI_DEFAULT_INDEX;
 

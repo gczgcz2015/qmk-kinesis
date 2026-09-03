@@ -193,8 +193,10 @@ def main() -> None:
             by_coordinate = dict(zip(matrix_order, layer))
             assert all(by_coordinate[coordinate] == "_______" for coordinate in TRACKBALL_KEYS)
 
-        assert "100, 200, 400, 800, 1200, 1600, 2400, 3200" in source
-        assert "#define CPI_CONFIG_MAGIC 0x43504B00UL" in source
+        assert "100,  200,  300,  400,  500,  600,  700,  800" in source
+        assert "2500, 2600, 2700, 2800, 2900, 3000, 3100, 3200" in source
+        assert "#define CPI_CONFIG_MAGIC 0x43504D00UL" in source
+        assert "#define CPI_DEFAULT_INDEX 15" in source
         assert "PMW_CPI_DN = QK_KB_0" in source
         assert "eeconfig_read_user()" in source and "eeconfig_update_user(" in source
         assert "pointing_device_set_cpi(" in source
@@ -222,7 +224,7 @@ def main() -> None:
     print(
         "layout validation passed: 12x9 split matrix, 81 visible keys "
         "(38 left + 43 right), rotated right-master PMW3360, synchronized VIA/Vial layers, "
-        "and persistent eight-step CPI controls"
+        "and persistent 32-step CPI controls"
     )
 
 
