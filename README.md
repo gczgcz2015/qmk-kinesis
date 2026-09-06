@@ -4,8 +4,8 @@
 
 - 每侧 4×6 主键区 + 3 个拇指键，共 54 键
 - Plum Twist `ROW2COL` 矩阵，每侧 27 颗 SK6812 逐键 RGB
-- 左手固定为 USB 主控，不连接指针外设
-- 右手 Ogen Lite V1.3 / PMW3360 轨迹球
+- 右手固定为 USB 主控，并连接 Ogen Lite V1.3 / PMW3360 轨迹球
+- 左手作为分体从端，仅连接矩阵和 RGB
 - GP0 单线 PIO 分体通信，GP8 作为两侧拇指区矩阵行
 - GP9–GP12 用于 PMW3360 SPI1，右手 GP13 预留
 - Vial 四层动态键位
@@ -43,7 +43,7 @@ VIAL_HOME=/path/to/vial-qmk make build
 2. 单独连接一侧，按住 BOOT 并点按 RESET，或快速按两次 RESET。
 3. 把 UF2 复制到 `RPI-RP2`。
 4. 断开后对另一侧重复操作。
-5. 两侧断电时连接 TRS，只给左手接 USB。
+5. 两侧断电时连接 TRS，只给右手接 USB。
 
 旧的单手固件不能与本固件混用，两侧都需要重新刷写。第一次升级会因
 矩阵、PID 和 Vial UID 变化而恢复默认键位。

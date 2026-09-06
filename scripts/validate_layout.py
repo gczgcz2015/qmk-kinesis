@@ -153,7 +153,7 @@ def main() -> None:
 
     config = KEYBOARD_CONFIG.read_text(encoding="utf-8")
     for name, value in {
-        "MASTER_LEFT": None,
+        "MASTER_RIGHT": None,
         "SERIAL_USART_TX_PIN": "GP0",
         "SPLIT_POINTING_ENABLE": None,
         "POINTING_DEVICE_RIGHT": None,
@@ -255,7 +255,7 @@ def main() -> None:
 
     print(
         "layout validation passed: split 10x6 matrix, 54 physical/VIA/Vial keys, "
-        "left-master split, right-side GP9-GP12 PMW3360, 4 synchronized layers, "
+        "right-master split, right-side GP9-GP12 PMW3360, 4 synchronized layers, "
         "eight CPI presets, and two 27-key GP1 RGB chains"
     )
 

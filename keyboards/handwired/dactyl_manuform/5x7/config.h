@@ -3,9 +3,9 @@
 
 #pragma once
 
-// The left half is the USB master. The right PMW3360 report is carried over
-// the split transport, so both halves still use the same UF2.
-#define MASTER_LEFT
+// The right half is the USB master and hosts the PMW3360. The left half's
+// matrix uses the split transport, so both halves still use the same UF2.
+#define MASTER_RIGHT
 
 // RP2040 PIO half-duplex split transport over the TRS data conductor.
 #define SERIAL_USART_TX_PIN GP0

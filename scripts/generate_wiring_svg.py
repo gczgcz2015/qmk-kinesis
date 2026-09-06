@@ -308,7 +308,7 @@ def generate_svg(keys: list[Key], keycodes: dict[tuple[int, int], str]) -> str:
   <rect class="bg" width="1800" height="2100"/>
   <rect class="panel" x="24" y="20" width="1752" height="2055" rx="24"/>
   <text class="title" x="60" y="64">RP2040-Zero 分体 4×6 + 3 · PMW3360 轨迹球</text>
-  <text class="subtitle" x="60" y="92">每侧 27 键 · ROW2COL · 左手 USB 主控 · 右手轨迹球 · GP0 半双工分体 · 每侧 GP1 独立 27 灯链</text>
+  <text class="subtitle" x="60" y="92">每侧 27 键 · ROW2COL · 右手 USB 主控 · 右手轨迹球 · GP0 半双工分体 · 每侧 GP1 独立 27 灯链</text>
 
   <text class="section" x="60" y="128">第一层键位、矩阵坐标与 GPIO</text>
   <text class="side-title" x="400" y="140">左手</text>
@@ -328,16 +328,16 @@ def generate_svg(keys: list[Key], keycodes: dict[tuple[int, int], str]) -> str:
   <line x1="60" y1="1388" x2="1740" y2="1388" stroke="#56647a" stroke-width="2"/>
   <text class="section" x="60" y="1428">RP2040-Zero 引脚与外设</text>
   <rect class="controller" x="60" y="1450" width="800" height="465" rx="20"/>
-  <text class="controller-title" x="90" y="1490">左手 · USB 主控</text>
+  <text class="controller-title" x="90" y="1490">左手 · 分体从端</text>
   <text class="pin" x="90" y="1530">矩阵行：R0–R4 → GP14 / GP15 / GP26 / GP27 / GP8</text>
   <text class="pin" x="90" y="1560">矩阵列：C0–C5 → GP2 / GP3 / GP4 / GP5 / GP6 / GP7</text>
   <text class="pin" x="90" y="1590">RGB：GP1 → 220–470 Ω → LED0.I；27 颗 + 接 3V3，− 接 GND</text>
   <text class="pin pin-accent" x="90" y="1620">TRS DATA：GP0；Ring：5V；Sleeve：GND</text>
   <text class="pin" x="90" y="1680">空闲 GPIO：GP9 / GP10 / GP11 / GP12 / GP13 / GP28 / GP29</text>
-  <text class="note" x="90" y="1720">左手不连接摇杆或轨迹球；GP8 只作为拇指区矩阵行 R4。</text>
+  <text class="note" x="90" y="1720">左手不连接轨迹球；GP8 只作为拇指区矩阵行 R4。</text>
 
   <rect class="controller" x="940" y="1450" width="800" height="465" rx="20"/>
-  <text class="controller-title" x="970" y="1490">右手 · PMW3360 轨迹球</text>
+  <text class="controller-title" x="970" y="1490">右手 · USB 主控 + PMW3360 轨迹球</text>
   <text class="pin" x="970" y="1530">矩阵行：R0–R4 → GP14 / GP15 / GP26 / GP27 / GP8</text>
   <text class="pin" x="970" y="1560">矩阵列：C0–C5 → GP2 / GP3 / GP4 / GP5 / GP6 / GP7</text>
   <text class="pin" x="970" y="1590">RGB：GP1 → 220–470 Ω → LED27.I；27 颗 + 接 3V3，− 接 GND</text>
@@ -357,7 +357,7 @@ def generate_svg(keys: list[Key], keycodes: dict[tuple[int, int], str]) -> str:
   <circle cx="390" cy="1960" r="12" fill="#8fe0b0"/>
   <circle cx="1410" cy="1960" r="12" fill="#8fe0b0"/>
   <text class="side-title" x="900" y="1948">TRS：Tip GP0 ↔ GP0 · Ring 5V ↔ 5V · Sleeve GND ↔ GND</text>
-  <text class="warning" x="170" y="2010">必须完全断电后插拔 TRS；连接完成后只给左手接 USB。两侧刷入同一个 UF2。</text>
+  <text class="warning" x="170" y="2010">必须完全断电后插拔 TRS；连接完成后只给右手接 USB。两侧刷入同一个 UF2。</text>
   <text class="note" x="170" y="2040">PMW3360 必须使用匹配透镜并移除传感器/透镜上的运输保护膜；VCC 与所有 GPIO 均为 3.3 V。</text>
 </svg>
 """
