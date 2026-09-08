@@ -71,6 +71,63 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     return true;
 }
 
+// Speed-adaptive pointer acceleration. The thresholds are expressed at the
+// reference CPI so changing the stored CPI does not change the feel of the
+// acceleration curve.
+#define TRACKBALL_ACCEL_REFERENCE_CPI 1600U
+#define TRACKBALL_ACCEL_START        8U
+#define TRACKBALL_ACCEL_MAX          32U
+#define TRACKBALL_ACCEL_MAX_FACTOR   300U
+
+static uint16_t trackball_accel_factor(uint16_t speed) {
+    if (speed <= TRACKBALL_ACCEL_START) {
+        return 100U;
+    }
+    if (speed >= TRACKBALL_ACCEL_MAX) {
+        return TRACKBALL_ACCEL_MAX_FACTOR;
+    }
+
+    return 100U + (uint16_t)(((uint32_t)(speed - TRACKBALL_ACCEL_START) *
+                              (TRACKBALL_ACCEL_MAX_FACTOR - 100U)) /
+                             (TRACKBALL_ACCEL_MAX - TRACKBALL_ACCEL_START));
+}
+
+static int16_t trackball_scale_axis(int16_t value, uint16_t factor) {
+    int32_t scaled = (int32_t)value * factor;
+    scaled += scaled >= 0 ? 50 : -50;
+
+    if (scaled > 12700) {
+        return 127;
+    }
+    if (scaled < -12700) {
+        return -127;
+    }
+    return (int16_t)(scaled / 100);
+}
+
+report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
+    int16_t x       = mouse_report.x;
+    int16_t y       = mouse_report.y;
+    uint16_t abs_x  = x < 0 ? (uint16_t)-x : (uint16_t)x;
+    uint16_t abs_y  = y < 0 ? (uint16_t)-y : (uint16_t)y;
+    uint16_t speed  = abs_x > abs_y ? abs_x : abs_y;
+    uint16_t current_cpi = pointing_device_get_cpi();
+
+    if (current_cpi == 0U) {
+        current_cpi = TRACKBALL_ACCEL_REFERENCE_CPI;
+    }
+
+    const uint16_t normalized_speed = (uint16_t)(((uint32_t)speed *
+                                                   TRACKBALL_ACCEL_REFERENCE_CPI +
+                                                   current_cpi / 2U) /
+                                                  current_cpi);
+    const uint16_t factor = trackball_accel_factor(normalized_speed);
+
+    mouse_report.x = (mouse_xy_report_t)trackball_scale_axis(x, factor);
+    mouse_report.y = (mouse_xy_report_t)trackball_scale_axis(y, factor);
+    return mouse_report;
+}
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_BASE] = LAYOUT_5x7_5x9(
         // Left key well: unchanged from main (7 / 7 / 7 / 6 / 5).

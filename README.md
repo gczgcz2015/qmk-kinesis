@@ -84,6 +84,10 @@ Vial 的 User 分类包含两个可分配键码：
 默认 `1600 CPI`。达到上下限后停止，不循环；当前档位写入 EEPROM，断电后保留。
 执行 EEPROM Reset 后恢复默认值。Base 层的五个新增右键默认为：
 
+固件还启用速度自适应加速：以当前 CPI 归一化移动速度，低速保持 1×，超过
+`8 counts/report` 后线性增加，达到 `32 counts/report` 时最高约 3×；速度降下来后
+会自动恢复为 1×。这只影响轨迹球 X/Y，不影响按键和滚轮。
+
 ```text
        C0          C1          C2
 R0   Keypad       CPI-        CPI+

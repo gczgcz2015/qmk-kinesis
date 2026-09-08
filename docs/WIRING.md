@@ -170,6 +170,10 @@ Ogen 丝印 `UP` 朝键盘顶部。轨迹球只输出光标 X/Y，不实现滚�
 
 达到上下限后停止；档位存入 EEPROM。执行 EEPROM Reset 时恢复 1600 CPI。
 
+轨迹球启用速度自适应加速：以当前 CPI 归一化移动速度，低速保持 1×，超过
+`8 counts/report` 后线性增加，达到 `32 counts/report` 时最高约 3×；速度降低后自动
+恢复为 1×。加速只作用于 X/Y 移动，不改变按键和滚轮。
+
 Ogen Lite 没有 5V 电平转换，`VCC` 绝不能接 `Vin`、`Vout` 或 TRS Ring。
 
 ## TRS 数据与供电

@@ -1365,7 +1365,8 @@
     <text class="hardware-text" x="1274" y="158">CPI 档位：100 / 200 / 300 / … / 1600（每档 100）</text>
     <text class="hardware-text" x="1274" y="184">　　　　　1700 / 1800 / 1900 / … / 3200</text>
     <text class="hardware-text" x="1274" y="210">CPI− / CPI+ 可在 Vial User 页分配，档位断电保存。</text>
-    <text class="hardware-text" x="1274" y="236">Ogen 丝印 UP 朝键盘顶部；只输出光标 X/Y。</text>
-    <text class="warning" x="1274" y="270">只把右侧 USB-C 接到电脑；禁止双 USB 供电。</text>
+    <text class="hardware-text" x="1274" y="236">自适应加速：8→32 counts/report，1×→3×，按当前 CPI 归一化。</text>
+    <text class="hardware-text" x="1274" y="260">Ogen 丝印 UP 朝键盘顶部；只输出光标 X/Y。</text>
+    <text class="warning" x="1274" y="285">只把右侧 USB-C 接到电脑；禁止双 USB 供电。</text>
   </g>
 </svg>

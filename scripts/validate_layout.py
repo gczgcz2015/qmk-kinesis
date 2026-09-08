@@ -200,6 +200,9 @@ def main() -> None:
         assert "PMW_CPI_DN = QK_KB_0" in source
         assert "eeconfig_read_user()" in source and "eeconfig_update_user(" in source
         assert "pointing_device_set_cpi(" in source
+        assert "pointing_device_task_user(report_mouse_t mouse_report)" in source
+        assert "TRACKBALL_ACCEL_REFERENCE_CPI 1600U" in source
+        assert "TRACKBALL_ACCEL_MAX_FACTOR   300U" in source
         parsed_keymaps[name] = layers
 
     assert parsed_keymaps["Vial"] == parsed_keymaps["VIA"]
