@@ -164,7 +164,7 @@ def main() -> None:
         "PMW33XX_CS_PIN": "GP9",
         "PMW33XX_CPI": "1600U",
         "POINTING_DEVICE_ROTATION_90": None,
-        "POINTING_DEVICE_INVERT_Y": None,
+        "POINTING_DEVICE_INVERT_X": None,
         "SPLIT_TRANSPORT_MIRROR": None,
         "DYNAMIC_KEYMAP_LAYER_COUNT": "4",
     }.items():

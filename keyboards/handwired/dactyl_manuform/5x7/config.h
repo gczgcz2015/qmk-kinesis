@@ -21,7 +21,8 @@
 #define PMW33XX_CS_PIN GP9
 #define PMW33XX_CPI 1600U
 #define POINTING_DEVICE_ROTATION_90
-#define POINTING_DEVICE_INVERT_Y
+// Reverse both output axes relative to the previous mounted orientation.
+#define POINTING_DEVICE_INVERT_X
 
 // Mirror reactive RGB state between two independent 27-LED chains.
 #define SPLIT_TRANSPORT_MIRROR
