@@ -53,6 +53,7 @@ void keyboard_post_init_user(void) {
         eeconfig_update_user(USER_CONFIG_MAGIC | cpi_index);
     }
     apply_cpi(false);
+    set_auto_mouse_enable(true);
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {

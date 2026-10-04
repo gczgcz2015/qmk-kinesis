@@ -165,6 +165,9 @@ def main() -> None:
         "PMW33XX_CPI": "1600U",
         "POINTING_DEVICE_ROTATION_90": None,
         "POINTING_DEVICE_INVERT_X": None,
+        "POINTING_DEVICE_AUTO_MOUSE_ENABLE": None,
+        "AUTO_MOUSE_DEFAULT_LAYER": "3",
+        "AUTO_MOUSE_TIME": "1000",
         "SPLIT_TRANSPORT_MIRROR": None,
         "DYNAMIC_KEYMAP_LAYER_COUNT": "4",
     }.items():
@@ -196,6 +199,7 @@ def main() -> None:
         assert "100, 200, 400, 800, 1200, 1600, 2400, 3200" in source
         assert "PMW_CPI_DN = QK_KB_0" in source
         assert "pointing_device_set_cpi(" in source
+        assert "set_auto_mouse_enable(true);" in source
         parsed_keymaps[name] = layers
 
     assert parsed_keymaps["Vial"] == parsed_keymaps["VIA"]

@@ -24,6 +24,11 @@
 // Reverse both output axes relative to the previous mounted orientation.
 #define POINTING_DEVICE_INVERT_X
 
+// Trackball movement activates the navigation/mouse layer until idle.
+#define POINTING_DEVICE_AUTO_MOUSE_ENABLE
+#define AUTO_MOUSE_DEFAULT_LAYER 3
+#define AUTO_MOUSE_TIME 1000
+
 // Mirror reactive RGB state between two independent 27-LED chains.
 #define SPLIT_TRANSPORT_MIRROR
 
